@@ -1,7 +1,7 @@
 from arguments.parser import parser
-from directions import Directions
+from enums.directions import Directions
 from rubik import Rubik
-from faces import Faces
+from enums.faces import Faces
 
 if __name__ == '__main__':
     args = parser.parse_args()

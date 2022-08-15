@@ -1,6 +1,6 @@
-from faces import Faces
-from directions import Directions
-from rotations import Rotations
+from enums.faces import Faces
+from enums.directions import Directions
+from enums.rotations import Rotations
 
 
 class Rubik:
@@ -15,14 +15,20 @@ class Rubik:
 
     def rotate(self, face, direction):
         destination = []
-        for i in range(self.n):
-            for j in range(self.n):
-                pos = self.n * (j) + self.n - i - 1 if direction == Rotations.CLOCKWISE else self.n * (
-                            self.n - j - 1) + i
-                # clockwise: (i, j) -> (j, n-i-1)
-                # anticlockwise: (i, j) -> (n-j-1, i)
-                destination.insert(self.n * i + j, self.cube[face.value][pos])
 
+        if direction == Rotations.CLOCKWISE:
+            pos = lambda i,j: self.n*(j) + self.n - i - 1
+                # clockwise: (i, j) -> (j, n-i-1)
+        elif direction == Rotations.ANTICLOCKWISE:
+            pos = lambda i,j: self.n*(self.n - j - 1) + i
+                # anticlockwise: (i, j) -> (n-j-1, i)
+        else:            
+            raise ValueError('Invalid direction')
+
+        for i in range(self.n):
+            for j in range(self.n): 
+                destination.insert(self.n*i + j, self.cube[face.value][pos])
+        
         self.cube[face.value] = destination.copy()
 
     def spinCol(self, face, column, direction):
@@ -103,3 +109,4 @@ class Rubik:
             self.spinCol(Faces.LEFT, self.n - 1, Directions.UP)
         else:
             print('Invalid direction')
+        
