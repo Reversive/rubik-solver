@@ -9,8 +9,10 @@ class Directions(Enum):
     RIGHT_DOWN = 5
     BOTTOM_LEFT = 6
     BOTTOM_RIGHT = 7
-    ROTATE_LEFT = 8
-    ROTATE_RIGHT = 9
+    ROTATE_ANTICLOCKWISE = 8
+    ROTATE_CLOCKWISE = 9
     UP = 10
     DOWN = 11
+    LEFT = 12
+    RIGHT = 13
     
