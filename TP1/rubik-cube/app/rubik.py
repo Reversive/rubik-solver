@@ -11,7 +11,7 @@ class Rubik:
 
         for i in range(6):
             for j in range(n * n):
-                self.cube[i].append(self.n*self.n*i + j)
+                self.cube[i].append(i)
 
     def rotate(self, face, direction):
         destination = []
@@ -50,9 +50,9 @@ class Rubik:
                            [Faces.TOP.value, Faces.BACK.value, Faces.BOTTOM.value, Faces.FRONT.value]]
         #       En la posicion que denota la cara en X va el valor de la que se encuentra en la cara que esta en X+1
 
-        if (direction == Directions.DOWN):
+        if (direction == Rotations.DOWN):
             faces = SPIN_FACES_DOWN[face.value % 3]
-        elif (direction == Directions.UP):
+        elif (direction == Rotations.UP):
             faces = SPIN_FACES_UP[face.value % 3]
         else: raise ValueError('Invalid direction')
         self.spin(faces, lambda j: j * self.n + column)
@@ -64,9 +64,9 @@ class Rubik:
         SPIN_FACES_LEFT = [Faces.FRONT.value, Faces.RIGHT.value, Faces.BACK.value, Faces.LEFT.value]
         SPIN_FACES_RIGHT = [Faces.FRONT.value, Faces.LEFT.value, Faces.BACK.value, Faces.RIGHT.value]
 
-        if (direction == Directions.LEFT):
+        if (direction == Rotations.LEFT):
             faces = SPIN_FACES_LEFT
-        elif (direction == Directions.RIGHT):
+        elif (direction == Rotations.RIGHT):
             faces = SPIN_FACES_RIGHT
         else: raise ValueError('Invalid direction')
 
@@ -87,10 +87,10 @@ class Rubik:
             lambda j: (self.n-1 -j)*self.n + self.n -1 -column, #RIGHT
             lambda j: self.n * (self.n -1 -column) + j      #BOTTOM
         ]
-        if (direction == Directions.DOWN):
+        if (direction == Rotations.DOWN):
             faces = SPIN_SIDE_DOWN
             lambdas = SIDE_LAMBDAS_DOWN
-        elif (direction == Directions.UP):
+        elif (direction == Rotations.UP):
             faces = SPIN_SIDE_UP
             lambdas = SIDE_LAMBDAS_UP
         else: raise ValueError('Invalid direction')
@@ -103,37 +103,59 @@ class Rubik:
         for j in range(self.n):
             self.cube[faces[3]][lambdas[3](j)] = aux_face[lambdas[0](j)]
     
+    def isSolved(self):
+        for i in range(6):
+            for j in range(self.n * self.n):
+                if self.cube[i][j] != i:
+                    return False
+
+        return True
+
+    def toString(self):
+        answer = ''
+        for i in range(6):
+            for j in range(self.n*self.n):
+                answer += str(self.cube[i][j])
+
+        return answer
+
     def move(self, direction):
         if direction == Directions.TOP_LEFT:
-            self.spinRow(Faces.FRONT, 0, Directions.LEFT)
+            self.spinRow(Faces.FRONT, 0, Rotations.LEFT)
             self.rotate(Faces.BOTTOM, Rotations.CLOCKWISE)
         elif direction == Directions.TOP_RIGHT:
-            self.spinRow(Faces.FRONT, 0, Directions.RIGHT)
+            self.spinRow(Faces.FRONT, 0, Rotations.RIGHT)
             self.rotate(Faces.BOTTOM, Rotations.ANTICLOCKWISE)
         elif direction == Directions.LEFT_UP:
-            self.spinCol(Faces.FRONT, 0, Directions.UP)
+            self.spinCol(Faces.FRONT, 0, Rotations.UP)
             self.rotate(Faces.LEFT, Rotations.ANTICLOCKWISE)
         elif direction == Directions.LEFT_DOWN:
-            self.spinCol(Faces.FRONT, 0, Directions.DOWN)
+            self.spinCol(Faces.FRONT, 0, Rotations.DOWN)
             self.rotate(Faces.LEFT, Rotations.CLOCKWISE)
         elif direction == Directions.RIGHT_UP:
-            self.spinCol(Faces.FRONT, self.n - 1, Directions.UP)
+            self.spinCol(Faces.FRONT, self.n - 1, Rotations.UP)
             self.rotate(Faces.RIGHT, Rotations.CLOCKWISE)
         elif direction == Directions.RIGHT_DOWN:
-            self.spinCol(Faces.FRONT, self.n - 1, Directions.DOWN)
+            self.spinCol(Faces.FRONT, self.n - 1, Rotations.DOWN)
             self.rotate(Faces.RIGHT, Rotations.ANTICLOCKWISE)
         elif direction == Directions.BOTTOM_LEFT:
-            self.spinRow(Faces.FRONT, self.n-1, Directions.LEFT)
+            self.spinRow(Faces.FRONT, self.n-1, Rotations.LEFT)
             self.rotate(Faces.BOTTOM, Rotations.ANTICLOCKWISE)
         elif direction == Directions.BOTTOM_RIGHT:
-            self.spinRow(Faces.FRONT, self.n-1, Directions.RIGHT)
+            self.spinRow(Faces.FRONT, self.n-1, Rotations.RIGHT)
             self.rotate(Faces.BOTTOM, Rotations.CLOCKWISE)
-        elif direction == Directions.ROTATE_ANTICLOCKWISE:
+        elif direction == Directions.FRONT_ROTATE_ANTICLOCKWISE:
             self.rotate(Faces.FRONT, Rotations.ANTICLOCKWISE)
-            self.spinSide(Faces.LEFT, self.n - 1, Directions.DOWN)
-        elif direction == Directions.ROTATE_CLOCKWISE:
+            self.spinSide(Faces.LEFT, self.n - 1, Rotations.DOWN)
+        elif direction == Directions.FRONT_ROTATE_CLOCKWISE:
             self.rotate(Faces.FRONT, Rotations.CLOCKWISE)
-            self.spinSide(Faces.LEFT, self.n - 1, Directions.UP)
+            self.spinSide(Faces.LEFT, self.n - 1, Rotations.UP)
+        elif direction == Directions.BACK_ROTATE_ANTICLOCKWISE:
+            self.rotate(Faces.BACK, Rotations.ANTICLOCKWISE)
+            self.spinSide(Faces.LEFT, 0, Rotations.UP)
+        elif direction == Directions.BACK_ROTATE_CLOCKWISE:
+            self.rotate(Faces.BACK, Rotations.CLOCKWISE)
+            self.spinSide(Faces.LEFT, 0, Rotations.DOWN)
         else:
             print('Invalid direction')
         
