@@ -1,23 +1,23 @@
 from enum import Enum
 
 class Directions(Enum):
-    NULL=-1
+    NULL=0
 
-    TOP_RIGHT = 5
-    TOP_LEFT = 7
+    TOP_RIGHT = 1
+    TOP_LEFT = -1
 
-    LEFT_UP = 4
-    LEFT_DOWN = 8
+    LEFT_UP = 2
+    LEFT_DOWN = -2
     
-    RIGHT_UP = 9
-    RIGHT_DOWN = 3
+    RIGHT_UP = 3
+    RIGHT_DOWN = -3
 
-    BOTTOM_LEFT = 10
-    BOTTOM_RIGHT = 2
+    BOTTOM_LEFT = 4
+    BOTTOM_RIGHT = -4
     
-    FRONT_ROTATE_ANTICLOCKWISE = 11
-    FRONT_ROTATE_CLOCKWISE = 1
+    FRONT_ROTATE_ANTICLOCKWISE = 5
+    FRONT_ROTATE_CLOCKWISE = -5
     
-    BACK_ROTATE_ANTICLOCKWISE = 12
-    BACK_ROTATE_CLOCKWISE = 0
+    BACK_ROTATE_ANTICLOCKWISE = 6
+    BACK_ROTATE_CLOCKWISE = -6
     
