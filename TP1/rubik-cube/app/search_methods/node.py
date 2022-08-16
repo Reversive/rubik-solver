@@ -2,7 +2,7 @@ class Node:
     def __init__(self, rubik, parent, lastMovement):
         self.parent = parent
         self.state = rubik # TODO: se podria guardar de una forma mas eficiente?
-        self.children = []
+        self.children = [] # TODO: ver como hacemos esto con numpy pq hay que saber el tamaño
         self.lastMovement = lastMovement
         
     def add_children(self, children):

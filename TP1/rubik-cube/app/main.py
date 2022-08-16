@@ -18,7 +18,6 @@ if __name__ == '__main__':
     # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
     # rubik.move(Directions.TOP_RIGHT)
 
-    
     dfs = DFS(rubik)
     print(dfs.solve())
 
