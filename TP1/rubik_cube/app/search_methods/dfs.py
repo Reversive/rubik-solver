@@ -19,7 +19,7 @@ class DFS:
         node = self.border.pop(0)
         while not node.state.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
             stateKey = node.state.to_string()
-            if (stateKey not in self.deepsOfStates or self.deepsOfStates[stateKey] > node.deep):
+            if (node.deep < 2 and (stateKey not in self.deepsOfStates or self.deepsOfStates[stateKey] > node.deep)):
                 # Solo expando cuando no he visitado el estado o si es menos profundo que cuando lo visite
                 self.deepsOfStates[stateKey] = node.deep
                 nextMovements = np.arange((-len(Directions) + 1) / 2, (len(Directions) - 1) / 2 + 1)

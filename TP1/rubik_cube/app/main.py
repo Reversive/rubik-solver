@@ -3,10 +3,9 @@ from enums.directions import Directions
 from rubik import Rubik
 from search_methods.dfs import DFS
 
-if __name__ == '__main__':
-    args = parser.parse_args()
+def main(n):
 
-    rubik = Rubik(args.options.n)
+    rubik = Rubik(n)
     print(rubik.cube)
     rubik.move(Directions.FRONT_ROTATE_CLOCKWISE)
     # rubik.move(Directions.TOP_LEFT)
@@ -32,3 +31,8 @@ if __name__ == '__main__':
     # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
 
     print(rubik.cube)
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+
+    main(args.options.n)
