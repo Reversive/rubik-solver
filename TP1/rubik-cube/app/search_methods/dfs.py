@@ -14,9 +14,10 @@ class DFS:
         np.random.seed(123456)  # TODO: constante general
 
     def solve(self):
-        i = 0
-        node = self.border[0]
-        while not node.state.is_solved() and len(self.border) > 0:
+        i = 0            
+
+        node = self.border.pop(0)
+        while not node.state.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
             stateKey = node.state.to_string()
             if (stateKey not in self.deepsOfStates or self.deepsOfStates[stateKey] > node.deep):
                 # Solo expando cuando no he visitado el estado o si es menos profundo que cuando lo visite
