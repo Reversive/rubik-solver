@@ -1,11 +1,10 @@
-from enums.directions import Directions
 import numpy as np
 
 
 class Node:
-    def __init__(self, rubik, parent, lastMovement, deep=0):
+    def __init__(self, rubikState, parent, lastMovement, deep=0):
         self.parent = parent
-        self.state = rubik  # TODO: se podria guardar de una forma mas eficiente?
+        self.state = rubikState
         self.lastMovement = lastMovement
         self.deep = deep
         self.children = []

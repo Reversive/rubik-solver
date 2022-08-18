@@ -3,9 +3,9 @@ import rubik
 import search_methods
 import main
 
-
 profiler = line_profiler.LineProfiler()
 profiler.add_function(search_methods.dfs.DFS.solve)
+profiler.add_function(rubik.Rubik.move)
 
 wrapper = profiler(main.main)
 wrapper(2)

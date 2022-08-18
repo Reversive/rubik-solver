@@ -1,74 +1,101 @@
 Timer unit: 1e-06 s
 
-Total time: 0.006151 s
-File: /home/manurodriguez/Desktop/ITBA/SIA/sia-repo/TP1/rubik_cube/app/main.py
+Total time: 0.045534 s
+File: /home/manurodriguez/Desktop/ITBA/sia/sia-repo/TP1/rubik_cube/app/main.py
 Function: main at line 6
 
 Line #      Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
      6                                           def main(n):
      7                                           
-     8         1         36.0     36.0      0.6      rubik = Rubik(n)
-     9         1        408.0    408.0      6.6      print(rubik.cube)
-    10         1        117.0    117.0      1.9      rubik.move(Directions.FRONT_ROTATE_CLOCKWISE)
-    11                                               # rubik.move(Directions.TOP_LEFT)
-    12                                               # rubik.move(Directions.BOTTOM_RIGHT)
-    13                                               # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
-    14                                               # rubik.move(Directions.LEFT_DOWN)
-    15                                               # rubik.move(Directions.RIGHT_UP)
+     8         1         36.0     36.0      0.1      rubik = Rubik(n)
+     9         1         69.0     69.0      0.2      print("to_string: " + rubik.to_string())
+    10         1        601.0    601.0      1.3      rubik.cube = rubik.move(Moves.FRONT_ROTATE_CLOCKWISE)
+    11         1         38.0     38.0      0.1      print("to_string: " + rubik.to_string())
+    12         1        519.0    519.0      1.1      rubik.move(Moves.TOP_LEFT)
+    13         1        512.0    512.0      1.1      rubik.move(Moves.BOTTOM_RIGHT)
+    14                                               # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
+    15                                               # rubik.move(Directions.LEFT_DOWN)
     16                                               # rubik.move(Directions.RIGHT_UP)
-    17                                               # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
-    18                                               # rubik.move(Directions.TOP_RIGHT)
-    19                                           
-    20         1         22.0     22.0      0.4      dfs = DFS(rubik)
-    21         1       5050.0   5050.0     82.1      print(dfs.solve())
-    22                                           
-    23                                               # rubik.move(Directions.TOP_LEFT)
-    24                                               # rubik.move(Directions.FRONT_ROTATE_CLOCKWISE)
-    25                                               # rubik.move(Directions.RIGHT_DOWN)
+    17                                               # rubik.move(Directions.RIGHT_UP)
+    18                                               # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
+    19                                               # rubik.move(Directions.TOP_RIGHT)
+    20                                           
+    21         1         19.0     19.0      0.0      dfs = DFS(rubik)
+    22         1      43740.0  43740.0     96.1      print(dfs.solve())
+    23                                           
+    24                                               # rubik.move(Directions.TOP_LEFT)
+    25                                               # rubik.move(Directions.FRONT_ROTATE_CLOCKWISE)
     26                                               # rubik.move(Directions.RIGHT_DOWN)
-    27                                               # rubik.move(Directions.LEFT_UP)
-    28                                               # rubik.move(Directions.FRONT_ROTATE_CLOCKWISE)
-    29                                               # rubik.move(Directions.BOTTOM_LEFT)
-    30                                               # rubik.move(Directions.TOP_RIGHT)
-    31                                               # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
-    32                                           
-    33         1        518.0    518.0      8.4      print(rubik.cube)
+    27                                               # rubik.move(Directions.RIGHT_DOWN)
+    28                                               # rubik.move(Directions.LEFT_UP)
+    29                                               # rubik.move(Directions.FRONT_ROTATE_CLOCKWISE)
+    30                                               # rubik.move(Directions.BOTTOM_LEFT)
+    31                                               # rubik.move(Directions.TOP_RIGHT)
+    32                                               # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
 
-Total time: 0.004833 s
-File: /home/manurodriguez/Desktop/ITBA/SIA/sia-repo/TP1/rubik_cube/app/search_methods/dfs.py
-Function: solve at line 16
+Total time: 0.020017 s
+File: /home/manurodriguez/Desktop/ITBA/sia/sia-repo/TP1/rubik_cube/app/rubik.py
+Function: move at line 141
 
 Line #      Hits         Time  Per Hit   % Time  Line Contents
 ==============================================================
-    16                                               def solve(self):
-    17         1          1.0      1.0      0.0          i = 0            
-    18                                           
-    19         1          1.0      1.0      0.0          node = self.border.pop(0)
-    20        15        119.0      7.9      2.5          while not node.state.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
-    21        14        548.0     39.1     11.3              stateKey = node.state.to_string()
-    22        14         16.0      1.1      0.3              if (node.deep < 2 and (stateKey not in self.deepsOfStates or self.deepsOfStates[stateKey] > node.deep)):
-    23                                                           # Solo expando cuando no he visitado el estado o si es menos profundo que cuando lo visite
-    24         2          2.0      1.0      0.0                  self.deepsOfStates[stateKey] = node.deep
-    25         2         28.0     14.0      0.6                  nextMovements = np.arange((-len(Directions) + 1) / 2, (len(Directions) - 1) / 2 + 1)
-    26         2        287.0    143.5      5.9                  nextMovements = np.delete(nextMovements, np.where(nextMovements == Directions.NULL.value) or np.where(
-    27                                                               nextMovement == -1 * node.lastMovement.value))
-    28         2         92.0     46.0      1.9                  np.random.shuffle(nextMovements)
-    29        26         48.0      1.8      1.0                  for nextMovement in nextMovements:
-    30        24        135.0      5.6      2.8                      direction = Directions(nextMovement)
-    31        24       1277.0     53.2     26.4                      newNode = Node(copy.deepcopy(node.state), node, direction, node.deep + 1)
-    32        24       1620.0     67.5     33.5                      newNode.state.move(direction)
-    33        24         33.0      1.4      0.7                      self.border.insert(0, newNode)
-    34        24        553.0     23.0     11.4                      node.add_children(newNode)
-    35                                           
-    36        14         11.0      0.8      0.2              self.visited.append(node)
-    37        14         15.0      1.1      0.3              node = self.border.pop(0)
-    38        14         11.0      0.8      0.2              i += 1
-    39        14         11.0      0.8      0.2              if i % 100 == 0:
-    40                                                           print(i)
-    41                                           
-    42         1         24.0     24.0      0.5          if node.state.is_solved():
-    43         1          1.0      1.0      0.0              return node
-    44                                                   else:
-    45                                                       raise ValueError('No solution found')
+   141                                               def move(self, direction):
+   142        37        157.0      4.2      0.8          endCube = np.array(self.cube, copy=True)
+   143        74        325.0      4.4      1.6          endCube = {
+   144        37       1611.0     43.5      8.0              Moves.LEFT_UP: self.move_col(endCube, 0, Directions.UP, Faces.LEFT, Rotations.ANTICLOCKWISE),
+   145        37       1480.0     40.0      7.4              Moves.LEFT_DOWN: self.move_col(endCube, 0, Directions.DOWN, Faces.LEFT, Rotations.CLOCKWISE),
+   146        37       1445.0     39.1      7.2              Moves.RIGHT_UP: self.move_col(endCube, self.n - 1, Directions.UP, Faces.RIGHT, Rotations.CLOCKWISE),
+   147        37       1432.0     38.7      7.2              Moves.RIGHT_DOWN: self.move_col(endCube, self.n - 1, Directions.DOWN, Faces.RIGHT, Rotations.ANTICLOCKWISE),
+   148        37       1403.0     37.9      7.0              Moves.TOP_LEFT: self.move_row(endCube, 0, Directions.LEFT, Rotations.CLOCKWISE),
+   149        37       1337.0     36.1      6.7              Moves.TOP_RIGHT: self.move_row(endCube, 0, Directions.RIGHT, Rotations.ANTICLOCKWISE),
+   150        37       1315.0     35.5      6.6              Moves.BOTTOM_LEFT: self.move_row(endCube, self.n - 1, Directions.LEFT, Rotations.CLOCKWISE),
+   151        37       1367.0     36.9      6.8              Moves.BOTTOM_RIGHT: self.move_row(endCube, self.n - 1, Directions.RIGHT, Rotations.ANTICLOCKWISE),
+   152        37       2009.0     54.3     10.0              Moves.FRONT_ROTATE_CLOCKWISE: self.move_rotate(endCube, Faces.FRONT, Rotations.CLOCKWISE, self.n - 1, Directions.UP),
+   153        37       1988.0     53.7      9.9              Moves.FRONT_ROTATE_ANTICLOCKWISE: self.move_rotate(endCube, Faces.FRONT, Rotations.ANTICLOCKWISE, self.n - 1, Directions.DOWN),
+   154        37       1940.0     52.4      9.7              Moves.BACK_ROTATE_CLOCKWISE: self.move_rotate(endCube, Faces.BACK, Rotations.CLOCKWISE, 0, Directions.DOWN),
+   155        37       2046.0     55.3     10.2              Moves.BACK_ROTATE_ANTICLOCKWISE: self.move_rotate(endCube, Faces.BACK, Rotations.ANTICLOCKWISE, 0, Directions.UP)
+   156        37        104.0      2.8      0.5          }.get(direction, 'Invalid direction on move')
+   157                                           
+   158        37         58.0      1.6      0.3          return endCube
+
+Total time: 0.043254 s
+File: /home/manurodriguez/Desktop/ITBA/sia/sia-repo/TP1/rubik_cube/app/search_methods/dfs.py
+Function: solve at line 17
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    17                                               def solve(self):
+    18         1          2.0      2.0      0.0          i = 0            
+    19                                           
+    20                                                   #para root
+    21         1          3.0      3.0      0.0          node = self.border.pop(0)
+    22         1          7.0      7.0      0.0          rubikNode = Rubik(self.n, node.state)
+    23                                           
+    24         4      13491.0   3372.8     31.2          while not rubikNode.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
+    25         3         73.0     24.3      0.2              if node.deep < 3 and (node.state.tostring() not in self.deepsOfStates or self.deepsOfStates[node.state.tostring()] > node.deep):
+    26                                                           # Solo expando cuando no he visitado el estado o si es menos profundo que cuando lo visite
+    27         3         16.0      5.3      0.0                  self.deepsOfStates[node.state.tostring()] = node.deep
+    28                                           
+    29         3         72.0     24.0      0.2                  nextMovements = np.arange((-len(Moves) + 1) / 2, (len(Moves) - 1) / 2 + 1)
+    30         3        259.0     86.3      0.6                  nextMovements = np.delete(nextMovements, [int((len(Moves) - 1) / 2), 6 - node.lastMovement.value])
+    31         3         62.0     20.7      0.1                  np.random.shuffle(nextMovements)
+    32                                           
+    33        37        113.0      3.1      0.3                  for nextMovement in nextMovements:
+    34        34        218.0      6.4      0.5                      direction = Moves(nextMovement)
+    35        34      19920.0    585.9     46.1                      newNode = Node(rubikNode.move(direction), node, direction, node.deep + 1)
+    36        34         82.0      2.4      0.2                      self.border.insert(0, newNode)
+    37        34        766.0     22.5      1.8                      node.add_children(newNode)
+    38                                           
+    39         3         10.0      3.3      0.0              self.visited.append(node)
+    40         3          9.0      3.0      0.0              node = self.border.pop(0)
+    41         3         44.0     14.7      0.1              rubikNode = Rubik(self.n, node.state)
+    42         3          7.0      2.3      0.0              i += 1
+    43         3          6.0      2.0      0.0              if i % 1000 == 0:
+    44                                                           print(i)
+    45                                           
+    46         1       8088.0   8088.0     18.7          if rubikNode.is_solved():
+    47         1          6.0      6.0      0.0              return node
+    48                                                   else:
+    49                                                       raise ValueError('No solution found')
 

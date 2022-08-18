@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Faces(Enum):
     FRONT = 0
     TOP = 1

@@ -1,15 +1,16 @@
 from arguments.parser import parser
-from enums.directions import Directions
+from enums.moves import Moves
 from rubik import Rubik
 from search_methods.dfs import DFS
 
-def main(n):
 
+def main(n):
     rubik = Rubik(n)
-    print(rubik.cube)
-    rubik.move(Directions.FRONT_ROTATE_CLOCKWISE)
-    # rubik.move(Directions.TOP_LEFT)
-    # rubik.move(Directions.BOTTOM_RIGHT)
+    print("to_string: " + rubik.to_string())
+    rubik.cube = rubik.move(Moves.FRONT_ROTATE_CLOCKWISE)
+    print("to_string: " + rubik.to_string())
+    rubik.move(Moves.TOP_LEFT)
+    rubik.move(Moves.BOTTOM_RIGHT)
     # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
     # rubik.move(Directions.LEFT_DOWN)
     # rubik.move(Directions.RIGHT_UP)
@@ -30,7 +31,6 @@ def main(n):
     # rubik.move(Directions.TOP_RIGHT)
     # rubik.move(Directions.FRONT_ROTATE_ANTICLOCKWISE)
 
-    print(rubik.cube)
 
 if __name__ == '__main__':
     args = parser.parse_args()
