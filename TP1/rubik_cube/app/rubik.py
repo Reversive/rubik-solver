@@ -30,6 +30,24 @@ class Rubik:
                 for j in range(self.n * self.n):
                     self.cube[i][j] = i
 
+        self.endCubeFunc = {
+            Moves.LEFT_UP: lambda endCube: self.move_col(endCube, 0, Directions.UP, Faces.LEFT, Rotations.ANTICLOCKWISE),
+            Moves.LEFT_DOWN: lambda endCube: self.move_col(endCube, 0, Directions.DOWN, Faces.LEFT, Rotations.CLOCKWISE),
+            Moves.RIGHT_UP: lambda endCube: self.move_col(endCube, self.n - 1, Directions.UP, Faces.RIGHT, Rotations.CLOCKWISE),
+            Moves.RIGHT_DOWN: lambda endCube: self.move_col(endCube, self.n - 1, Directions.DOWN, Faces.RIGHT, Rotations.ANTICLOCKWISE),
+            Moves.TOP_LEFT: lambda endCube: self.move_row(endCube, 0, Directions.LEFT, Rotations.CLOCKWISE),
+            Moves.TOP_RIGHT: lambda endCube: self.move_row(endCube, 0, Directions.RIGHT, Rotations.ANTICLOCKWISE),
+            Moves.BOTTOM_LEFT: lambda endCube: self.move_row(endCube, self.n - 1, Directions.LEFT, Rotations.CLOCKWISE),
+            Moves.BOTTOM_RIGHT: lambda endCube: self.move_row(endCube, self.n - 1, Directions.RIGHT, Rotations.ANTICLOCKWISE),
+            Moves.FRONT_ROTATE_CLOCKWISE: lambda endCube: self.move_rotate(endCube, Faces.FRONT, Rotations.CLOCKWISE, self.n - 1,
+                                                           Directions.UP),
+            Moves.FRONT_ROTATE_ANTICLOCKWISE: lambda endCube: self.move_rotate(endCube, Faces.FRONT, Rotations.ANTICLOCKWISE,
+                                                               self.n - 1, Directions.DOWN),
+            Moves.BACK_ROTATE_CLOCKWISE: lambda endCube: self.move_rotate(endCube, Faces.BACK, Rotations.CLOCKWISE, 0, Directions.DOWN),
+            Moves.BACK_ROTATE_ANTICLOCKWISE: lambda endCube: self.move_rotate(endCube, Faces.BACK, Rotations.ANTICLOCKWISE, 0,
+                                                              Directions.UP)
+        }
+
     def rotate(self, endCube, face, direction):
         if direction == Rotations.CLOCKWISE:
             pos = lambda i, j: self.n * (self.n - j - 1) + i
@@ -140,22 +158,4 @@ class Rubik:
     
     def move(self, move):
         endCube = np.array(self.cube, copy=True)
-        endCube = {
-            Moves.LEFT_UP: lambda: self.move_col(endCube, 0, Directions.UP, Faces.LEFT, Rotations.ANTICLOCKWISE),
-            Moves.LEFT_DOWN: lambda: self.move_col(endCube, 0, Directions.DOWN, Faces.LEFT, Rotations.CLOCKWISE),
-            Moves.RIGHT_UP: lambda: self.move_col(endCube, self.n - 1, Directions.UP, Faces.RIGHT, Rotations.CLOCKWISE),
-            Moves.RIGHT_DOWN: lambda: self.move_col(endCube, self.n - 1, Directions.DOWN, Faces.RIGHT, Rotations.ANTICLOCKWISE),
-            Moves.TOP_LEFT: lambda: self.move_row(endCube, 0, Directions.LEFT, Rotations.CLOCKWISE),
-            Moves.TOP_RIGHT: lambda: self.move_row(endCube, 0, Directions.RIGHT, Rotations.ANTICLOCKWISE),
-            Moves.BOTTOM_LEFT: lambda: self.move_row(endCube, self.n - 1, Directions.LEFT, Rotations.CLOCKWISE),
-            Moves.BOTTOM_RIGHT: lambda: self.move_row(endCube, self.n - 1, Directions.RIGHT, Rotations.ANTICLOCKWISE),
-            Moves.FRONT_ROTATE_CLOCKWISE: lambda: self.move_rotate(endCube, Faces.FRONT, Rotations.CLOCKWISE, self.n - 1,
-                                                           Directions.UP),
-            Moves.FRONT_ROTATE_ANTICLOCKWISE: lambda: self.move_rotate(endCube, Faces.FRONT, Rotations.ANTICLOCKWISE,
-                                                               self.n - 1, Directions.DOWN),
-            Moves.BACK_ROTATE_CLOCKWISE: lambda: self.move_rotate(endCube, Faces.BACK, Rotations.CLOCKWISE, 0, Directions.DOWN),
-            Moves.BACK_ROTATE_ANTICLOCKWISE: lambda: self.move_rotate(endCube, Faces.BACK, Rotations.ANTICLOCKWISE, 0,
-                                                              Directions.UP)
-        }.get(move, 'Invalid move')()
-
-        return endCube
+        return self.endCubeFunc.get(move, 'Invalid move')(endCube)

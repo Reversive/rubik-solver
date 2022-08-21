@@ -10,10 +10,9 @@ class Manager:
         self.method = method
         self.visited = np.array([], dtype=Node)
         self.border = np.array([], dtype=Node)
-        self.border = np.append(self.border, Node(rubik.cube, None, Moves.NULL))
+        self.border = np.append(self.border, Node(rubik.cube, None, None))
         self.deepsOfStates = {}
         self.n = rubik.n  # TODO: cambiar esto?
-        np.random.seed(123456)  # TODO: constante general
 
     def solve(self):
         i = 0
@@ -29,8 +28,11 @@ class Manager:
                 # Solo expando cuando no he visitado el estado o si es menos profundo que cuando lo visite
                 self.deepsOfStates[node.state.tostring()] = node.deep
 
-                nextMovements = np.arange((-len(Moves) + 1) / 2, (len(Moves) - 1) / 2 + 1)
-                nextMovements = np.delete(nextMovements, [int((len(Moves) - 1) / 2), 6 - node.lastMovement.value])
+                nextMovements = np.arange(0, len(Moves))
+                if node.lastMovement is not None:
+                    # chequeo que no sea root node
+                    nextMovements = np.delete(nextMovements, int((node.lastMovement.value+(len(Moves)/2)) % len(Moves)))
+    
                 np.random.shuffle(nextMovements)
                 newBorder = np.empty(len(nextMovements), dtype=Node)
 

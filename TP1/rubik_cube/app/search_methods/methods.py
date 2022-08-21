@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class Method(object):
     def __init__(self, insertIdx = None):
         self.insertIdx = insertIdx
