@@ -127,6 +127,7 @@ class Rubik:
         return endCube
 
     def is_solved(self):
+        #FIXME: El solve no es completo
         for i in range(6):
             for j in range(self.n * self.n):
                 if self.cube[i][j] != i:
@@ -158,4 +159,4 @@ class Rubik:
     
     def move(self, move):
         endCube = np.array(self.cube, copy=True)
-        return self.endCubeFunc.get(move, 'Invalid move')(endCube)
+        return Rubik(self.n, self.endCubeFunc.get(move, 'Invalid move')(endCube))

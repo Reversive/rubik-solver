@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Node:
-    def __init__(self, rubikState, parent, lastMovement, deep=0):
+    def __init__(self, rubikState, parent, lastMovement, deep):
         self.parent = parent
         self.state = rubikState
         self.lastMovement = lastMovement
@@ -17,3 +17,18 @@ class Node:
 
     def get_parent(self):
         return self.parent
+
+    def __cmp__(self, other):
+        return self.deep < other.deep
+
+    def __eq__(self, other):
+        return self.__cmp__(other)
+
+    def __ne__(self, other):
+        return not self.__cmp__(other)
+
+    def __lt__(self, other):
+        return False
+
+    def __hash__(self):
+        return hash(str(self))
