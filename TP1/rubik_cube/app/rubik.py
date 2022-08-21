@@ -47,6 +47,18 @@ class Rubik:
             Moves.BACK_ROTATE_ANTICLOCKWISE: lambda endCube: self.move_rotate(endCube, Faces.BACK, Rotations.ANTICLOCKWISE, 0,
                                                               Directions.UP)
         }
+        self.SIDE_LAMBDAS_UP = [
+            lambda j, column: (self.n - 1 - j) * self.n + column,  # LEFT
+            lambda j, column: self.n * (self.n - column) - j - 1,  # BOTTOM
+            lambda j, column: j * self.n + (self.n - 1 - column),  # RIGHT
+            lambda j, column: self.n * column + j  # TOP
+        ]
+        self.SIDE_LAMBDAS_DOWN = [
+            lambda j, column: j * self.n + column,  # LEFT
+            lambda j, column: self.n * column + self.n - 1 - j,  # TOP
+            lambda j, column: (self.n - 1 - j) * self.n + self.n - 1 - column,  # RIGHT
+            lambda j, column: self.n * (self.n - 1 - column) + j  # BOTTOM
+        ] # el orden es acorde a SPIN_SIDE_DOWN
 
     def rotate(self, endCube, face, direction):
         if direction == Rotations.CLOCKWISE:
@@ -72,7 +84,7 @@ class Rubik:
         return endCube
 
     def spin_col(self, cube, face, column, direction):
-        if face == 2 or face == 4:
+        if face == Faces.LEFT.value or face == Faces.RIGHT.value:
             raise ValueError('Invalid face, for sides use spin_side')
 
         if (direction == Directions.DOWN):
@@ -85,7 +97,7 @@ class Rubik:
         return self.spin(cube, faces, lambda j: j * self.n + column)
 
     def spin_row(self, cube, face, row, direction):
-        if (face == 2 or face == 4):
+        if face == Faces.LEFT.value or face == Faces.RIGHT.value:
             raise ValueError('Invalid face, for sides use spin_side')
 
         if (direction == Directions.LEFT):
@@ -98,31 +110,19 @@ class Rubik:
         return self.spin(cube, faces, lambda j: self.n * row + j)
 
     def spin_side(self, endCube, column, direction):
-        SIDE_LAMBDAS_UP = [
-            lambda j: (self.n - 1 - j) * self.n + column,  # LEFT
-            lambda j: self.n * (self.n - column) - j - 1,  # BOTTOM
-            lambda j: j * self.n + (self.n - 1 - column),  # RIGHT
-            lambda j: self.n * column + j  # TOP
-        ]
-        SIDE_LAMBDAS_DOWN = [
-            lambda j: j * self.n + column,  # LEFT
-            lambda j: self.n * column + self.n - 1 - j,  # TOP
-            lambda j: (self.n - 1 - j) * self.n + self.n - 1 - column,  # RIGHT
-            lambda j: self.n * (self.n - 1 - column) + j  # BOTTOM
-        ]
         if (direction == Directions.DOWN):
             faces = self.SPIN_SIDE_DOWN
-            lambdas = SIDE_LAMBDAS_DOWN
+            lambdas = self.SIDE_LAMBDAS_DOWN
         elif (direction == Directions.UP):
             faces = self.SPIN_SIDE_UP
-            lambdas = SIDE_LAMBDAS_UP
+            lambdas = self.SIDE_LAMBDAS_UP
         else:
             raise ValueError('Invalid direction spinning side')
 
         for i in range(len(faces)):
             for j in range(self.n):
-                endCube[faces[i]][lambdas[i](j)] = self.cube[faces[(i + 1) % len(faces)]][
-                    lambdas[(i + 1) % len(faces)](j)]
+                endCube[faces[i]][lambdas[i](j, column)] = self.cube[faces[(i + 1) % len(faces)]][
+                    lambdas[(i + 1) % len(faces)](j, column)]
 
         return endCube
 

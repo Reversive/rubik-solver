@@ -7,4 +7,5 @@ def get_color_heursitic_weight(rubik):
         for j in range(rubik.n * rubik.n):
             if rubik.cube[i][j] != i:
                 count += 1
+                
     return count / (rubik.n * 4)

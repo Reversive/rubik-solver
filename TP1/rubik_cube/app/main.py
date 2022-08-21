@@ -6,13 +6,12 @@ from search_methods.manager import Manager
 from search_methods.methods import BFS, DFS, Greedy
 import numpy as np
 
-RANDOM_SEED = 1234567
-MAX_RANDOM_MOVES = 5
+RANDOM_SEED = 111
+RANDOM_MOVES = 15
 
 
 def shuffleRubik(rubik):
-    movesQty = np.random.randint(1, MAX_RANDOM_MOVES)
-    for i in range(movesQty):
+    for i in range(RANDOM_MOVES):
         rubik = rubik.move(Moves(np.random.randint(0, len(Moves))))
 
     return rubik
@@ -24,8 +23,8 @@ def main(n):
     rubik = Rubik(n)
     rubik = shuffleRubik(rubik)
     print("to_string: " + rubik.to_string())
-    manager = Manager(Greedy(get_color_heursitic_weight), rubik)
-    #manager = Manager(BFS(), rubik)
+    #manager = Manager(Greedy(get_color_heursitic_weight), rubik)
+    manager = Manager(BFS(), rubik)
     #manager = Manager(DFS(), rubik)
 
     result = manager.solve()

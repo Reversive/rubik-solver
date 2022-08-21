@@ -2,11 +2,12 @@ import numpy as np
 
 
 class Node:
-    def __init__(self, rubikState, parent, lastMovement, deep):
+    def __init__(self, state, parent, lastMovement, deep, calculateWeight):
         self.parent = parent
-        self.state = rubikState
+        self.state = state
         self.lastMovement = lastMovement
         self.deep = deep
+        self.weight = calculateWeight(self.state)
         self.children = []
 
     def add_children(self, newChildren):
@@ -19,16 +20,16 @@ class Node:
         return self.parent
 
     def __cmp__(self, other):
-        return self.deep < other.deep
+        return self.weight.__cmp__(other.weight)
 
     def __eq__(self, other):
-        return self.__cmp__(other)
+        return self == other
 
     def __ne__(self, other):
-        return not self.__cmp__(other)
+        return self != other
 
     def __lt__(self, other):
-        return False
+        return self.weight < other.weight
 
     def __hash__(self):
         return hash(str(self))

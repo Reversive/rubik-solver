@@ -11,8 +11,7 @@ class Manager:
     def __init__(self, method, rubik):
         self.method = method
         self.visited = np.array([], dtype=Node)
-        self.border = np.array([], dtype=self.BORDER_DTYPE)
-        self.border = np.append(self.border, np.array([(0, Node(rubik, None, None, 0))], dtype=self.BORDER_DTYPE))
+        self.border = [Node(rubik, None, None, 0, self.method.calculate_weight)]
         self.deepsOfStates = {}
         self.n = rubik.n  # TODO: cambiar esto?
 
@@ -20,8 +19,7 @@ class Manager:
         i = 0
 
         # para root
-        node = self.border[0][1]
-        self.border = np.delete(self.border, 0)
+        node = self.border.pop(0)
 
         while not node.state.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
             if node.state.to_string() not in self.deepsOfStates or self.deepsOfStates[
@@ -35,22 +33,19 @@ class Manager:
                                               int((node.lastMovement.value + (len(Moves) / 2)) % len(Moves)))
 
                 np.random.shuffle(nextMovements)
-                newBorder = np.empty(len(nextMovements), dtype=self.BORDER_DTYPE)
+                newBorder = []
 
-                for index, nextMovement in enumerate(nextMovements):
+                for nextMovement in nextMovements:
                     direction = Moves(nextMovement)
-                    newNode = Node(node.state.move(direction), node, direction, node.deep + 1)
-                    newTuple = (self.method.calculate_weight(newNode), newNode)
-                    node.add_children(newTuple)
-                    newBorder[index] = newTuple
+                    newNode = Node(node.state.move(direction), node, direction, node.deep + 1, self.method.calculate_weight)
+                    node.add_children(newNode)
+                    newBorder = [newNode] + newBorder
 
-                self.border = self.method.insert_node(self.border,
+                self.border = self.method.insert_nodes(self.border,
                                                       newBorder)  # agrego todos los nuevos border de una
                 self.visited = np.append(self.visited, node)
 
-            node = self.border[0][1]
-            self.border = np.delete(self.border, 0)
-
+            node = self.border.pop(0)
             i += 1
             if i % 1000 == 0:
                 print(i)

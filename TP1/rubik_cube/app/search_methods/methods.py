@@ -1,34 +1,36 @@
 import numpy as np
+import bisect
 
 
 class Method(object):
     def __init__(self):
         pass
 
-    def insert_node(self, array, node):
+    def insert_nodes(self, array, nodes):
         pass
 
-    def calculate_weight(self, node):
+    def calculate_weight(self, nodes):
         return 0
 
 
 class BFS(Method):
-    def insert_node(self, array, node):
-        return np.append(array, node)
+    def insert_nodes(self, array, nodes):
+        return array + nodes
 
 class Greedy(Method):
     def __init__(self, heuristic):
         super().__init__()
         self.heuristic = heuristic
 
-    def insert_node(self, array, node):
-        array = np.append(array, node)
-        return np.sort(array)
+    def insert_nodes(self, array, nodes):
+        for node in nodes:
+            bisect.insort(array, node)
+        return array
 
-    def calculate_weight(self, node):
-        return self.heuristic(node.state)
+    def calculate_weight(self, nodes):
+        return self.heuristic(nodes)
 
 
 class DFS(Method):
-    def insert_node(self, array, node):
-        return np.insert(array, 0, node)
+    def insert_nodes(self, array, nodes):
+        return nodes + array
