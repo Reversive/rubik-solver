@@ -13,7 +13,7 @@ RANDOM_MOVES = 4
 
 def shuffleRubik(rubik):
     for i in range(RANDOM_MOVES):
-        rubik = rubik.move(Moves(i))
+        rubik.cube = rubik.move(Moves(i))
 
     return rubik
 
@@ -24,13 +24,13 @@ def main(n):
     rubik = Rubik(n)
     rubik = shuffleRubik(rubik)
     print("input: " + rubik.to_string())
-    manager = Manager(Greedy(get_color_heursitic_weight), rubik)
-    #manager = Manager(BFS(), rubik)
+    #manager = Manager(Greedy(get_color_heursitic_weight), rubik)
+    manager = Manager(BFS(), rubik)
     #manager = Manager(DFS(), rubik)
     start_time = time.time()
     result = manager.solve()
     print('Solucionado: SI')
-    print("Rubik cube: " + result.state.to_string())
+    print("Rubik cube: \n" + str(result.state))
     print("--- %s seconds ---" % (time.time() - start_time))
 
 
