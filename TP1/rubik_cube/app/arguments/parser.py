@@ -1,4 +1,5 @@
 from simple_parsing import ArgumentParser
+
 from .options import Options
 
 parser = ArgumentParser(

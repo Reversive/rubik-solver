@@ -1,26 +1,28 @@
-from operator import mod
-from search_methods.node import Node
-from enums.moves import Moves
-import numpy as np
 import collections
+
+import numpy as np
+from enums.moves import Moves
 from rubik import Rubik
+from search_methods.node import Node
+
 
 class Manager:
     BORDER_DTYPE = [('heuristicValue', float), ('node', Node)]
 
-    def __init__(self, method, rubik):
+    def __init__(self, method, rubik, rubikUtils):
         self.method = method
         self.visited = []
         self.border = collections.deque([Node(rubik.cube, None, None, 0, self.method.calculate_weight)])
         self.deepsOfStates = {}
         self.n = rubik.n
+        self.rubikUtils = rubikUtils
 
     def solve(self):
         i = 0
 
         # para root
         node = self.border.pop()
-        rubik = Rubik(self.n, node.state)
+        rubik = Rubik(self.n, self.rubikUtils, node.state)
 
         while not rubik.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
             if rubik.to_string() not in self.deepsOfStates or self.deepsOfStates[
@@ -40,27 +42,27 @@ class Manager:
                 for nextMovement in nextMovements:
                     direction = Moves(nextMovement)
                     newNode = Node(
-                                rubik.move(direction), 
-                                node, direction, node.deep + 1,
-                                   self.method.calculate_weight)
+                        rubik.move(direction),
+                        node, direction, node.deep + 1,
+                        self.method.calculate_weight)
                     newBorder = [newNode] + newBorder
                     newChildren = [newNode] + newChildren
 
                 node.add_children(newChildren)
-                self.border = self.method.insert_nodes(self.border,
-                                                      newBorder)  # agrego todos los nuevos border de una
+                self.border = self.method.insert_nodes(self.border, newBorder)
+                # agrego todos los nuevos border de una
 
             self.visited.append(node)
             node = self.border.popleft()
-            rubik = Rubik(self.n, node.state)
+            rubik = Rubik(self.n, self.rubikUtils, node.state)
             i += 1
-            if i % 1000 == 0:
+            if i % 10000 == 0:
                 print(i)
 
         if rubik.is_solved():
             print("Nodos expandidos: " + str(len(self.visited)))
             print("Nodos borde: " + str(len(self.border)))
-            print("Profundidad: " + str(len(self.deepsOfStates)))
+            print("Profundidad: " + str(node.deep))
             return node
         else:
             raise ValueError('No solution found')

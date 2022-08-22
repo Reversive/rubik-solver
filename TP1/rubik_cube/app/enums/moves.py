@@ -19,4 +19,3 @@ class Moves(Enum):
 
     FRONT_ROTATE_CLOCKWISE = 5
     FRONT_ROTATE_ANTICLOCKWISE = 11
-

@@ -1,14 +1,16 @@
+import time
+
+import numpy as np
+
 from arguments.parser import parser
 from enums.moves import Moves
 from rubik import Rubik
-from heuristics.color_heuristic import get_color_heursitic_weight
+from rubik_utils import RubikUtils
 from search_methods.manager import Manager
-from search_methods.methods import BFS, DFS, Greedy
-import numpy as np
-import time
+from search_methods.methods import BFS
 
 RANDOM_SEED = 111
-RANDOM_MOVES = 4
+RANDOM_MOVES = 7
 
 
 def shuffleRubik(rubik):
@@ -20,13 +22,13 @@ def shuffleRubik(rubik):
 
 def main(n):
     np.random.seed(RANDOM_SEED)
-
-    rubik = Rubik(n)
+    rubikUtils = RubikUtils(n)
+    rubik = Rubik(n, rubikUtils)
     rubik = shuffleRubik(rubik)
     print("input: " + rubik.to_string())
-    #manager = Manager(Greedy(get_color_heursitic_weight), rubik)
-    manager = Manager(BFS(), rubik)
-    #manager = Manager(DFS(), rubik)
+    # manager = Manager(Greedy(get_color_heursitic_weight), rubik)
+    manager = Manager(BFS(), rubik, rubikUtils)
+    # manager = Manager(DFS(), rubik)
     start_time = time.time()
     result = manager.solve()
     print('Solucionado: SI')

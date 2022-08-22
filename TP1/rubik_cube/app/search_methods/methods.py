@@ -1,4 +1,3 @@
-import numpy as np
 import bisect
 
 
@@ -39,5 +38,5 @@ class DFS(Method):
     def insert_nodes(self, array, nodes):
         for node in nodes:
             array.appendleft(node)
-            
+
         return array

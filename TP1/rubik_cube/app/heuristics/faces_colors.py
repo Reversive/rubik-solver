@@ -11,4 +11,4 @@ def faces_colors(rubik):
         for color in colors:
             if color != 1:
                 dif_colors += 1
-    return (dif_colors/faces) - 1
+    return (dif_colors / faces) - 1
