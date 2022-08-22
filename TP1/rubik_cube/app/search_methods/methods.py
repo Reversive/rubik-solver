@@ -17,6 +17,7 @@ class BFS(Method):
     def insert_nodes(self, array, nodes):
         return array + nodes
 
+
 class Greedy(Method):
     def __init__(self, heuristic):
         super().__init__()

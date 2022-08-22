@@ -10,7 +10,7 @@ class Manager:
 
     def __init__(self, method, rubik):
         self.method = method
-        self.visited = np.array([], dtype=Node)
+        self.visited = []
         self.border = [Node(rubik, None, None, 0, self.method.calculate_weight)]
         self.deepsOfStates = {}
         self.n = rubik.n  # TODO: cambiar esto?
@@ -37,23 +37,24 @@ class Manager:
 
                 for nextMovement in nextMovements:
                     direction = Moves(nextMovement)
-                    newNode = Node(node.state.move(direction), node, direction, node.deep + 1, self.method.calculate_weight)
+                    newNode = Node(node.state.move(direction), node, direction, node.deep + 1,
+                                   self.method.calculate_weight)
                     node.add_children(newNode)
                     newBorder = [newNode] + newBorder
 
                 self.border = self.method.insert_nodes(self.border,
-                                                      newBorder)  # agrego todos los nuevos border de una
-                self.visited = np.append(self.visited, node)
+                                                       newBorder)  # agrego todos los nuevos border de una
 
+            self.visited.append(node)
             node = self.border.pop(0)
             i += 1
             if i % 1000 == 0:
                 print(i)
 
         if node.state.is_solved():
-            print("visited nodes: " + str(len(self.visited)))
-            print("border nodes: " + str(len(self.border)))
-            print("deeps of states: " + str(len(self.deepsOfStates)))
+            print("Nodos expandidos: " + str(len(self.visited)))
+            print("Nodos borde: " + str(len(self.border)))
+            print("Profundidad: " + str(len(self.deepsOfStates)))
             return node
         else:
             raise ValueError('No solution found')

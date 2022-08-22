@@ -5,14 +5,15 @@ from heuristics.color_heuristic import get_color_heursitic_weight
 from search_methods.manager import Manager
 from search_methods.methods import BFS, DFS, Greedy
 import numpy as np
+import time
 
 RANDOM_SEED = 111
-RANDOM_MOVES = 15
+RANDOM_MOVES = 6
 
 
 def shuffleRubik(rubik):
     for i in range(RANDOM_MOVES):
-        rubik = rubik.move(Moves(np.random.randint(0, len(Moves))))
+        rubik = rubik.move(Moves(i))
 
     return rubik
 
@@ -26,9 +27,11 @@ def main(n):
     #manager = Manager(Greedy(get_color_heursitic_weight), rubik)
     manager = Manager(BFS(), rubik)
     #manager = Manager(DFS(), rubik)
-
+    start_time = time.time()
     result = manager.solve()
-    print("to_string: " + result.state.to_string())
+    print('Solucionado: SI')
+    print("Rubik cube: " + result.state.to_string())
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 
 if __name__ == '__main__':
