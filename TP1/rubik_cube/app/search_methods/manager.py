@@ -1,9 +1,8 @@
 from operator import mod
-from rubik import Rubik
 from search_methods.node import Node
 from enums.moves import Moves
 import numpy as np
-
+import collections
 
 class Manager:
     BORDER_DTYPE = [('heuristicValue', float), ('node', Node)]
@@ -11,15 +10,14 @@ class Manager:
     def __init__(self, method, rubik):
         self.method = method
         self.visited = []
-        self.border = [Node(rubik, None, None, 0, self.method.calculate_weight)]
+        self.border = collections.deque([Node(rubik, None, None, 0, self.method.calculate_weight)])
         self.deepsOfStates = {}
-        self.n = rubik.n  # TODO: cambiar esto?
 
     def solve(self):
         i = 0
 
         # para root
-        node = self.border.pop(0)
+        node = self.border.pop()
 
         while not node.state.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
             if node.state.to_string() not in self.deepsOfStates or self.deepsOfStates[
@@ -34,19 +32,23 @@ class Manager:
 
                 np.random.shuffle(nextMovements)
                 newBorder = []
+                newChildren = []
 
                 for nextMovement in nextMovements:
                     direction = Moves(nextMovement)
-                    newNode = Node(node.state.move(direction), node, direction, node.deep + 1,
+                    newNode = Node(
+                                node.state.move(direction), 
+                                node, direction, node.deep + 1,
                                    self.method.calculate_weight)
-                    node.add_children(newNode)
                     newBorder = [newNode] + newBorder
+                    newChildren = [newNode] + newChildren
 
+                node.add_children(newChildren)
                 self.border = self.method.insert_nodes(self.border,
-                                                       newBorder)  # agrego todos los nuevos border de una
+                                                      newBorder)  # agrego todos los nuevos border de una
 
             self.visited.append(node)
-            node = self.border.pop(0)
+            node = self.border.popleft()
             i += 1
             if i % 1000 == 0:
                 print(i)

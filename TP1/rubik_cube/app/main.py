@@ -8,7 +8,7 @@ import numpy as np
 import time
 
 RANDOM_SEED = 111
-RANDOM_MOVES = 6
+RANDOM_MOVES = 4
 
 
 def shuffleRubik(rubik):
@@ -19,13 +19,13 @@ def shuffleRubik(rubik):
 
 
 def main(n):
-    np.random.seed(RANDOM_SEED)  # TODO: revisar que esta seed se aplica a todos los random que se llaman luego?
+    np.random.seed(RANDOM_SEED)
 
     rubik = Rubik(n)
     rubik = shuffleRubik(rubik)
-    print("to_string: " + rubik.to_string())
-    #manager = Manager(Greedy(get_color_heursitic_weight), rubik)
-    manager = Manager(BFS(), rubik)
+    print("input: " + rubik.to_string())
+    manager = Manager(Greedy(get_color_heursitic_weight), rubik)
+    #manager = Manager(BFS(), rubik)
     #manager = Manager(DFS(), rubik)
     start_time = time.time()
     result = manager.solve()

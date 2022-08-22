@@ -15,7 +15,10 @@ class Method(object):
 
 class BFS(Method):
     def insert_nodes(self, array, nodes):
-        return array + nodes
+        for node in nodes:
+            array.append(node)
+
+        return array
 
 
 class Greedy(Method):
@@ -34,4 +37,7 @@ class Greedy(Method):
 
 class DFS(Method):
     def insert_nodes(self, array, nodes):
-        return nodes + array
+        for node in nodes:
+            array.appendleft(node)
+            
+        return array

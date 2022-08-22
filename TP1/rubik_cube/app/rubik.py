@@ -84,8 +84,9 @@ class Rubik:
         return endCube
 
     def spin_col(self, cube, face, column, direction):
-        if face == Faces.LEFT.value or face == Faces.RIGHT.value:
-            raise ValueError('Invalid face, for sides use spin_side')
+        # COMENTADO POR EFICIENCIA
+        # if face == Faces.LEFT.value or face == Faces.RIGHT.value:
+        #     raise ValueError('Invalid face, for sides use spin_side')
 
         if (direction == Directions.DOWN):
             faces = self.SPIN_FACES_DOWN[face.value % 3]
@@ -97,8 +98,9 @@ class Rubik:
         return self.spin(cube, faces, lambda j: j * self.n + column)
 
     def spin_row(self, cube, face, row, direction):
-        if face == Faces.LEFT.value or face == Faces.RIGHT.value:
-            raise ValueError('Invalid face, for sides use spin_side')
+        # COMENTADO POR EFICIENCIA
+        # if face == Faces.LEFT.value or face == Faces.RIGHT.value:
+            # raise ValueError('Invalid face, for sides use spin_side')
 
         if (direction == Directions.LEFT):
             faces = self.SPIN_FACES_LEFT
