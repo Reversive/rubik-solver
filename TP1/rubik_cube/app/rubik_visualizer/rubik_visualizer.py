@@ -39,6 +39,7 @@ class Rubik_Visualizer():
         arcade.start_render()
         self.draw_node(self.manager.visited[self.current_node])
         self.draw_next_node_button("Next node")
+        self.draw_go_to_solution("Go to solution")
         arcade.finish_render()
         arcade.run()
 
@@ -47,6 +48,17 @@ class Rubik_Visualizer():
         next_node.on_click = self.on_click_next_node
         self.uimanager.add(arcade.gui.UIAnchorWidget(anchor_x="right", anchor_y="bottom", child=next_node))
         self.uimanager.draw()
+
+    def draw_go_to_solution(self, text):
+        go_to_solution = arcade.gui.UIFlatButton(text=text, width=200)
+        go_to_solution.on_click = self.on_click_go_to_solution
+        self.uimanager.add(arcade.gui.UIAnchorWidget(anchor_x="right", align_y=60, anchor_y="bottom", child=go_to_solution))
+        self.uimanager.draw()
+
+    def on_click_go_to_solution(self, event):
+        self.current_node = len(self.manager.visited) - 2
+        self.solution = self.manager.visited[self.current_node]
+        self.on_click_next_node(event)
 
     def on_click_next_node(self, event):
         arcade.start_render()

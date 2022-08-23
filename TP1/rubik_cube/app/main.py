@@ -12,7 +12,7 @@ from search_methods.manager import Manager
 from search_methods.methods import BFS, DFS, AStar, LocalGreedy, GlobalGreedy
 
 RANDOM_SEED = 111
-RANDOM_MOVES = 8
+RANDOM_MOVES = 2
 
 
 
@@ -35,7 +35,7 @@ def main(n):
     manager4 = Manager(DFS(), rubik, rubikUtils)
     manager5 = Manager(GlobalGreedy(get_color_heursitic_weight), rubik, rubikUtils)
     start_time = time.time()
-    result = manager2.solve()
+    result = manager3.solve()
     print('Solucionado: SI')
     print("Rubik cube: \n" + str(result.state))
     print("--- %s seconds ---" % (time.time() - start_time))
