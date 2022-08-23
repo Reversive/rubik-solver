@@ -12,9 +12,9 @@ class Manager:
     def __init__(self, method, rubik, rubikUtils):
         self.method = method
         self.visited = []
-        self.border = collections.deque([Node(rubik.cube, None, None, 0, self.method.calculate_weight)])
-        self.deepsOfStates = {}
         self.n = rubik.n
+        self.border = collections.deque([Node(rubik.cube, None, None, 0, self.method.calculate_weight, self.n)])
+        self.deepsOfStates = {}
         self.rubikUtils = rubikUtils
 
     def solve(self):
@@ -33,24 +33,17 @@ class Manager:
                 if node.lastMovement is not None:
                     # chequeo que no sea root node
                     nextMovements = np.delete(nextMovements,
-                                              int((node.lastMovement.value + (len(Moves) / 2)) % len(Moves)))
+                                              int((node.lastMovement + (len(Moves) / 2)) % len(Moves)))
 
                 np.random.shuffle(nextMovements)
-                newBorder = []
-                newChildren = []
 
                 for nextMovement in nextMovements:
-                    direction = Moves(nextMovement)
                     newNode = Node(
-                        rubik.move(direction),
-                        node, direction, node.deep + 1,
-                        self.method.calculate_weight)
-                    newBorder = [newNode] + newBorder
-                    newChildren = [newNode] + newChildren
-
-                node.add_children(newChildren)
-                self.border = self.method.insert_nodes(self.border, newBorder)
-                # agrego todos los nuevos border de una
+                        rubik.move(nextMovement),
+                        node, nextMovement, node.deep + 1,
+                        self.method.calculate_weight, self.n)
+                    self.border = self.method.insert_node(self.border, newNode)
+                    node.add_children(newNode)
 
             self.visited.append(node)
             node = self.border.popleft()

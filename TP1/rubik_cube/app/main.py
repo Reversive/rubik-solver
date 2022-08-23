@@ -2,20 +2,21 @@ import time
 
 import numpy as np
 
+from heuristics.color_heuristic import get_color_heursitic_weight
 from arguments.parser import parser
 from enums.moves import Moves
 from rubik import Rubik
 from rubik_utils import RubikUtils
 from search_methods.manager import Manager
-from search_methods.methods import BFS
+from search_methods.methods import BFS, DFS, AStar, Greedy
 
 RANDOM_SEED = 111
-RANDOM_MOVES = 6
+RANDOM_MOVES = 7
 
 
 def shuffleRubik(rubik):
     for i in range(RANDOM_MOVES):
-        rubik.cube = rubik.move(Moves(i % 10))
+        rubik.cube = rubik.move(i % (len(Moves)-1))
 
     return rubik
 
@@ -26,11 +27,12 @@ def main(n):
     rubik = Rubik(n, rubikUtils)
     rubik = shuffleRubik(rubik)
     print("input: " + rubik.to_string())
-    # manager = Manager(Greedy(get_color_heursitic_weight), rubik)
-    manager = Manager(BFS(), rubik, rubikUtils)
-    # manager = Manager(DFS(), rubik)
+    manager1 = Manager(Greedy(get_color_heursitic_weight), rubik, rubikUtils)
+    manager2 = Manager(AStar(get_color_heursitic_weight), rubik, rubikUtils)
+    manager3 = Manager(BFS(), rubik, rubikUtils)
+    manager4 = Manager(DFS(), rubik, rubikUtils)
     start_time = time.time()
-    result = manager.solve()
+    result = manager3.solve()
     print('Solucionado: SI')
     print("Rubik cube: \n" + str(result.state))
     print("--- %s seconds ---" % (time.time() - start_time))

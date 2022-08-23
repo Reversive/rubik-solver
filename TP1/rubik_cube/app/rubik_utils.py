@@ -1,4 +1,7 @@
 from enums.faces import Faces
+from enums.moves import Moves
+from enums.rotations import Rotations
+from enums.directions import Directions
 
 
 class RubikUtils:
@@ -60,3 +63,30 @@ class RubikUtils:
                 self.POSITIONS_SPIN_SIDE_UP_BY_FACE_BY_COL[face] += [[SIDE_LAMBDAS_UP_FUNCTIONS[face](j, column) for j in range(self.n)]]
                 self.POSITIONS_SPIN_SIDE_DOWN_BY_FACE_BY_COL[face] += [[SIDE_LAMBDAS_DOWN_FUNCTIONS[face](j, column) for j in range(self.n)]]
 
+
+        self.moveCubeFunctions = {
+            Moves.LEFT_UP.value: lambda endCube, self: self.move_col(endCube, 0, Directions.UP, Faces.LEFT,
+                                                         Rotations.ANTICLOCKWISE),
+            Moves.LEFT_DOWN.value: lambda endCube, self: self.move_col(endCube, 0, Directions.DOWN, Faces.LEFT,
+                                                           Rotations.CLOCKWISE),
+            Moves.RIGHT_UP.value: lambda endCube, self: self.move_col(endCube, self.n - 1, Directions.UP, Faces.RIGHT,
+                                                          Rotations.CLOCKWISE),
+            Moves.RIGHT_DOWN.value: lambda endCube, self: self.move_col(endCube, self.n - 1, Directions.DOWN, Faces.RIGHT,
+                                                            Rotations.ANTICLOCKWISE),
+            Moves.TOP_LEFT.value: lambda endCube, self: self.move_row(endCube, 0, Directions.LEFT, Rotations.CLOCKWISE),
+            Moves.TOP_RIGHT.value: lambda endCube, self: self.move_row(endCube, 0, Directions.RIGHT, Rotations.ANTICLOCKWISE),
+            Moves.BOTTOM_LEFT.value: lambda endCube, self: self.move_row(endCube, self.n - 1, Directions.LEFT, Rotations.CLOCKWISE),
+            Moves.BOTTOM_RIGHT.value: lambda endCube, self: self.move_row(endCube, self.n - 1, Directions.RIGHT,
+                                                              Rotations.ANTICLOCKWISE),
+            Moves.FRONT_ROTATE_CLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.FRONT, Rotations.CLOCKWISE,
+                                                                           self.n - 1,
+                                                                           Directions.UP),
+            Moves.FRONT_ROTATE_ANTICLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.FRONT,
+                                                                               Rotations.ANTICLOCKWISE,
+                                                                               self.n - 1, Directions.DOWN),
+            Moves.BACK_ROTATE_CLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.BACK, Rotations.CLOCKWISE, 0,
+                                                                          Directions.DOWN),
+            Moves.BACK_ROTATE_ANTICLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.BACK,
+                                                                              Rotations.ANTICLOCKWISE, 0,
+                                                                              Directions.UP)
+        }
