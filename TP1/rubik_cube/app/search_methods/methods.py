@@ -5,7 +5,7 @@ class Method(object):
     def __init__(self):
         pass
 
-    def insert_node(self, array, node):
+    def insert_nodes(self, array, nodes):
         pass
 
     def calculate_weight(self, node, n):
@@ -13,19 +13,37 @@ class Method(object):
 
 
 class BFS(Method):
-    def insert_node(self, array, node):
-        array.append(node)
+    def insert_nodes(self, array, nodes):
+        for node in nodes:
+            array.append(node)
 
         return array
 
 
-class Greedy(Method):
+class LocalGreedy(Method):
     def __init__(self, heuristic):
         super().__init__()
         self.heuristic = heuristic
 
-    def insert_node(self, array, node):
-        bisect.insort(array, node)
+    def insert_nodes(self, array, nodes):
+        nodes.sort()
+        for node in nodes:
+            array.appendleft(node)
+        return array
+
+    def calculate_weight(self, node, n):
+        return self.heuristic(node.state, n)
+
+
+
+class GlobalGreedy(Method):
+    def __init__(self, heuristic):
+        super().__init__()
+        self.heuristic = heuristic
+
+    def insert_nodes(self, array, nodes):
+        for node in nodes:
+            bisect.insort(array, node)
         return array
 
     def calculate_weight(self, node, n):
@@ -37,8 +55,9 @@ class AStar(Method):
         super().__init__()
         self.heuristic = heuristic
 
-    def insert_node(self, array, node):
-        bisect.insort(array, node)
+    def insert_nodes(self, array, nodes):
+        for node in nodes:
+            bisect.insort(array, node)
         return array
 
     def calculate_weight(self, node, n):
@@ -46,7 +65,9 @@ class AStar(Method):
 
 
 class DFS(Method):
-    def insert_node(self, array, node):
-        array.appendleft(node)
+    def insert_nodes(self, array, nodes):
+        # recibe ordenados de mas viejos a mas nuevos, por eso el reverse
+        for node in nodes.reverse():
+            array.appendleft(node)
 
         return array
