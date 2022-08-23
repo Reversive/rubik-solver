@@ -37,14 +37,17 @@ class Manager:
 
                 np.random.shuffle(nextMovements)
 
+                newBorders = []
                 for nextMovement in nextMovements:
                     newNode = Node(
                         rubik.move(nextMovement),
                         node, nextMovement, node.deep + 1,
                         self.method.calculate_weight, self.n)
-                    self.border = self.method.insert_node(self.border, newNode)
                     node.add_children(newNode)
+                    newBorders.append(newNode)
 
+                self.border = self.method.insert_nodes(self.border, newBorders)
+                
             self.visited.append(node)
             node = self.border.popleft()
             rubik = Rubik(self.n, self.rubikUtils, node.state)
