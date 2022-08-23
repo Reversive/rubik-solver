@@ -10,12 +10,12 @@ from search_methods.manager import Manager
 from search_methods.methods import BFS
 
 RANDOM_SEED = 111
-RANDOM_MOVES = 7
+RANDOM_MOVES = 6
 
 
 def shuffleRubik(rubik):
     for i in range(RANDOM_MOVES):
-        rubik.cube = rubik.move(Moves(i))
+        rubik.cube = rubik.move(Moves(i % 10))
 
     return rubik
 

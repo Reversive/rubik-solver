@@ -47,18 +47,19 @@ class Rubik:
         }
 
     def rotate(self, endCube, face, direction):
-        if direction == Rotations.CLOCKWISE:
-            pos = lambda i, j: self.n * (self.n - j - 1) + i
-            # clockwise: (i, j) -> (n-j-1, i)
-        elif direction == Rotations.ANTICLOCKWISE:
-            pos = lambda i, j: self.n * (j) + self.n - i - 1
-            # anticlockwise: (i, j) -> (j, n-i-1)
-        else:
-            raise ValueError('Invalid direction rotating')
+        # if direction == Rotations.CLOCKWISE:
+        #     pos = lambda i, j: self.n * (self.n - j - 1) + i
+        #     # clockwise: (i, j) -> (n-j-1, i)
+        # elif direction == Rotations.ANTICLOCKWISE:
+        #     pos = lambda i, j: self.n * (j) + self.n - i - 1
+        #     # anticlockwise: (i, j) -> (j, n-i-1)
+        # else:
+        #     raise ValueError('Invalid direction rotating')
 
         for i in range(self.n):
             for j in range(self.n):
-                endCube[face.value][self.n * i + j] = self.cube[face.value][pos(i, j)]
+                endCube[face.value][self.rubikUtils.POSITIONS_ROTATE_DESTINY[i][j]] = \
+                    self.cube[face.value][self.rubikUtils.POSITIONS_ROTATE_ORIGIN[direction.value][i][j]]
 
         return endCube
 
@@ -96,7 +97,6 @@ class Rubik:
         # COMENTADO POR EFICIENCIA
         # if face == Faces.LEFT.value or face == Faces.RIGHT.value:
         #     raise ValueError('Invalid face, for sides use spin_side')
-
         return self.spin(cube,
                          self.rubikUtils.FACES_SPIN_BY_DIRECTION[direction.value][face.value % 3],
                          self.rubikUtils.POSITIONS_SPIN_COL_BY_COL[column])
@@ -111,12 +111,10 @@ class Rubik:
                          self.rubikUtils.POSITIONS_SPIN_ROW_BY_ROW[row])
 
     def is_solved(self):
-        # FIXME: El solve no es completo
         for i in range(6):
             for j in range(self.n * self.n):
                 if self.cube[i][j] != i:
                     return False
-
         return True
 
     def to_string(self):

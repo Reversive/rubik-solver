@@ -31,6 +31,18 @@ class RubikUtils:
             lambda j, column: self.n * (self.n - 1 - column) + j  # BOTTOM
         ]  # el orden es acorde a SPIN_SIDE_DOWN
 
+        self.POSITIONS_ROTATE_ORIGIN = []
+        aux = []
+        for i in range(self.n): #CLOCKWISE
+            aux += [[self.n * (self.n - j - 1) + i for j in range(self.n)]]
+        self.POSITIONS_ROTATE_ORIGIN += [aux]
+        aux = []
+        self.POSITIONS_ROTATE_DESTINY = []
+        for i in range(self.n): #ANTICLOCKWISE
+            aux += [[self.n * (j) + self.n - i - 1 for j in range(self.n)]]
+            self.POSITIONS_ROTATE_DESTINY += [[self.n * i + j for j in range(self.n)]]
+        self.POSITIONS_ROTATE_ORIGIN += [aux]
+
         self.POSITIONS_SPIN_COL_BY_COL = []
         for column in range(self.n):
             self.POSITIONS_SPIN_COL_BY_COL += [[j * self.n + column for j in range(self.n)]]
