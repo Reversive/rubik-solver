@@ -53,6 +53,7 @@ class Manager:
                 print(i)
 
         if rubik.is_solved():
+            self.visited.append(node)
             print("Nodos expandidos: " + str(len(self.visited)))
             print("Nodos borde: " + str(len(self.border)))
             print("Profundidad: " + str(node.deep))
