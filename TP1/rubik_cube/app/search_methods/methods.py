@@ -88,6 +88,8 @@ class IDDFS(Method):
         for node in nodes[::-1]:
             if node.deep <= self.depth_step:
                 array.appendleft(node)
+            else:
+                array.append(node)
 
         #Bueno lo pusheo pq lo unico que falta es aumentar el depth_step, pero no se puede meter recursivo pq no tengo los nodos de los arboles antiguos
         #Si a alguno se le ocurre algo :8

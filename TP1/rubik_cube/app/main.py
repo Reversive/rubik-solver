@@ -12,7 +12,7 @@ from search_methods.manager import Manager
 from search_methods.methods import BFS, DFS, IDDFS, AStar, LocalGreedy, GlobalGreedy
 
 RANDOM_SEED = 111
-RANDOM_MOVES = 2
+RANDOM_MOVES = 3
 
 
 
