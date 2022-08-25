@@ -25,6 +25,7 @@ class Manager:
         rubik = Rubik(self.n, self.rubikUtils, node.state)
 
         while not rubik.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
+
             if rubik.to_string() not in self.deepsOfStates or self.deepsOfStates[
                 rubik.to_string()] > node.deep:
                 # Solo expando cuando no he visitado el estado o si es menos profundo que cuando lo visite
@@ -45,9 +46,8 @@ class Manager:
                         self.method.calculate_weight, self.n)
                     node.add_children(newNode)
                     newBorders.append(newNode)
-
                 self.border = self.method.insert_nodes(self.border, newBorders)
-                
+
             self.visited.append(node)
             node = self.border.popleft()
             rubik = Rubik(self.n, self.rubikUtils, node.state)

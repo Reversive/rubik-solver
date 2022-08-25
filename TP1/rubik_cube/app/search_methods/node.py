@@ -23,7 +23,7 @@ class Node:
         return self.weight.__cmp__(other.weight)
 
     def __eq__(self, other):
-        return self == other
+        return self.__hash__() == other.__hash__()
 
     def __ne__(self, other):
         return self != other

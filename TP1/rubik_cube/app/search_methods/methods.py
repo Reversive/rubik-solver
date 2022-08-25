@@ -1,5 +1,9 @@
 import bisect
 
+import numpy as np
+
+from rubik_cube.app.enums.moves import Moves
+
 
 class Method(object):
     def __init__(self):
@@ -67,7 +71,25 @@ class AStar(Method):
 class DFS(Method):
     def insert_nodes(self, array, nodes):
         # recibe ordenados de mas viejos a mas nuevos, por eso el reverse
-        for node in nodes.reverse():
+        for node in nodes[::-1]:
             array.appendleft(node)
 
         return array
+
+
+class IDDFS(Method):
+    def __init__(self):
+        super().__init__()
+        self.depth_step = 2
+        self.sum_count = 0
+
+    def insert_nodes(self, array, nodes):
+        self.sum_count = 0
+        for node in nodes[::-1]:
+            if node.deep <= self.depth_step:
+                array.appendleft(node)
+
+        #Bueno lo pusheo pq lo unico que falta es aumentar el depth_step, pero no se puede meter recursivo pq no tengo los nodos de los arboles antiguos
+        #Si a alguno se le ocurre algo :8
+        return array
+
