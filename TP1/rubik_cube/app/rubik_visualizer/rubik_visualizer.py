@@ -1,6 +1,6 @@
 import arcade
 import arcade.gui
-from enums.moves import Moves
+from enums.moves import MovesN3
 
 def draw_square(xStart, yStart, color):
     arcade.draw_rectangle_filled(xStart, yStart, 50, 50, color)
@@ -12,7 +12,7 @@ def write_text(xStart, yStart, text):
 
 def write_movement(xCoordinate, yCoordinate, movement):
     if movement is not None:
-        write_text(xCoordinate, yCoordinate, "Last Movement: " + Moves(movement).name)
+        write_text(xCoordinate, yCoordinate, "Last Movement: " + MovesN3(movement).name)
         return
     write_text(xCoordinate, yCoordinate, "No last movement")
 

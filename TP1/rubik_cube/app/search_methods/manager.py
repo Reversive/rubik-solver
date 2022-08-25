@@ -1,7 +1,7 @@
 import collections
 
 import numpy as np
-from enums.moves import Moves
+from enums.moves import MovesN2, MovesN3
 from rubik import Rubik
 from search_methods.node import Node
 
@@ -19,7 +19,7 @@ class Manager:
 
     def solve(self):
         i = 0
-
+        possibleMoves = np.array(list(map(int, MovesN3 if self.n == 3 else MovesN2)))
         # para root
         node = self.border.pop()
         rubik = Rubik(self.n, self.rubikUtils, node.state)
@@ -30,19 +30,18 @@ class Manager:
                 rubik.to_string()] > node.deep:
                 # Solo expando cuando no he visitado el estado o si es menos profundo que cuando lo visite
                 self.deepsOfStates[rubik.to_string()] = node.deep
-                nextMovements = np.arange(0, len(Moves))
                 if node.lastMovement is not None:
                     # chequeo que no sea root node
-                    nextMovements = np.delete(nextMovements,
-                                              int((node.lastMovement + (len(Moves) / 2)) % len(Moves)))
-
-                np.random.shuffle(nextMovements)
+                    nextMoves = np.delete(possibleMoves,
+                                              np.where(int((node.lastMovement + (len(MovesN3) / 2)) % len(MovesN3))))
+                else: nextMoves = possibleMoves
+                np.random.shuffle(nextMoves)
 
                 newBorders = []
-                for nextMovement in nextMovements:
+                for nextMove in nextMoves:
                     newNode = Node(
-                        rubik.move(nextMovement),
-                        node, nextMovement, node.deep + 1,
+                        rubik.move(nextMove),
+                        node, nextMove, node.deep + 1,
                         self.method.calculate_weight, self.n)
                     node.add_children(newNode)
                     newBorders.append(newNode)
@@ -53,7 +52,7 @@ class Manager:
             rubik = Rubik(self.n, self.rubikUtils, node.state)
             i += 1
             if i % 10000 == 0:
-                print(i)
+                print(i, node.deep)
 
         if rubik.is_solved():
             self.visited.append(node)

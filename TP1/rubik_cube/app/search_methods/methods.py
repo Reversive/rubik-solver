@@ -2,8 +2,6 @@ import bisect
 
 import numpy as np
 
-from rubik_cube.app.enums.moves import Moves
-
 
 class Method(object):
     def __init__(self):

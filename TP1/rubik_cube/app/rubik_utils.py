@@ -1,5 +1,5 @@
 from enums.faces import Faces
-from enums.moves import Moves
+from enums.moves import MovesN3
 from enums.rotations import Rotations
 from enums.directions import Directions
 
@@ -65,28 +65,28 @@ class RubikUtils:
 
 
         self.moveCubeFunctions = {
-            Moves.LEFT_UP.value: lambda endCube, self: self.move_col(endCube, 0, Directions.UP, Faces.LEFT,
+            MovesN3.LEFT_UP.value: lambda endCube, self: self.move_col(endCube, 0, Directions.UP, Faces.LEFT,
                                                          Rotations.ANTICLOCKWISE),
-            Moves.LEFT_DOWN.value: lambda endCube, self: self.move_col(endCube, 0, Directions.DOWN, Faces.LEFT,
+            MovesN3.LEFT_DOWN.value: lambda endCube, self: self.move_col(endCube, 0, Directions.DOWN, Faces.LEFT,
                                                            Rotations.CLOCKWISE),
-            Moves.RIGHT_UP.value: lambda endCube, self: self.move_col(endCube, self.n - 1, Directions.UP, Faces.RIGHT,
+            MovesN3.RIGHT_UP.value: lambda endCube, self: self.move_col(endCube, self.n - 1, Directions.UP, Faces.RIGHT,
                                                           Rotations.CLOCKWISE),
-            Moves.RIGHT_DOWN.value: lambda endCube, self: self.move_col(endCube, self.n - 1, Directions.DOWN, Faces.RIGHT,
+            MovesN3.RIGHT_DOWN.value: lambda endCube, self: self.move_col(endCube, self.n - 1, Directions.DOWN, Faces.RIGHT,
                                                             Rotations.ANTICLOCKWISE),
-            Moves.TOP_LEFT.value: lambda endCube, self: self.move_row(endCube, 0, Directions.LEFT, Rotations.CLOCKWISE),
-            Moves.TOP_RIGHT.value: lambda endCube, self: self.move_row(endCube, 0, Directions.RIGHT, Rotations.ANTICLOCKWISE),
-            Moves.BOTTOM_LEFT.value: lambda endCube, self: self.move_row(endCube, self.n - 1, Directions.LEFT, Rotations.CLOCKWISE),
-            Moves.BOTTOM_RIGHT.value: lambda endCube, self: self.move_row(endCube, self.n - 1, Directions.RIGHT,
+            MovesN3.TOP_LEFT.value: lambda endCube, self: self.move_row(endCube, 0, Directions.LEFT, Rotations.CLOCKWISE),
+            MovesN3.TOP_RIGHT.value: lambda endCube, self: self.move_row(endCube, 0, Directions.RIGHT, Rotations.ANTICLOCKWISE),
+            MovesN3.BOTTOM_LEFT.value: lambda endCube, self: self.move_row(endCube, self.n - 1, Directions.LEFT, Rotations.CLOCKWISE),
+            MovesN3.BOTTOM_RIGHT.value: lambda endCube, self: self.move_row(endCube, self.n - 1, Directions.RIGHT,
                                                               Rotations.ANTICLOCKWISE),
-            Moves.FRONT_ROTATE_CLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.FRONT, Rotations.CLOCKWISE,
+            MovesN3.FRONT_ROTATE_CLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.FRONT, Rotations.CLOCKWISE,
                                                                            self.n - 1,
                                                                            Directions.UP),
-            Moves.FRONT_ROTATE_ANTICLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.FRONT,
+            MovesN3.FRONT_ROTATE_ANTICLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.FRONT,
                                                                                Rotations.ANTICLOCKWISE,
                                                                                self.n - 1, Directions.DOWN),
-            Moves.BACK_ROTATE_CLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.BACK, Rotations.CLOCKWISE, 0,
+            MovesN3.BACK_ROTATE_CLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.BACK, Rotations.CLOCKWISE, 0,
                                                                           Directions.DOWN),
-            Moves.BACK_ROTATE_ANTICLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.BACK,
+            MovesN3.BACK_ROTATE_ANTICLOCKWISE.value: lambda endCube, self: self.move_rotate(endCube, Faces.BACK,
                                                                               Rotations.ANTICLOCKWISE, 0,
                                                                               Directions.UP)
         }

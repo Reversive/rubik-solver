@@ -2,7 +2,6 @@ import numpy as np
 
 from enums.directions import Directions
 from enums.faces import Faces
-from enums.moves import Moves
 from enums.rotations import Rotations
 
 
