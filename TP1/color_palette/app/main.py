@@ -1,6 +1,7 @@
 from arguments.parser import parser
 import numpy as np
 
+from methods.crossover.uniform_crossover import uniform_crossover
 from methods.crossover.geometric_average_crossover import geometric_average_crossover
 from methods.crossover.heuristic_crossover import heuristic_crossover
 from methods.selection.tournament_selection import deterministic_tournament_selection
@@ -30,6 +31,9 @@ def main(target, available_colors):
     print(*offspring, sep='\n')
     print("---------------------")
     offspring = geometric_average_crossover(sliced[0], sliced[1], target)
+    print(*offspring, sep='\n')
+    print("---------------------")
+    offspring = uniform_crossover(sliced[0], sliced[1], target)
     print(*offspring, sep='\n')
     print("---------------------")
 
