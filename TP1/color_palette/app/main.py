@@ -1,6 +1,8 @@
 from arguments.parser import parser
 import numpy as np
 
+from methods.crossover.geometric_average_crossover import geometric_average_crossover
+from methods.crossover.heuristic_crossover import heuristic_crossover
 from methods.selection.tournament_selection import deterministic_tournament_selection
 from methods.selection.tournament_selection import probabilistic_tournament_selection
 from methods.selection.elite_selection import elite_selection
@@ -23,6 +25,13 @@ def main(target, available_colors):
     print("---------------------")
     sliced = probabilistic_tournament_selection(solver.current_palette, 4)
     print(*sliced, sep='\n')
+    print("---------------------")
+    offspring = heuristic_crossover(sliced[0], sliced[1], target)
+    print(*offspring, sep='\n')
+    print("---------------------")
+    offspring = geometric_average_crossover(sliced[0], sliced[1], target)
+    print(*offspring, sep='\n')
+    print("---------------------")
 
 
 if __name__ == '__main__':
