@@ -2,7 +2,7 @@ from data_structure.Color import Color
 import numpy as np
 
 
-def roulette_selection(palette: list[Color], result_size: int, palette_size: int) -> list[Color]:
+def roulette_selection(palette: list[Color], result_size: int) -> list[Color]:
     total_fit = sum(color.fitness for color in palette)
     # accumulated_fit = [palette[0].fitness / total_fit]
     # for i in range(1, len(palette)):

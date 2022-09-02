@@ -1,6 +1,8 @@
 from arguments.parser import parser
 import numpy as np
 
+from methods.selection.tournament_selection import deterministic_tournament_selection
+from methods.selection.tournament_selection import probabilistic_tournament_selection
 from methods.selection.elite_selection import elite_selection
 from methods.selection.roulette_selection import roulette_selection
 from data_structure.Solver import Solver
@@ -13,7 +15,13 @@ def main(target, available_colors):
     sliced = elite_selection(solver.current_palette, 4, solver.palette_size)
     print(*sliced, sep='\n')
     print("---------------------")
-    sliced = roulette_selection(solver.current_palette, 4, solver.palette_size)
+    sliced = roulette_selection(solver.current_palette, 4)
+    print(*sliced, sep='\n')
+    print("---------------------")
+    sliced = deterministic_tournament_selection(solver.current_palette, 4, 3)
+    print(*sliced, sep='\n')
+    print("---------------------")
+    sliced = probabilistic_tournament_selection(solver.current_palette, 4)
     print(*sliced, sep='\n')
 
 
