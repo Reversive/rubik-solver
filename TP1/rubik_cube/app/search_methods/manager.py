@@ -1,6 +1,6 @@
 import collections
 
-import numpy as np
+import random
 from enums.moves import MovesN2, MovesN3
 from rubik import Rubik
 from search_methods.node import Node
@@ -19,24 +19,23 @@ class Manager:
 
     def solve(self):
         i = 0
-        possibleMoves = np.array(list(map(int, MovesN3 if self.n == 3 else MovesN2)))
+        possibleMoves = list(map(int, MovesN3 if self.n == 3 else MovesN2))
         # para root
         node = self.border.pop()
         rubik = Rubik(self.n, self.rubikUtils, node.state)
 
         while not rubik.is_solved() and (len(self.border) > 0 or len(self.visited) == 0):
-
             if rubik.to_string() not in self.deepsOfStates or self.deepsOfStates[
                 rubik.to_string()] > node.deep:
                 # Solo expando cuando no he visitado el estado o si es menos profundo que cuando lo visite
                 self.deepsOfStates[rubik.to_string()] = node.deep
                 if node.lastMovement is not None:
                     # chequeo que no sea root node
-                    nextMoves = np.delete(possibleMoves,
-                                              np.where(int((node.lastMovement + (len(MovesN3) / 2)) % len(MovesN3))))
+                    nextMoves = [m for m in possibleMoves
+                             if m != int((node.lastMovement + (len(MovesN3) / 2)) % len(MovesN3))]
                 else: nextMoves = possibleMoves
-                np.random.shuffle(nextMoves)
 
+                random.shuffle(nextMoves)
                 newBorders = []
                 for nextMove in nextMoves:
                     newNode = Node(

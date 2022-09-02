@@ -1,8 +1,7 @@
-import numpy as np
-
 from enums.directions import Directions
 from enums.faces import Faces
 from enums.rotations import Rotations
+from copy import deepcopy
 
 
 class Rubik:
@@ -13,10 +12,10 @@ class Rubik:
         if state is not None:
             self.cube = state
         else:
-            self.cube = np.empty((6, self.n * self.n), dtype=int)
+            self.cube = [[],[],[],[],[],[]]
             for i in range(6):
                 for j in range(self.n * self.n):
-                    self.cube[i][j] = i
+                    self.cube[i].append(i)
 
 
     def rotate(self, endCube, face, direction):
@@ -113,6 +112,6 @@ class Rubik:
         return cube
 
     def move(self, move):
-        endCube = np.array(self.cube, copy=True)
+        endCube = list(map(list, self.cube))
         moveFunc = self.rubikUtils.moveCubeFunctions.get(move, 'Invalid move')
         return moveFunc(endCube, self)

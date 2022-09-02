@@ -1,6 +1,6 @@
 import time
 
-import numpy as np
+import random
 
 from heuristics.color_heuristic import get_color_heursitic_weight
 from arguments.parser import parser
@@ -11,23 +11,28 @@ from rubik_utils import RubikUtils
 from search_methods.manager import Manager
 from search_methods.methods import BFS, DFS, IDDFS, AStar, LocalGreedy, GlobalGreedy
 
-RANDOM_SEED = 11
-RANDOM_MOVES = 12
+RANDOM_SEED = 1111
+RANDOM_MOVES = 7
 
 
 
 def shuffleRubik(rubik):
-    possibleMoves = np.array(list(map(int, MovesN3 if rubik.n == 3 else MovesN2)))
-    nextMove = -10000000
+    possibleMoves = list(map(int, MovesN3 if rubik.n == 3 else MovesN2))
+    nextMove = None
     for i in range(RANDOM_MOVES):
-        nextMove = np.random.choice(np.delete(possibleMoves, np.where(int((nextMove + (len(MovesN3) / 2)) % len(MovesN3)))))
+        if nextMove is not None:
+            nextMoves = [m for m in possibleMoves
+                         if m != int((nextMove + (len(MovesN3) / 2)) % len(MovesN3))]
+        else: nextMoves = possibleMoves
+
+        nextMove = random.choice(nextMoves)
         rubik.cube = rubik.move(nextMove)
 
     return rubik
 
 
 def main(n):
-    np.random.seed(RANDOM_SEED)
+    random.seed(RANDOM_SEED)
     rubikUtils = RubikUtils(n)
     rubik = Rubik(n, rubikUtils)
     rubik = shuffleRubik(rubik)
@@ -39,7 +44,7 @@ def main(n):
     manager5 = Manager(IDDFS(), rubik, rubikUtils)
     manager6 = Manager(GlobalGreedy(get_color_heursitic_weight), rubik, rubikUtils)
     start_time = time.time()
-    result = manager2.solve()
+    result = manager3.solve()
     print('Solucionado: SI')
     print("Rubik cube: \n" + str(result.state))
     print("--- %s seconds ---" % (time.time() - start_time))
