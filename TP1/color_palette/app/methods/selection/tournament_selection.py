@@ -3,8 +3,9 @@ import numpy as np
 from data_structure.Color import Color
 
 
-def deterministic_tournament_selection(palette: list[Color], result_size: int, groups_size: int) -> list[Color]:
+def deterministic_tournament_selection(palette: list[Color], result_size: int) -> list[Color]:
     selected = []
+    groups_size = 5
     while len(selected) < result_size:
         selected.append(max(np.random.choice(palette, groups_size), key=lambda color: color.fitness))
     return selected

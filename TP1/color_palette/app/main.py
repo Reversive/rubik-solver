@@ -1,14 +1,7 @@
-from arguments.parser import parser
 import numpy as np
 import random
+import json
 
-from methods.crossover.uniform_crossover import uniform_crossover
-from methods.crossover.geometric_average_crossover import geometric_average_crossover
-from methods.crossover.heuristic_crossover import heuristic_crossover
-from methods.selection.tournament_selection import deterministic_tournament_selection
-from methods.selection.tournament_selection import probabilistic_tournament_selection
-from methods.selection.elite_selection import elite_selection
-from methods.selection.roulette_selection import roulette_selection
 from data_structure.Solver import Solver
 
 
@@ -17,7 +10,9 @@ def main(target, available_colors):
 
 
 if __name__ == '__main__':
-    args = parser.parse_args()
+    file = open('../app/arguments/args.json')
+    data = json.load(file)
+    file.close()
     avail_colors = []
     for i in range(1000):
         avail_colors.append([random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)])
