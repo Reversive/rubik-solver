@@ -24,7 +24,7 @@ def main():
 
     solver = Solver(palette=available_colors, target=target, max_iterations=data['max_generations'],
                     mutation_probability=data['mutation_prob'], selection_function=data['selection_fun'],
-                    selection_func_result_size=data['k'])
+                    selection_func_result_size=data['k'], crossover_function=data['crossover_fun'])
 
 
 if __name__ == '__main__':
