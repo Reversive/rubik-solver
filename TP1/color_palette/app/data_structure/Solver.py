@@ -9,7 +9,7 @@ from methods.selection.tournament_selection import probabilistic_tournament_sele
 from methods.crossover.uniform_crossover import uniform_crossover
 from methods.crossover.heuristic_crossover import heuristic_crossover
 from methods.crossover.geometric_average_crossover import geometric_average_crossover
-from methods.crossover import point_crossover
+from methods.crossover.point_crossover import point_crossover
 
 from methods.mutations.mutate import mutate
 
@@ -71,16 +71,16 @@ class Solver:
                 new_gen.append(mutate(offspring[0], self.target_color))
             else:
                 new_gen.append(offspring[0])
-            if random.uniform(0, 1) < self.mutation_probability:
-                new_gen.append(mutate(offspring[1], self.target_color))
-            else:
-                new_gen.append(offspring[1])
+            if self.crossover_function != heuristic_crossover:  # since heuristic crossover gives only one child
+                if random.uniform(0, 1) < self.mutation_probability:
+                    new_gen.append(mutate(offspring[1], self.target_color))
+                else:
+                    new_gen.append(offspring[1])
 
         self.current_palette = new_gen
         self.palette_number += 1
 
         for color in new_gen:
-            print(color.fitness)
             if color.fitness >= 0.99:
                 print("found!")
                 print(color.rgb)
