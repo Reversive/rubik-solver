@@ -12,6 +12,8 @@ from methods.crossover.heuristic_crossover import heuristic_crossover
 
 from methods.crossover.geometric_average_crossover import geometric_average_crossover
 
+from methods.mutations.mutate import mutate
+
 
 class Solver:
 
@@ -34,18 +36,27 @@ class Solver:
             raise RuntimeError
         new_gen = []
         while len(new_gen) < self.palette_size:
-            sliced = elite_selection(self.current_palette, 5, self.palette_size)
-            # sliced = roulette_selection(self.current_palette, int(self.palette_size/2))
+            # sliced = elite_selection(self.current_palette, 5, self.palette_size)
+            sliced = roulette_selection(self.current_palette, 10)
             offspring = geometric_average_crossover(sliced[random.randint(0, len(sliced) - 1)],
                                                     sliced[random.randint(0, len(sliced) - 1)],
                                                     self.target_color)
-            new_gen.append(offspring[0])
-            new_gen.append(offspring[1])
+            if random.uniform(0, 1) < 0.15:
+                new_gen.append(mutate(offspring[0], self.target_color))
+            else:
+                new_gen.append(offspring[0])
+            if random.uniform(0, 1) < 0.15:
+                new_gen.append(mutate(offspring[1], self.target_color))
+            else:
+                new_gen.append(offspring[1])
+
         self.current_palette = new_gen
         self.palette_number += 1
+
         for color in new_gen:
             print(color.fitness)
             if color.fitness >= 0.98:
                 print("found!")
                 print(color.rgb)
+                print(self.palette_number)
                 exit(1)

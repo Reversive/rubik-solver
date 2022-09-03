@@ -19,7 +19,7 @@ def main(target, available_colors):
 if __name__ == '__main__':
     args = parser.parse_args()
     avail_colors = []
-    for i in range(5000):
+    for i in range(500):
         avail_colors.append([random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)])
-    target_color = np.array([0.01, 0.02, 0.021])
+    target_color = np.array([0.1, 0.2, 0.21])
     main(target_color, avail_colors)
