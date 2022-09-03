@@ -10,7 +10,7 @@ def mutate(color: Color, target: Color) -> Color:
 
 
 def mutate_gene(color: Color, idx: int):
-    delta = random.uniform(-0.5, 0.5)
+    delta = random.uniform(-0.1, 0.1)
     color.rgb[idx] = abs(color.rgb[idx] + delta)
     return color.rgb
 
@@ -29,6 +29,7 @@ def mutate_double_gene(color: Color, target: Color) -> Color:
 
 
 def mutate_all_genes(color: Color, target: Color) -> Color:
-    rgb = [abs(color.rgb[0] + random.uniform(-0.5, 0.5)), abs(color.rgb[1] + random.uniform(-0.5, 0.5)),
-           abs(color.rgb[2] + random.uniform(-0.5, 0.5))]
+    limit = 0.1
+    rgb = [abs(color.rgb[0] + random.uniform(-limit, limit)), abs(color.rgb[1] + random.uniform(-limit, limit)),
+           abs(color.rgb[2] + random.uniform(-limit, limit))]
     return Color(rgb, fitness(target, rgb))
