@@ -55,7 +55,7 @@ class Solver:
 
         for color in new_gen:
             print(color.fitness)
-            if color.fitness >= 0.98:
+            if color.fitness >= 0.99:
                 print("found!")
                 print(color.rgb)
                 print(self.palette_number)
