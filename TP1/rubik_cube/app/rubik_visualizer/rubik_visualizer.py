@@ -79,7 +79,7 @@ class Rubik_Visualizer():
     def draw_node(self, node):
         self.draw_cube(node.state)
         write_movement(20, 780, node.lastMovement)
-        write_text(20, 760, "Depth: " + str(node.deep))
+        write_text(20, 760, "Depth: " + str(node.depth))
         write_text(20, 740, "Weight: " + str(node.weight))
 
     def draw_cube(self, cube):

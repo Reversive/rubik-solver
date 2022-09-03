@@ -1,7 +1,5 @@
 from enums.directions import Directions
 from enums.faces import Faces
-from enums.rotations import Rotations
-from copy import deepcopy
 
 
 class Rubik:
@@ -15,7 +13,7 @@ class Rubik:
             self.cube = [[],[],[],[],[],[]]
             for i in range(6):
                 for j in range(self.n * self.n):
-                    self.cube[i].append(i)
+                    self.cube[i].append(str(i))
 
 
     def rotate(self, endCube, face, direction):
@@ -82,19 +80,14 @@ class Rubik:
                          self.rubikUtils.FACES_SPIN_BY_DIRECTION[direction.value],
                          self.rubikUtils.POSITIONS_SPIN_ROW_BY_ROW[row])
 
-    def is_solved(self):
-        for i in range(6):
-            for j in range(self.n * self.n):
-                if self.cube[i][j] != i:
-                    return False
-        return True
-
     def to_string(self):
-        answer = ''
-        for i in range(6):
-            for j in range(self.n * self.n):
-                answer += str(self.cube[i][j])
-        return answer
+        return ''.join([
+            ''.join(self.cube[0]),
+            ''.join(self.cube[1]),
+            ''.join(self.cube[2]),
+            ''.join(self.cube[3]),
+            ''.join(self.cube[4]),
+            ''.join(self.cube[5])])
 
     def move_row(self, cube, row, direction, rotation):
         cube = self.spin_row(cube, Faces.FRONT, row, direction)
