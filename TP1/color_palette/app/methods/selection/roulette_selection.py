@@ -12,7 +12,8 @@ def roulette_selection(palette: list[Color], result_size: int) -> list[Color]:
     relative_fit = []
     for i in range(len(palette)):
         relative_fit.append(palette[i].fitness / total_fit)
-    return [np.random.choice(palette, p=relative_fit) for i in range(result_size)]
+    return np.random.choice(palette, p=relative_fit, size=result_size, replace=True)
+
 
 
 
