@@ -63,7 +63,7 @@ class AStar(Method):
         return array
 
     def calculate_weight(self, node, n):
-        return self.heuristic(node.state, n) + node.deep
+        return self.heuristic(node.state, n) + node.depth
 
 
 class DFS(Method):
@@ -84,7 +84,7 @@ class IDDFS(Method):
     def insert_nodes(self, array, nodes):
         self.sum_count = 0
         for node in nodes[::-1]:
-            if node.deep <= self.depth_step:
+            if node.depth <= self.depth_step:
                 array.appendleft(node)
             else:
                 array.append(node)

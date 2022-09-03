@@ -1,7 +1,5 @@
 from enums.directions import Directions
 from enums.faces import Faces
-from enums.rotations import Rotations
-from copy import deepcopy
 
 
 class Rubik:
