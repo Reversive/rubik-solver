@@ -32,7 +32,7 @@ def shuffleRubik(rubik, moves_qty):
 
 
 def main(n):
-    for moves_qty in [1,7,12]:
+    for moves_qty in [8]:
         random.seed(RANDOM_SEED)
         rubikUtils = RubikUtils(n)
         rubik = Rubik(n, rubikUtils)
