@@ -1,14 +1,11 @@
-import numpy as np
-
-
-def faces_colors(rubik):
+def get_faces_colors_weight(cube, n):
     dif_colors = 0
-    faces = 6
-    for i in range(faces):
-        colors = np.empty(6)
-        for j in range(rubik.n * rubik.n):
-            colors[rubik.cube[i][j]] = 1
+    for i in range(6):
+        colors = [0,0,0,0,0,0]
+        for j in range(n * n):
+            colors[int(cube[i][j])] = 1
         for color in colors:
             if color != 1:
                 dif_colors += 1
-    return (dif_colors / faces) - 1
+
+    return (dif_colors / 6) - 1

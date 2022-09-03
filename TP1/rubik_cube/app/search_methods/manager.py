@@ -13,7 +13,8 @@ class Manager:
         self.method = method
         self.visited = 0
         self.n = rubik.n
-        self.border = collections.deque([Node(rubik.cube, None, None, 0, self.method.calculate_weight, self.n)])
+        self.method.insert_nodes([Node(rubik.cube, None, None, 0, self.method.calculate_weight, self.n)])
+        # self.border = collections.deque([Node(rubik.cube, None, None, 0, self.method.calculate_weight, self.n)])
         self.depth_of_states = {}
         self.rubik_utils = rubik_utils
 
@@ -21,12 +22,12 @@ class Manager:
         i = 0
         possible_moves = list(map(int, MovesN3 if self.n == 3 else MovesN2))
         # para root
-        node = self.border.pop()
+        node = self.method.pop()
         self.visited += 1
         rubik = Rubik(self.n, self.rubik_utils, node.state)
         self.depth_of_states[self.state_string(node.state)] = node.depth
 
-        while not self.rubik_utils.is_solved(node.state) and (len(self.border) > 0 or self.visited == 1):
+        while not self.rubik_utils.is_solved(node.state) and (len(self.method.border) > 0 or self.visited == 1):
             if node.lastMovement is not None:
                 # chequeo que no sea root node
                 next_moves = [m for m in possible_moves
@@ -48,18 +49,20 @@ class Manager:
                     new_borders.append(new_node)
                 else: self.visited += 1 # no lo agrego a la frontera pero si lo cuento como visitado
 
-            self.border = self.method.insert_nodes(self.border, new_borders)
+            self.method.insert_nodes(new_borders)
             
-            self.visited += 1
-            node = self.border.popleft()
+            self.visited += 1        
+            node = self.method.pop()
+
             rubik = Rubik(self.n, self.rubik_utils, node.state)
-            if self.visited % 50000 == 0:
-                print(self.visited, node.depth, len(self.border))
+            if self.visited % 250000 == 0:
+                print(self.visited, node.depth, len(self.method.border))
 
         if self.rubik_utils.is_solved(node.state):
             self.visited += 1
-            print("Nodos expandidos: " + str(self.visited))
-            print("Nodos borde: " + str(len(self.border)))
+            print("Nodos visitados: " + str(self.visited))
+            print("Estados encontrados: " + str(len(self.depth_of_states)))
+            print("Nodos borde: " + str(len(self.method.border)))
             print("Profundidad: " + str(node.depth))
             moves_to_solution = ""
             parent = node

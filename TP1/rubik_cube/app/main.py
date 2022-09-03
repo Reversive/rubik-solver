@@ -1,8 +1,9 @@
 import time
-
 import random
+import func_timeout
 
 from heuristics.color_heuristic import get_color_heursitic_weight
+from heuristics.faces_colors import get_faces_colors_weight
 from arguments.parser import parser
 from enums.moves import MovesN2, MovesN3
 from rubik import Rubik
@@ -30,30 +31,41 @@ def shuffleRubik(rubik, moves_qty):
 
     return rubik
 
+def main(n, index):
+    rubikUtils = RubikUtils(n)
+    manager_BFS = lambda r: Manager(BFS(), r, rubikUtils)
+    manager_DFS = lambda r: Manager(DFS(), r, rubikUtils)
+    manager_ASTAR = lambda r: Manager(AStar(get_color_heursitic_weight), r, rubikUtils)
+    manager_ASTAR = lambda r: Manager(AStar(get_faces_colors_weight), r, rubikUtils)
+    manager_LGREEDY = lambda r: Manager(LocalGreedy(get_color_heursitic_weight), r, rubikUtils)
+    manager_LGREEDY = lambda r: Manager(LocalGreedy(get_faces_colors_weight), r, rubikUtils)
+    manager_GGREEDY = lambda r: Manager(GlobalGreedy(get_color_heursitic_weight), r, rubikUtils)
+    manager_GGREEDY = lambda r: Manager(GlobalGreedy(get_faces_colors_weight), r, rubikUtils)
+    managers_strs = ["BFS", "DFS","LGREEDY1","LGREEDY2", "ASTAR1","ASTAR2",  "GGREEDY1",  "GGREEDY2"]
+    managers = [manager_BFS, manager_DFS, manager_LGREEDY, manager_LGREEDY, manager_ASTAR, manager_ASTAR, manager_GGREEDY, manager_GGREEDY]
 
-def main(n):
-    for moves_qty in [8]:
+    print("MANAGER " + managers_strs[index])
+    manager = managers[index]
+    for moves_qty in [2, 5, 7]:
+        print("MOVES QTY: " + str(moves_qty))
         random.seed(RANDOM_SEED)
-        rubikUtils = RubikUtils(n)
         rubik = Rubik(n, rubikUtils)
-        rubik = shuffleRubik(rubik, moves_qty)
-        print("input: " + rubik.to_string())
-        manager1 = Manager(LocalGreedy(get_color_heursitic_weight), rubik, rubikUtils)
-        manager2 = Manager(AStar(get_color_heursitic_weight), rubik, rubikUtils)
-        manager3 = Manager(BFS(), rubik, rubikUtils)
-        manager4 = Manager(DFS(), rubik, rubikUtils)
-        manager5 = Manager(IDDFS(), rubik, rubikUtils)
-        manager6 = Manager(GlobalGreedy(get_color_heursitic_weight), rubik, rubikUtils)
+        shuffled_rubik = shuffleRubik(rubik, moves_qty)
+        print("input: " + shuffled_rubik.to_string())
         start_time = time.time()
-        result = manager3.solve()
-        print('Solucionado: SI')
-        print("Rubik cube: \n" + str(result.state))
-        print("--- %s seconds ---" % (time.time() - start_time))
+        try:
+            result = func_timeout.func_timeout(90, lambda: manager(shuffled_rubik).solve(), args=())
+            print('Solucionado: SI')
+            print("Rubik cube: \n" + str(result.state))
+        except func_timeout.FunctionTimedOut:
+            print('Solucionado: NO')
+        print("--- %s seconds ---\n" % (time.time() - start_time))
+
         # rubikVisualizer = rubik_visualizer.Rubik_Visualizer(manager3)
         # rubikVisualizer.visualize()
-
+    print("\n\n")
 
 if __name__ == '__main__':
     args = parser.parse_args()
 
-    main(args.options.n)
+    main(args.options.n, args.options.index)
