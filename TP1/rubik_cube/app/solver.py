@@ -12,10 +12,6 @@ from rubik_utils import RubikUtils
 from search_methods.manager import Manager
 from search_methods.methods import BFS, DFS, IDDFS, AStar, LocalGreedy, GlobalGreedy
 
-RANDOM_SEED = 12345
-RANDOM_MOVES = 1
-
-
 
 def shuffleRubik(rubik, moves_qty):
     possibleMoves = list(map(int, MovesN3 if rubik.n == 3 else MovesN2))
@@ -31,50 +27,44 @@ def shuffleRubik(rubik, moves_qty):
 
     return rubik
 
-def main(n, algorithm, scramble, timeout):
+def main(n, algorithm, scramble, seed, timeout, csv):
     rubikUtils = RubikUtils(n)
-    manager_BFS = lambda r: Manager(BFS(), r, rubikUtils)
-    manager_DFS = lambda r: Manager(DFS(), r, rubikUtils)
-    manager_ASTAR = lambda r: Manager(AStar(get_color_heursitic_weight), r, rubikUtils)
-    manager_ASTAR = lambda r: Manager(AStar(get_faces_colors_weight), r, rubikUtils)
-    manager_LGREEDY = lambda r: Manager(LocalGreedy(get_color_heursitic_weight), r, rubikUtils)
-    manager_LGREEDY = lambda r: Manager(LocalGreedy(get_faces_colors_weight), r, rubikUtils)
-    manager_GGREEDY = lambda r: Manager(GlobalGreedy(get_color_heursitic_weight), r, rubikUtils)
-    manager_GGREEDY = lambda r: Manager(GlobalGreedy(get_faces_colors_weight), r, rubikUtils)
-    managers = [manager_BFS, manager_DFS, manager_LGREEDY, manager_LGREEDY, manager_ASTAR, manager_ASTAR, manager_GGREEDY, manager_GGREEDY]
-
     managers = {
-        "BFS": manager_BFS,
-        "DFS": manager_DFS,
-        "ASTAR1": manager_ASTAR,
-        "ASTAR2": manager_ASTAR,
-        "LGREEDY1": manager_LGREEDY,
-        "LGREEDY2": manager_LGREEDY,
-        "GGREEDY1": manager_GGREEDY,
-        "GGREEDY2": manager_GGREEDY
+        "BFS": lambda r: Manager(BFS(), r, rubikUtils),
+        "DFS": lambda r: Manager(DFS(), r, rubikUtils),
+        "ASTAR1": lambda r: Manager(AStar(get_color_heursitic_weight), r, rubikUtils),
+        "ASTAR2": lambda r: Manager(AStar(get_faces_colors_weight), r, rubikUtils),
+        "LGREEDY1": lambda r: Manager(LocalGreedy(get_color_heursitic_weight), r, rubikUtils),
+        "LGREEDY2": lambda r: Manager(LocalGreedy(get_faces_colors_weight), r, rubikUtils),
+        "GGREEDY1": lambda r: Manager(GlobalGreedy(get_color_heursitic_weight), r, rubikUtils),
+        "GGREEDY2": lambda r: Manager(GlobalGreedy(get_faces_colors_weight), r, rubikUtils)
     }
 
-    print("ALGORITHM " + algorithm)
     manager = managers[algorithm]
-    print("MOVES QTY: " + str(scramble))
-    random.seed(RANDOM_SEED)
+    random.seed(seed)
     rubik = Rubik(n, rubikUtils)
     shuffled_rubik = shuffleRubik(rubik, scramble)
-    print("input: " + shuffled_rubik.to_string())
     start_time = time.time()
     try:
-        result = func_timeout.func_timeout(timeout, lambda: manager(shuffled_rubik).solve(), args=())
-        print('Solucionado: SI')
-        print("Rubik cube: \n" + str(result.state))
+        if not csv:
+            print("ALGORITHM " + algorithm)
+            print("MOVES QTY: " + str(scramble))
+            print("SEED: " + str(seed))
+            print("input: " + shuffled_rubik.to_string())
+            
+        result = func_timeout.func_timeout(timeout, lambda: manager(shuffled_rubik).solve(True), args=())
+        execution_time = time.time() - start_time
+        if csv:
+            print(f"{result},{execution_time}")
+        else:
+            print("--- %s seconds ---\n" % execution_time)
     except func_timeout.FunctionTimedOut:
         print('Solucionado: NO')
-    print("--- %s seconds ---\n" % (time.time() - start_time))
 
     # rubikVisualizer = rubik_visualizer.Rubik_Visualizer(manager3)
     # rubikVisualizer.visualize()
-    print("\n\n")
 
 if __name__ == '__main__':
     args = parser.parse_args()
 
-    main(args.options.n, args.options.algorithm, args.options.scramble, args.options.timeout)
+    main(args.options.n, args.options.algorithm, args.options.scramble, args.options.seed, args.options.timeout, args.options.csv)
