@@ -20,7 +20,6 @@ class Method(object):
     def pop(self):
         pass
 
-
 class BFS(Method):
     def __init__(self):
         self.border = deque()
@@ -44,7 +43,6 @@ class DFS(Method):
 
     def pop(self):
         return self.border.popleft()
-
 
 class LocalGreedy(Method):
     def __init__(self, heuristic):
@@ -96,17 +94,26 @@ class AStar(Method):
 class IDDFS(Method):
     def __init__(self):
         super().__init__()
-        self.depth_step = 2
-        self.sum_count = 0
+        self.border = deque()
+        self.next_border = deque()
+        self.depth_step = 4
+        self.current_iteration = 1
 
     def insert_nodes(self, nodes):
-        self.sum_count = 0
-        for node in nodes[::-1]:
-            if node.depth <= self.depth_step:
+        if(nodes[0].depth <= self.current_iteration * self.depth_step):
+            # recibe ordenados de mas viejos a mas nuevos, por eso el reverse
+            for node in nodes[::-1]:
                 self.border.appendleft(node)
-            else:
-                self.border.append(node)
-
-        #Bueno lo pusheo pq lo unico que falta es aumentar el depth_step, pero no se puede meter recursivo pq no tengo los nodos de los arboles antiguos
-        #Si a alguno se le ocurre algo :8
+        else:
+            for node in nodes[::-1]:
+                self.next_border.appendleft(node)
+    
+    def pop(self):
+        ans = self.border.popleft()
+        if len(self.border) == 0: 
+            print("next iter")
+            self.border, self.next_border = self.next_border, self.border
+            self.current_iteration += 1
+            
+        return ans
 

@@ -5,4 +5,4 @@ def get_color_heursitic_weight(cube, n):
             if cube[i][j] != str(i):
                 count += 1
 
-    return count / (n * 4) # n*4 es la maxima cantidad de colores que se pueden corregir en el cubo
+    return count / (n * 4) # n*4 es la maxima cantidad de colores que se pueden corregir en el cubo en un movimiento

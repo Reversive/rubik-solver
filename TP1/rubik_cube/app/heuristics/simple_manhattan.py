@@ -11,4 +11,4 @@ def get_simple_manhattan_weight(cube, n):
                 else:
                     distance_sum += 1
                 
-    return distance_sum / (4 * (n-1))
+    return distance_sum / (n * 4) # n*4 es la maxima cantidad de colores que se pueden corregir en el cubo en un movimiento

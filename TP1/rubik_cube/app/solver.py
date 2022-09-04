@@ -37,7 +37,8 @@ def main(n, algorithm, scramble, seed, timeout, csv):
         "LGREEDY_DIFFCOLORS": lambda r: Manager(LocalGreedy(get_color_heursitic_weight), r, rubikUtils),
         "LGREEDY_SMANHATTAN": lambda r: Manager(LocalGreedy(get_simple_manhattan_weight), r, rubikUtils),
         "GGREEDY_DIFFCOLORS": lambda r: Manager(GlobalGreedy(get_color_heursitic_weight), r, rubikUtils),
-        "GGREEDY_SMANHATTAN": lambda r: Manager(GlobalGreedy(get_simple_manhattan_weight), r, rubikUtils)
+        "GGREEDY_SMANHATTAN": lambda r: Manager(GlobalGreedy(get_simple_manhattan_weight), r, rubikUtils),
+        "IDDFS": lambda r: Manager(IDDFS(), r, rubikUtils)
     }
 
     manager = managers[algorithm]
