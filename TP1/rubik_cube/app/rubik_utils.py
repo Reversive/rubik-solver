@@ -26,6 +26,7 @@ class RubikUtils:
         for i in range(6):
             for j in range(self.n * self.n):
                 self.solution[i].append(str(i))
+                
         SIDE_LAMBDAS_UP_FUNCTIONS = [
             lambda j, column: (self.n - 1 - j) * self.n + column,  # LEFT
             lambda j, column: self.n * (self.n - column) - j - 1,  # BOTTOM

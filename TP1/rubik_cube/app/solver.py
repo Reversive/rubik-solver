@@ -3,7 +3,7 @@ import random
 import func_timeout
 
 from heuristics.color_heuristic import get_color_heursitic_weight
-from heuristics.faces_colors import get_faces_colors_weight
+from heuristics.simple_manhattan import get_simple_manhattan_weight
 from arguments.parser import parser
 from enums.moves import MovesN2, MovesN3
 from rubik import Rubik
@@ -32,12 +32,12 @@ def main(n, algorithm, scramble, seed, timeout, csv):
     managers = {
         "BFS": lambda r: Manager(BFS(), r, rubikUtils),
         "DFS": lambda r: Manager(DFS(), r, rubikUtils),
-        "ASTAR1": lambda r: Manager(AStar(get_color_heursitic_weight), r, rubikUtils),
-        "ASTAR2": lambda r: Manager(AStar(get_faces_colors_weight), r, rubikUtils),
-        "LGREEDY1": lambda r: Manager(LocalGreedy(get_color_heursitic_weight), r, rubikUtils),
-        "LGREEDY2": lambda r: Manager(LocalGreedy(get_faces_colors_weight), r, rubikUtils),
-        "GGREEDY1": lambda r: Manager(GlobalGreedy(get_color_heursitic_weight), r, rubikUtils),
-        "GGREEDY2": lambda r: Manager(GlobalGreedy(get_faces_colors_weight), r, rubikUtils)
+        "ASTAR_DIFFCOLORS": lambda r: Manager(AStar(get_color_heursitic_weight), r, rubikUtils),
+        "ASTAR_SMANHATTAN": lambda r: Manager(AStar(get_simple_manhattan_weight), r, rubikUtils),
+        "LGREEDY_DIFFCOLORS": lambda r: Manager(LocalGreedy(get_color_heursitic_weight), r, rubikUtils),
+        "LGREEDY_SMANHATTAN": lambda r: Manager(LocalGreedy(get_simple_manhattan_weight), r, rubikUtils),
+        "GGREEDY_DIFFCOLORS": lambda r: Manager(GlobalGreedy(get_color_heursitic_weight), r, rubikUtils),
+        "GGREEDY_SMANHATTAN": lambda r: Manager(GlobalGreedy(get_simple_manhattan_weight), r, rubikUtils)
     }
 
     manager = managers[algorithm]
@@ -55,9 +55,9 @@ def main(n, algorithm, scramble, seed, timeout, csv):
         result = func_timeout.func_timeout(timeout, lambda: manager(shuffled_rubik).solve(True), args=())
         execution_time = time.time() - start_time
         if csv:
-            print(f"{result},{execution_time}")
+            print(f"{seed},{result},{execution_time}")
         else:
-            print("--- %s seconds ---\n" % execution_time)
+            print("--- %s seconds ---\n" % round(execution_time,4))
     except func_timeout.FunctionTimedOut:
         print('Solucionado: NO')
 
