@@ -31,7 +31,7 @@ def shuffleRubik(rubik, moves_qty):
 
     return rubik
 
-def main(n, algorithm, scramble):
+def main(n, algorithm, scramble, timeout):
     rubikUtils = RubikUtils(n)
     manager_BFS = lambda r: Manager(BFS(), r, rubikUtils)
     manager_DFS = lambda r: Manager(DFS(), r, rubikUtils)
@@ -63,7 +63,7 @@ def main(n, algorithm, scramble):
     print("input: " + shuffled_rubik.to_string())
     start_time = time.time()
     try:
-        result = func_timeout.func_timeout(90, lambda: manager(shuffled_rubik).solve(), args=())
+        result = func_timeout.func_timeout(timeout, lambda: manager(shuffled_rubik).solve(), args=())
         print('Solucionado: SI')
         print("Rubik cube: \n" + str(result.state))
     except func_timeout.FunctionTimedOut:
@@ -77,4 +77,4 @@ def main(n, algorithm, scramble):
 if __name__ == '__main__':
     args = parser.parse_args()
 
-    main(args.options.n, args.options.algorithm, args.options.scramble)
+    main(args.options.n, args.options.algorithm, args.options.scramble, args.options.timeout)
