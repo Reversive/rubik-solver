@@ -7,4 +7,3 @@ class Options:
     scramble: int = 5  # how many times to scramble the cube
     algorithm: str = "bfs"  # algorithm to use to solve the cube
     heuristic: str = "manhattan"  # heuristic to use to solve the cube
-    index: int = 0 # index of manager

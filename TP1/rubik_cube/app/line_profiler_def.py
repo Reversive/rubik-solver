@@ -1,6 +1,6 @@
 import line_profiler
 
-import main
+import rubik_cube.app.solver as solver
 import rubik
 import search_methods
 
@@ -15,7 +15,7 @@ profiler.add_function(search_methods.manager.Manager.solve)
 # profiler.add_function(rubik.Rubik.spin)
 # profiler.add_function(rubik.Rubik.rotate)
 
-wrapper = profiler(main.main)
+wrapper = profiler(solver.main)
 wrapper(2)
 
 profiler.print_stats(open("line_profiler_ans.txt", "w"), output_unit=1)

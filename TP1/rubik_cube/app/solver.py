@@ -31,7 +31,7 @@ def shuffleRubik(rubik, moves_qty):
 
     return rubik
 
-def main(n, index):
+def main(n, algorithm, scramble):
     rubikUtils = RubikUtils(n)
     manager_BFS = lambda r: Manager(BFS(), r, rubikUtils)
     manager_DFS = lambda r: Manager(DFS(), r, rubikUtils)
@@ -41,31 +41,40 @@ def main(n, index):
     manager_LGREEDY = lambda r: Manager(LocalGreedy(get_faces_colors_weight), r, rubikUtils)
     manager_GGREEDY = lambda r: Manager(GlobalGreedy(get_color_heursitic_weight), r, rubikUtils)
     manager_GGREEDY = lambda r: Manager(GlobalGreedy(get_faces_colors_weight), r, rubikUtils)
-    managers_strs = ["BFS", "DFS","LGREEDY1","LGREEDY2", "ASTAR1","ASTAR2",  "GGREEDY1",  "GGREEDY2"]
     managers = [manager_BFS, manager_DFS, manager_LGREEDY, manager_LGREEDY, manager_ASTAR, manager_ASTAR, manager_GGREEDY, manager_GGREEDY]
 
-    print("MANAGER " + managers_strs[index])
-    manager = managers[index]
-    for moves_qty in [2, 5, 7]:
-        print("MOVES QTY: " + str(moves_qty))
-        random.seed(RANDOM_SEED)
-        rubik = Rubik(n, rubikUtils)
-        shuffled_rubik = shuffleRubik(rubik, moves_qty)
-        print("input: " + shuffled_rubik.to_string())
-        start_time = time.time()
-        try:
-            result = func_timeout.func_timeout(90, lambda: manager(shuffled_rubik).solve(), args=())
-            print('Solucionado: SI')
-            print("Rubik cube: \n" + str(result.state))
-        except func_timeout.FunctionTimedOut:
-            print('Solucionado: NO')
-        print("--- %s seconds ---\n" % (time.time() - start_time))
+    managers = {
+        "BFS": manager_BFS,
+        "DFS": manager_DFS,
+        "ASTAR1": manager_ASTAR,
+        "ASTAR2": manager_ASTAR,
+        "LGREEDY1": manager_LGREEDY,
+        "LGREEDY2": manager_LGREEDY,
+        "GGREEDY1": manager_GGREEDY,
+        "GGREEDY2": manager_GGREEDY
+    }
 
-        # rubikVisualizer = rubik_visualizer.Rubik_Visualizer(manager3)
-        # rubikVisualizer.visualize()
+    print("ALGORITHM " + algorithm)
+    manager = managers[algorithm]
+    print("MOVES QTY: " + str(scramble))
+    random.seed(RANDOM_SEED)
+    rubik = Rubik(n, rubikUtils)
+    shuffled_rubik = shuffleRubik(rubik, scramble)
+    print("input: " + shuffled_rubik.to_string())
+    start_time = time.time()
+    try:
+        result = func_timeout.func_timeout(90, lambda: manager(shuffled_rubik).solve(), args=())
+        print('Solucionado: SI')
+        print("Rubik cube: \n" + str(result.state))
+    except func_timeout.FunctionTimedOut:
+        print('Solucionado: NO')
+    print("--- %s seconds ---\n" % (time.time() - start_time))
+
+    # rubikVisualizer = rubik_visualizer.Rubik_Visualizer(manager3)
+    # rubikVisualizer.visualize()
     print("\n\n")
 
 if __name__ == '__main__':
     args = parser.parse_args()
 
-    main(args.options.n, args.options.index)
+    main(args.options.n, args.options.algorithm, args.options.scramble)
