@@ -25,6 +25,7 @@ class Solver:
         self.colors = colors
         self.target_color = target
         self.current_population = self.generate_population(population, colors)
+        self.best_member = max(self.current_population, key=lambda member: member.fitness)
         self.population_number = 0
         self.max_iterations = max_iterations
         self.mutation_probability = mutation_probability
@@ -51,9 +52,12 @@ class Solver:
         self.palette_list.append(self.current_population)
 
         if not self.solved:
-            print("Did you create a new color?")
-            raise RuntimeError
+            print("Best member was" + str(self.best_member.percentage))
+            print(self.best_member.fitness)
+
         else:
+            print("Best member is" + str(self.best_member.percentage))
+            print(self.best_member.fitness)
             print(self.population_number)
 
     def generate_population(self, population, colors) -> list[Member]:
@@ -77,11 +81,6 @@ class Solver:
 
         self.current_population = new_gen
         self.population_number += 1
-
-        for color in new_gen:
-            if color.fitness >= len(self.colors) - 0.15:
-                print("found!")
-                print(color.percentage)
-                print("fit: " + str(fitness(self.target_color, color.percentage, self.colors)))
-                self.solved = True
-                break
+        local_best_member = max(new_gen, key=lambda m: m.fitness)
+        if local_best_member.fitness < self.best_member.fitness:
+            self.best_member = local_best_member

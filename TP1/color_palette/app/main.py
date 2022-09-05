@@ -21,7 +21,7 @@ def main():
     available_colors = np.random.uniform(0, 1, size=(data['colors_amount'], data['pigments_amount']))
 
     # Creating population
-    curr_population = np.random.uniform(0, 1, size=(data['population_size'], data['colors_amount']))
+    curr_population = np.random.uniform(0, 0.1, size=(data['population_size'], data['colors_amount']))
 
     # Setting target
     target = np.array(data['target_color'])
