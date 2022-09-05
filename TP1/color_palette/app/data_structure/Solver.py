@@ -23,7 +23,7 @@ crossover_functions = {'geometric': geometric_average_crossover, 'heuristic': he
 class Solver:
 
     def __init__(self, population, target, max_iterations, mutation_probability, selection_function,
-                 selection_func_result_size, crossover_function, colors):
+                 selection_func_result_size, crossover_function, colors, mutation_range):
         self.population_size = len(population)
         self.colors = colors
         self.target_color = target
@@ -33,6 +33,7 @@ class Solver:
         self.mutation_probability = mutation_probability
         self.solved = False
         self.selection_func_result_size = selection_func_result_size
+        self.mutation_range = mutation_range
         self.palette_list = []
         if selection_functions.__contains__(selection_function):
             self.selection_function = selection_functions[selection_function]
@@ -71,22 +72,21 @@ class Solver:
             offspring = self.crossover_function(sliced[random.randint(0, len(sliced) - 1)],
                                                 sliced[random.randint(0, len(sliced) - 1)],
                                                 self.target_color, self.colors)
-            if random.uniform(0, 1) < self.mutation_probability:
-                new_gen.append(mutate(offspring[0], self.target_color, self.colors))
-            else:
-                new_gen.append(offspring[0])
+
+            new_gen.append(
+                mutate(offspring[0], self.target_color, self.colors, self.mutation_probability, self.mutation_range))
             if self.crossover_function != heuristic_crossover:  # since heuristic crossover gives only one child
-                if random.uniform(0, 1) < self.mutation_probability:
-                    new_gen.append(mutate(offspring[1], self.target_color, self.colors))
-                else:
-                    new_gen.append(offspring[1])
+                new_gen.append(mutate(offspring[1], self.target_color, self.colors, self.mutation_probability,
+                                      self.mutation_range))
 
         self.current_population = new_gen
         self.population_number += 1
 
         for color in new_gen:
-            if color.fitness >= 0.99:
+            print(color.fitness)
+            if color.fitness >= len(self.colors) - 0.15:
                 print("found!")
                 print(color.percentage)
+                print("fit: " + str(fitness(self.target_color, color.percentage, self.colors)))
                 self.solved = True
                 break
