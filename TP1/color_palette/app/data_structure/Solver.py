@@ -32,7 +32,7 @@ class Solver:
         self.mutation_probability = mutation_probability
         self.solved = False
         self.selection_func_result_size = selection_func_result_size
-
+        self.palette_list = []
         if selection_functions.__contains__(selection_function):
             self.selection_function = selection_functions[selection_function]
         else:
@@ -46,7 +46,10 @@ class Solver:
             self.selection_function = uniform_crossover
 
         while self.palette_number < self.max_iterations and not self.solved:
+            self.palette_list.append(self.current_palette)
             self.evolve_palette()
+
+        self.palette_list.append(self.current_palette)
 
         if not self.solved:
             print("Did you create a new color?")

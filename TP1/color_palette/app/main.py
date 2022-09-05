@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import random
 import json
-
+from color_palette.plotter import plotter
 from data_structure.Solver import Solver
 
 
@@ -25,6 +25,7 @@ def main():
     solver = Solver(palette=available_colors, target=target, max_iterations=data['max_generations'],
                     mutation_probability=data['mutation_prob'], selection_function=data['selection_fun'],
                     selection_func_result_size=data['k'], crossover_function=data['crossover_fun'])
+    plotter.plot_population(solver.palette_list)
 
 
 if __name__ == '__main__':
