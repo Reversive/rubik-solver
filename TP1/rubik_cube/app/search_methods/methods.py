@@ -96,22 +96,22 @@ class IDDFS(Method):
         super().__init__()
         self.border = deque()
         self.next_border = deque()
-        self.depth_step = 4
+        self.depth_step = 3
         self.current_iteration = 1
 
     def insert_nodes(self, nodes):
-        if(nodes[0].depth <= self.current_iteration * self.depth_step):
-            # recibe ordenados de mas viejos a mas nuevos, por eso el reverse
-            for node in nodes[::-1]:
-                self.border.appendleft(node)
-        else:
-            for node in nodes[::-1]:
-                self.next_border.appendleft(node)
+        if len(nodes) > 0:
+            if(nodes[0].depth <= self.current_iteration * self.depth_step):
+                # recibe ordenados de mas viejos a mas nuevos, por eso el reverse
+                for node in nodes[::-1]:
+                    self.border.appendleft(node)
+            else:
+                for node in nodes[::-1]:
+                    self.next_border.appendleft(node)
     
     def pop(self):
         ans = self.border.popleft()
         if len(self.border) == 0: 
-            print("next iter")
             self.border, self.next_border = self.next_border, self.border
             self.current_iteration += 1
             
