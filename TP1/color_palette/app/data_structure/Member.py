@@ -2,8 +2,8 @@ import numpy as np
 
 
 class Member:
-    def __init__(self, probabilities: np.array, fitness):
-        self.probabilities = probabilities
+    def __init__(self, percentage: np.array, fitness):
+        self.percentage = percentage
         self.fitness = fitness
 
     def __str__(self):

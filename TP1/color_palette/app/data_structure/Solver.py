@@ -61,7 +61,7 @@ class Solver:
     def generate_population(self, population, colors) -> list[Member]:
         curr_population = []
         for i in range(self.population_size):
-            curr_population.append(Member(population[i], fitness(self.target_color, population[i])))
+            curr_population.append(Member(population[i], fitness(self.target_color, population[i], self.colors)))
         return curr_population
 
     def evolve_population(self):
@@ -70,14 +70,14 @@ class Solver:
             sliced = self.selection_function(self.current_population, self.selection_func_result_size)
             offspring = self.crossover_function(sliced[random.randint(0, len(sliced) - 1)],
                                                 sliced[random.randint(0, len(sliced) - 1)],
-                                                self.target_color)
+                                                self.target_color, self.colors)
             if random.uniform(0, 1) < self.mutation_probability:
-                new_gen.append(mutate(offspring[0], self.target_color))
+                new_gen.append(mutate(offspring[0], self.target_color, self.colors))
             else:
                 new_gen.append(offspring[0])
             if self.crossover_function != heuristic_crossover:  # since heuristic crossover gives only one child
                 if random.uniform(0, 1) < self.mutation_probability:
-                    new_gen.append(mutate(offspring[1], self.target_color))
+                    new_gen.append(mutate(offspring[1], self.target_color, self.colors))
                 else:
                     new_gen.append(offspring[1])
 
@@ -87,6 +87,6 @@ class Solver:
         for color in new_gen:
             if color.fitness >= 0.99:
                 print("found!")
-                print(color.probabilities)
+                print(color.percentage)
                 self.solved = True
                 break
