@@ -1,13 +1,14 @@
 from functions.fitness import fitness
-from data_structure.Color import Color
+from data_structure.Member import Member
+import numpy as np
 
 
-def crossover(parents: Color, points: [], target: Color) -> list[Color]:
-    offspring_rgb = [get_rgb(parents, points[0], points[1], points[2]),
-                     get_rgb(parents, 1 - points[0], 1 - points[1], 1 - points[2])]
-    return [Color(offspring_rgb[0], fitness(target, offspring_rgb[0])),
-            Color(offspring_rgb[1], fitness(target, offspring_rgb[1]))]
+def crossover(parents: Member, points: [], target: Member, colors) -> list[Member]:
+    offspring_percentage = [get_percentage(parents, points),
+                            get_percentage(parents, np.subtract(np.ones(len(points), dtype=int), points))]
+    return [Member(offspring_percentage[0], fitness(target, offspring_percentage[0], colors)),
+            Member(offspring_percentage[1], fitness(target, offspring_percentage[1], colors))]
 
 
-def get_rgb(parents, r_idx, g_idx, b_idx):
-    return [parents[r_idx].rgb[0], parents[g_idx].rgb[1], parents[b_idx].rgb[2]]
+def get_percentage(parents, points):
+    return [parents[points[i]].percentage[i] for i in range(len(points))]

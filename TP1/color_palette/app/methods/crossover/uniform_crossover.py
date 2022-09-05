@@ -1,10 +1,10 @@
 import random
-
-from data_structure.Color import Color
+import numpy as np
+from data_structure.Member import Member
 from methods.crossover.helper import crossover
 
 
-def uniform_crossover(first_parent: Color, second_parent: Color, target: Color) -> list[Color]:
+def uniform_crossover(first_parent: Member, second_parent: Member, target: Member, colors) -> list[Member]:
     parents = [first_parent, second_parent]
-    idx = [random.randint(0, 1), random.randint(0, 1), random.randint(0, 1)]
-    return crossover(parents, idx, target)
+    points = np.random.randint(0, 2, size=len(first_parent.percentage))
+    return crossover(parents, points, target, colors)

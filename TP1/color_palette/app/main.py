@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import random
 import json
-from color_palette.plotter import plotter
+# from color_palette.plotter import plotter
 from data_structure.Solver import Solver
 
 
@@ -17,15 +17,23 @@ def main():
     data = json.load(file)
     file.close()
 
-    available_colors = []
-    for i in range(data['population_size']):
-        available_colors.append([random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)])
+    # Setting target
     target = np.array(data['target_color'])
 
-    solver = Solver(palette=available_colors, target=target, max_iterations=data['max_generations'],
+    pigments_amount = len(target)
+    # Creating colors
+    available_colors = np.random.uniform(0, 1, size=(data['colors_amount'], pigments_amount))
+
+    # Creating population
+    curr_population = np.random.uniform(0.1, 0.3, size=(data['population_size'], data['colors_amount']))
+
+    solver = Solver(population=curr_population, colors=available_colors, target=target,
+                    max_iterations=data['max_generations'],
                     mutation_probability=data['mutation_prob'], selection_function=data['selection_fun'],
-                    selection_func_result_size=data['k'], crossover_function=data['crossover_fun'])
-    plotter.plot_population(solver.palette_list)
+                    selection_func_result_size=data['k'], crossover_function=data['crossover_fun'],
+                    mutation_range=data['mutation_range'])
+
+#    plotter.plot_population(solver.palette_list)
 
 
 if __name__ == '__main__':

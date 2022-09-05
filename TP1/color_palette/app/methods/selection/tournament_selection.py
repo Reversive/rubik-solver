@@ -1,9 +1,9 @@
 import random
 import numpy as np
-from data_structure.Color import Color
+from data_structure.Member import Member
 
 
-def deterministic_tournament_selection(palette: list[Color], result_size: int) -> list[Color]:
+def deterministic_tournament_selection(palette: list[Member], result_size: int) -> list[Member]:
     selected = []
     groups_size = 5
     while len(selected) < result_size:
@@ -11,7 +11,7 @@ def deterministic_tournament_selection(palette: list[Color], result_size: int) -
     return selected
 
 
-def probabilistic_tournament_selection(palette: list[Color], result_size: int) -> list[Color]:
+def probabilistic_tournament_selection(palette: list[Member], result_size: int) -> list[Member]:
     threshold = random.uniform(0.5, 1)
     selected = []
     while len(selected) < result_size:

@@ -1,5 +1,6 @@
 {
   "population_size": 1000,
+  "colors_amount": 100,
   "target_color": [
     0.1,
     0.2,
@@ -8,6 +9,7 @@
   "selection_fun": "elite",
   "crossover_fun": "geometric",
   "mutation_prob": 0.1,
+  "mutation_range": 0.1,
   "k": 50,
   "max_generations": 100
 }
