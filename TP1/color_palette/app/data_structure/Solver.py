@@ -7,8 +7,6 @@ from methods.selection.roulette_selection import roulette_selection
 from methods.selection.tournament_selection import deterministic_tournament_selection
 from methods.selection.tournament_selection import probabilistic_tournament_selection
 from methods.crossover.uniform_crossover import uniform_crossover
-from methods.crossover.heuristic_crossover import heuristic_crossover
-from methods.crossover.geometric_average_crossover import geometric_average_crossover
 from methods.crossover.point_crossover import point_crossover
 
 from methods.mutations.mutate import mutate
@@ -16,8 +14,7 @@ from methods.mutations.mutate import mutate
 selection_functions = {'elite': elite_selection, 'roulette': roulette_selection,
                        'prob_tournament': probabilistic_tournament_selection,
                        'det_tournament': deterministic_tournament_selection}
-crossover_functions = {'geometric': geometric_average_crossover, 'heuristic': heuristic_crossover,
-                       'point': point_crossover, 'uniform': uniform_crossover}
+crossover_functions = {'point': point_crossover, 'uniform': uniform_crossover}
 
 
 class Solver:
@@ -75,15 +72,13 @@ class Solver:
 
             new_gen.append(
                 mutate(offspring[0], self.target_color, self.colors, self.mutation_probability, self.mutation_range))
-            if self.crossover_function != heuristic_crossover:  # since heuristic crossover gives only one child
-                new_gen.append(mutate(offspring[1], self.target_color, self.colors, self.mutation_probability,
-                                      self.mutation_range))
+            new_gen.append(
+                mutate(offspring[1], self.target_color, self.colors, self.mutation_probability, self.mutation_range))
 
         self.current_population = new_gen
         self.population_number += 1
 
         for color in new_gen:
-            print(color.fitness)
             if color.fitness >= len(self.colors) - 0.15:
                 print("found!")
                 print(color.percentage)

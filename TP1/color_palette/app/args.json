@@ -1,16 +1,16 @@
 {
-  "population_size": 500,
-  "colors_amount": 10,
+  "population_size": 100,
+  "colors_amount": 20,
   "pigments_amount": 3,
   "target_color": [
-    0.75,
+    0.1,
     0.5,
-    0.75
+    0.1
   ],
   "selection_fun": "elite",
   "crossover_fun": "point",
-  "mutation_prob": 0.05,
-  "mutation_range": 0.1,
+  "mutation_prob": 0.1,
+  "mutation_range": 0.2,
   "k": 10,
   "max_generations": 500
 }
