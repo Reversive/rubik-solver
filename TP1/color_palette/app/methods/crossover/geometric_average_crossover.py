@@ -1,18 +1,18 @@
 import random
-from data_structure.Color import Color
+from data_structure.Member import Member
 from functions.fitness import fitness
 
 
-def geometric_average_crossover(first_parent: Color, second_parent: Color, target: Color) -> list[Color]:
+def geometric_average_crossover(first_parent: Member, second_parent: Member, target: Member) -> list[Member]:
     offspring_rgb = [get_rgb(first_parent, second_parent, lambda gamma, x1, x2: (1 - gamma) * x1 + gamma * x2),
                      get_rgb(first_parent, second_parent, lambda gamma, x1, x2: (1 - gamma) * x2 + gamma * x1)]
-    return [Color(offspring_rgb[0], fitness(target, offspring_rgb[0])),
-            Color(offspring_rgb[1], fitness(target, offspring_rgb[1]))]
+    return [Member(offspring_rgb[0], fitness(target, offspring_rgb[0])),
+            Member(offspring_rgb[1], fitness(target, offspring_rgb[1]))]
 
 
-def get_rgb(first_parent: Color, second_parent: Color, function):
+def get_rgb(first_parent: Member, second_parent: Member, function):
     gamma = random.uniform(0, 1)
-    red = function(gamma, first_parent.rgb[0], second_parent.rgb[0])
-    green = function(gamma, first_parent.rgb[1], second_parent.rgb[1])
-    blue = function(gamma, first_parent.rgb[2], second_parent.rgb[2])
+    red = function(gamma, first_parent.probabilities[0], second_parent.probabilities[0])
+    green = function(gamma, first_parent.probabilities[1], second_parent.probabilities[1])
+    blue = function(gamma, first_parent.probabilities[2], second_parent.probabilities[2])
     return [red, green, blue]

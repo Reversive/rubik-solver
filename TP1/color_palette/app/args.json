@@ -1,5 +1,7 @@
 {
   "population_size": 500,
+  "colors_amount": 100,
+  "pigments_amount": 3,
   "target_color": [
     0.75,
     0.5,
