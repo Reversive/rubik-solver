@@ -88,3 +88,8 @@ class Solver:
         local_best_member = max(new_gen, key=lambda m: m.fitness)
         if local_best_member.fitness > self.best_member.fitness:
             self.best_member = local_best_member
+        self.get_generation_colors()
+
+    def get_generation_colors(self):
+        for member in self.current_population:
+            print(np.clip(sum(member.percentage[i] * self.colors[i] for i in range(len(member.percentage))), 0, 1))
