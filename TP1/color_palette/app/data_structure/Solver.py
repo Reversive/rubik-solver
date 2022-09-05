@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from data_structure.Member import Member
 from functions.fitness import fitness
 
@@ -53,6 +54,8 @@ class Solver:
 
         if not self.solved:
             print("Best member was" + str(self.best_member.percentage))
+            aux = [self.best_member.percentage[i] * colors[i] for i in range(len(self.best_member.percentage))]
+            print(np.clip(sum(aux), 0, 1))
             print(self.best_member.fitness)
 
         else:
@@ -81,6 +84,7 @@ class Solver:
 
         self.current_population = new_gen
         self.population_number += 1
+
         local_best_member = max(new_gen, key=lambda m: m.fitness)
-        if local_best_member.fitness < self.best_member.fitness:
+        if local_best_member.fitness > self.best_member.fitness:
             self.best_member = local_best_member
