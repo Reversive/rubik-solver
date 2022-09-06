@@ -17,6 +17,8 @@ selection_functions = {'elite': elite_selection, 'roulette': roulette_selection,
                        'det_tournament': deterministic_tournament_selection}
 crossover_functions = {'point': point_crossover, 'uniform': uniform_crossover}
 
+epsilon = pow(10, -4)
+
 
 class Solver:
 
@@ -92,6 +94,10 @@ class Solver:
 
         if self.population_number - self.best_gen > self.max_iterations / 4:
             print("Stationary state reached - ...")
+            self.solved = True
+
+        if 1 - self.best_member.fitness < epsilon:
+            print("Desired fitness reached - ...")
             self.solved = True
 
     def get_generation_colors(self):

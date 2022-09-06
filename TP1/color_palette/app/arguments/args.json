@@ -11,5 +11,5 @@
   "mutation_prob": 0.05,
   "mutation_range": 0.1,
   "k": 10,
-  "max_generations": 2000
+  "max_generations": 4000
 }
