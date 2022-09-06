@@ -1,15 +1,15 @@
 {
-  "population_size": 1000,
-  "colors_amount": 100,
+  "population_size": 100,
+  "colors_amount": 20,
   "target_color": [
-    0.1,
-    0.2,
-    0.21
+    0.25,
+    0.5,
+    0.25
   ],
   "selection_fun": "elite",
-  "crossover_fun": "geometric",
-  "mutation_prob": 0.1,
+  "crossover_fun": "uniform",
+  "mutation_prob": 0.05,
   "mutation_range": 0.1,
-  "k": 50,
-  "max_generations": 100
+  "k": 10,
+  "max_generations": 2000
 }

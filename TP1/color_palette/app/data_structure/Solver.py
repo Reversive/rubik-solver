@@ -27,6 +27,7 @@ class Solver:
         self.target_color = target
         self.current_population = self.generate_population(population, colors)
         self.best_member = max(self.current_population, key=lambda member: member.fitness)
+        self.best_gen = 0
         self.population_number = 0
         self.max_iterations = max_iterations
         self.mutation_probability = mutation_probability
@@ -53,15 +54,12 @@ class Solver:
         self.palette_list.append(self.current_population)
 
         if not self.solved:
-            print("Best member was" + str(self.best_member.percentage))
-            aux = [self.best_member.percentage[i] * colors[i] for i in range(len(self.best_member.percentage))]
-            print(np.clip(sum(aux), 0, 1))
-            print(self.best_member.fitness)
-
-        else:
-            print("Best member is" + str(self.best_member.percentage))
-            print(self.best_member.fitness)
-            print(self.population_number)
+            print("Max amount of generations reached.")
+        print("Best percentage is " + str(self.best_member.percentage))
+        aux = [self.best_member.percentage[i] * colors[i] for i in range(len(self.best_member.percentage))]
+        print(np.clip(sum(aux), 0, 1))
+        print("fitness: " + str(self.best_member.fitness))
+        print("Member is from generation " + str(self.best_gen))
 
     def generate_population(self, population, colors) -> list[Member]:
         curr_population = []
@@ -71,8 +69,8 @@ class Solver:
 
     def evolve_population(self):
         new_gen = []
+        sliced = self.selection_function(self.current_population, self.selection_func_result_size)
         while len(new_gen) < self.population_size:
-            sliced = self.selection_function(self.current_population, self.selection_func_result_size)
             offspring = self.crossover_function(sliced[random.randint(0, len(sliced) - 1)],
                                                 sliced[random.randint(0, len(sliced) - 1)],
                                                 self.target_color, self.colors)
@@ -88,6 +86,13 @@ class Solver:
         local_best_member = max(new_gen, key=lambda m: m.fitness)
         if local_best_member.fitness > self.best_member.fitness:
             self.best_member = local_best_member
+            self.best_gen = self.population_number
+
+        # self.get_generation_colors()
+
+        if self.population_number - self.best_gen > self.max_iterations / 4:
+            print("Stationary state reached - ...")
+            self.solved = True
 
     def get_generation_colors(self):
         for member in self.current_population:
