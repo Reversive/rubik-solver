@@ -71,8 +71,8 @@ class Solver:
 
     def evolve_population(self):
         new_gen = []
+        sliced = self.selection_function(self.current_population, self.selection_func_result_size)
         while len(new_gen) < self.population_size:
-            sliced = self.selection_function(self.current_population, self.selection_func_result_size)
             offspring = self.crossover_function(sliced[random.randint(0, len(sliced) - 1)],
                                                 sliced[random.randint(0, len(sliced) - 1)],
                                                 self.target_color, self.colors)

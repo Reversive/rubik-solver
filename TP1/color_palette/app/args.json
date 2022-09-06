@@ -6,7 +6,7 @@
     0.5,
     0.25
   ],
-  "selection_fun": "roulette",
+  "selection_fun": "elite",
   "crossover_fun": "uniform",
   "mutation_prob": 0.05,
   "mutation_range": 0.1,
