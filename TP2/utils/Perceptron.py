@@ -1,7 +1,7 @@
 import numpy as np
 
 THRESHOLD = 0.00001
-MAX_ITERS = 100000
+MAX_ITERS = 1000000
 
 
 class Perceptron:
