@@ -1,8 +1,10 @@
-from step_network.step_classifier import StepClassifier
+from onelayer_network.linear_classifier import LinearClassifier
+from onelayer_network.nolinear_classifier import NoLinearClassifier
+from onelayer_network.step_classifier import StepClassifier
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    StepClassifier()
+    #StepClassifier()
+    #LinearClassifier()
+    NoLinearClassifier()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/

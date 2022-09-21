@@ -1,17 +1,18 @@
 import numpy as np
 
 THRESHOLD = 0.00001
-MAX_ITERS = 1000000
+MAX_ITERS = 100000
 
 
 class Perceptron:
-    def __init__(self, activation_func, input_dim, learning_rate):
-        self.func = activation_func
+    def __init__(self, input_dim, learning_rate, act_func = lambda x: x, deriv_act_func = lambda x: 1):
         self.weights = np.zeros(1 + input_dim)
         self.learning_rate = learning_rate
+        self.act_func = act_func
+        self.deriv_act_func= deriv_act_func
 
-    def test(self, h):
-        return self.func(np.dot(self.weights, np.array([1] + h)))
+    def test(self, inputs_without_constant):
+        return self.act_func(np.dot(self.weights, np.append(1, inputs_without_constant)))
 
     def cuadratic_error(self, train_data):
         error = 0
@@ -27,11 +28,13 @@ class Perceptron:
         np.random.seed(12345)
         while error_min > THRESHOLD and i < MAX_ITERS:
             example = train_data[np.random.choice(range(len(train_data)))]
-            inputs = example[:-1]
+            inputs = np.append(1, example[:-1])
             expected_output = example[-1]
-            test_result = self.test(inputs)
-            delta_w = self.learning_rate * (expected_output - test_result) * np.array([1] + inputs)
+            output = self.act_func(np.dot(self.weights, inputs))
+
+            delta_w = self.learning_rate * (expected_output - output) * inputs * self.deriv_act_func(output)
             self.weights += delta_w
+
             error = self.cuadratic_error(train_data)
             if error < error_min:
                 error_min = error
@@ -40,3 +43,4 @@ class Perceptron:
             i += 1
 
         self.weights = w_min
+        print(f'Error min: {error_min}, iterations: {i}, weights: {self.weights}')
