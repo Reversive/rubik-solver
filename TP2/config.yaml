@@ -1,9 +1,10 @@
 [general_config]
-train_dataset = ./TP2-ej2-conjunto.csv
-test_dataset = ./TP2-ej2-conjunto.csv
+dataset = ./TP2-ej2-conjunto.csv
+epochs = 5
+learning_rate = 0.01
 
 #Can be linaer;nolinear;step
-classifier = nolinear
+classifier = linear
 
 [step_classifier]
 umbral = 0

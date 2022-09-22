@@ -31,12 +31,13 @@ class Perceptron:
     def train(self, train_data, continue_condition, next_example_idx = None):
         error_min = float('inf')
         w_min = self.weights
-        i = 0
+        iterations = 0
 
         for _ in range(self.epochs):
             epoch_error_min = float('inf')
+            iteration = 0
 
-            while continue_condition(i, error_min):
+            while continue_condition(iteration, error_min):
                 example = train_data[next_example_idx() if next_example_idx is not None else i]
                 inputs = np.append(1, example[:-1])
                 expected_output = example[-1]
@@ -50,7 +51,9 @@ class Perceptron:
                     epoch_error_min = epoch_error
                     epoch_w_min = self.weights
 
-                i += 1
+                iteration += 1
+
+            iterations += iteration
 
             self.weights = epoch_w_min
             error = self.test(train_data)
@@ -59,6 +62,6 @@ class Perceptron:
                 w_min = self.weights
 
         self.weights = w_min
-        print(f'Error min: {error_min}, iterations: {i}, weights: {self.weights}')
+        print(f'Error min: {error_min}, iterations: {iterations}, weights: {self.weights}')
 
         
