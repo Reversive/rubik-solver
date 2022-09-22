@@ -1,3 +1,4 @@
+import math
 from utils.DatasetUtils import DivideDatasetToTrainAndTest
 from utils.Perceptron import Perceptron
 import pandas as pd
@@ -18,16 +19,9 @@ class LinearClassifier:
 
         train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(dataset_df, 0.8)
 
-        self.perceptron.train_online(train_dataset_df.values, test_dataset_df.values)
+        self.perceptron.train_online(train_dataset_df.values)
 
-        corrects_qualifications = 0
-        for i in range(len(train_dataset_df)):
-            result = self.perceptron.test(train_dataset_df.values[i][:-1])
-            predicted = train_dataset_df.values[i][-1]
-            print(result, predicted, i)
-            if result == predicted:
-                corrects_qualifications += 1
                 
-        print(f'Corrects qualifications: {corrects_qualifications}, incorrects: {len(train_dataset_df) - corrects_qualifications}')
+        print(f'Total error: {self.perceptron.test(test_dataset_df.values)}')
 
 

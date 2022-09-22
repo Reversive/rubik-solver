@@ -10,26 +10,25 @@ class Perceptron:
         self.act_func = act_func
         self.deriv_act_func= deriv_act_func
 
-    def test(self, inputs_without_constant):
-        return self.act_func(np.dot(self.weights, np.append(1, inputs_without_constant)))
+    def classify(self, example):
+        return self.act_func(np.dot(self.weights, np.append(1, example)))
 
-    def cuadratic_error(self, train_data):
+    def test(self, data):
         error = 0
-        for example in train_data:
-            error += (1 / 2) * pow(example[-1] - self.test(example[:-1]), 2)
+        for example in data:
+            error += (1 / 2) * pow(example[-1] - self.classify(example[:-1]), 2)
 
         return error
 
-    def train_batch(self, train_data, test_data):
+    def train_batch(self, train_data):
         continue_condition = lambda i: i < len(train_data)
-        self.train(train_data, test_data, continue_condition)
+        self.train(train_data, continue_condition)
 
-    def train_online(self, train_data, test_data):
-        np.random.seed(12345)
+    def train_online(self, train_data):
         continue_condition = lambda i, error_min: error_min > THRESHOLD and i < len(train_data)        
-        self.train(train_data, test_data, continue_condition, lambda: np.random.choice(len(train_data)))
+        self.train(train_data, continue_condition, lambda: np.random.choice(len(train_data)))
 
-    def train(self, train_data, test_data, continue_condition, next_example_idx = None):
+    def train(self, train_data, continue_condition, next_example_idx = None):
         error_min = float('inf')
         w_min = self.weights
         i = 0
@@ -46,7 +45,7 @@ class Perceptron:
                 delta_w = self.learning_rate * (expected_output - output) * inputs * self.deriv_act_func(output)
                 self.weights += delta_w
 
-                epoch_error = self.cuadratic_error(test_data)
+                epoch_error = self.test(train_data)
                 if epoch_error < epoch_error_min:
                     epoch_error_min = epoch_error
                     epoch_w_min = self.weights
@@ -54,7 +53,7 @@ class Perceptron:
                 i += 1
 
             self.weights = epoch_w_min
-            error = self.cuadratic_error(test_data)
+            error = self.test(train_data)
             if error < error_min:
                 error_min = error
                 w_min = self.weights
