@@ -5,7 +5,8 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 class LinearClassifier:
-    def __init__(self):
+    def __init__(self, linear_config):
+
         self.perceptron = Perceptron(input_dim=3, learning_rate=0.01, epochs=5)
         print("Linear exercise")
         dataset_df = pd.read_csv("./TP2-ej2-conjunto.csv", header=0)

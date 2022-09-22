@@ -3,8 +3,9 @@ import numpy as np
 
 
 class StepClassifier:
-    def __init__(self):
-        UMBRAL = 0
+    def __init__(self, step_config):
+        UMBRAL = float(step_config['umbral'])
+
         self.perceptron = Perceptron(input_dim=2, learning_rate=0.01, epochs=5, act_func=lambda x: np.sign(x - UMBRAL))
 
         print("AND exercise")

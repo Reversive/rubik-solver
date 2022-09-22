@@ -21,7 +21,9 @@ class NoLinearClassifierType(Enum):
 
 
 class NoLinearClassifier:
-    def __init__(self, CLASSIFIER_TYPE, BETA = 0.5):
+    def __init__(self, nolinear_config):
+        CLASSIFIER_TYPE = NoLinearClassifierType[nolinear_config['activation_function']]
+        BETA = float(nolinear_config['beta'])
         self.perceptron = Perceptron(input_dim=3, learning_rate=0.01, epochs=5, 
                                     act_func=lambda x: CLASSIFIER_TYPE.value["act_func"](x, BETA), 
                                     deriv_act_func=lambda x: CLASSIFIER_TYPE.value["deriv_act_func"](x, BETA))

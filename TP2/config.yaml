@@ -1,0 +1,18 @@
+[general_config]
+train_dataset = ./TP2-ej2-conjunto.csv
+test_dataset = ./TP2-ej2-conjunto.csv
+
+#Can be linaer;nolinear;step
+classifier = nolinear
+
+[step_classifier]
+umbral = 0
+
+[linear_classifier]
+
+[nolinear_classifier]
+activation_function = TANH
+beta = 1.0
+
+
+[normalization]
