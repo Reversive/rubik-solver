@@ -5,11 +5,11 @@ import numpy as np
 class StepClassifier:
     def __init__(self):
         UMBRAL = 0
-        self.perceptron = Perceptron(2, 0.01, lambda x: np.sign(x - UMBRAL))
+        self.perceptron = Perceptron(input_dim=2, learning_rate=0.01, epochs=5, act_func=lambda x: np.sign(x - UMBRAL))
 
         print("AND exercise")
         and_train_dataset = [[-1, 1, -1], [1, -1, -1], [-1, -1, -1], [1, 1, 1]]
-        self.perceptron.train(and_train_dataset)
+        self.perceptron.train_online(and_train_dataset, and_train_dataset)
 
         corrects_qualifications = 0
         for i in range(len(and_train_dataset)):
@@ -19,7 +19,7 @@ class StepClassifier:
 
         print("XOR exercise")
         xor_train_dataset = [[-1, 1, 1], [1, -1, 1], [-1, -1, -1], [1, 1, -1]]
-        self.perceptron.train(xor_train_dataset)
+        self.perceptron.train_online(xor_train_dataset, xor_train_dataset)
 
         corrects_qualifications = 0
         for i in range(len(xor_train_dataset)):

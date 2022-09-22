@@ -4,7 +4,9 @@ from onelayer_network.step_classifier import StepClassifier
 
 
 if __name__ == '__main__':
-    #StepClassifier()
-    #LinearClassifier()
-    classifier = NoLinearClassifier(NoLinearClassifierType.TANH)
+    # StepClassifier()
+    # LinearClassifier()
+    # classifier = NoLinearClassifier(NoLinearClassifierType.TANH)
+    # classifier.execute()
+    classifier = NoLinearClassifier(NoLinearClassifierType.EXP)
     classifier.execute()
