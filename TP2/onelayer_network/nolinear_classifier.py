@@ -24,13 +24,14 @@ class NoLinearClassifier:
     def __init__(self, nolinear_config):
         CLASSIFIER_TYPE = NoLinearClassifierType[nolinear_config['activation_function']]
         BETA = float(nolinear_config['beta'])
-        self.perceptron = Perceptron(input_dim=3, learning_rate=0.01, epochs=5, 
+        self.perceptron = Perceptron(input_dim=3, learning_rate=0.01, epochs=5,
                                     act_func=lambda x: CLASSIFIER_TYPE.value["act_func"](x, BETA), 
                                     deriv_act_func=lambda x: CLASSIFIER_TYPE.value["deriv_act_func"](x, BETA))
         self.output_scaler = CLASSIFIER_TYPE.value["OUTPUT_SCALER"]
+        self.classifier_type = CLASSIFIER_TYPE.name
 
     def execute(self):
-        print("NoLinear exercise")
+        print(f"NoLinear {self.classifier_type}")
         dataset_df = pd.read_csv("./TP2-ej2-conjunto.csv", header=0)
 
         # standarize inputs
@@ -41,16 +42,8 @@ class NoLinearClassifier:
 
         train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(dataset_df, 0.8)
 
-        self.perceptron.train_online(train_dataset_df.values, test_dataset_df.values)
+        self.perceptron.train_online(train_dataset_df.values)
         
 
-        corrects_qualifications = 0
-        for i in range(len(train_dataset_df)):
-            result = self.perceptron.test(train_dataset_df.values[i][:-1])
-            predicted = train_dataset_df.values[i][-1]
-            print(result, predicted, i)
-            if result == predicted:
-                corrects_qualifications += 1
 
-        print(f'Corrects qualifications: {corrects_qualifications}, incorrects: {len(train_dataset_df) - corrects_qualifications}')
-
+        print(f'Total error: {self.perceptron.test(test_dataset_df.values)}')
