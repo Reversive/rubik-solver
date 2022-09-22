@@ -1,7 +1,7 @@
 import numpy as np
 
 THRESHOLD = 0.00001
-MAX_ITERS = 100000
+MAX_ITERS = 10000
 
 
 class Perceptron:
@@ -22,6 +22,7 @@ class Perceptron:
         return error
 
     def train(self, train_data):
+        # ONLINE TODO: BATCH
         error_min = float('inf')
         w_min = self.weights
         i = 0
@@ -35,6 +36,7 @@ class Perceptron:
             delta_w = self.learning_rate * (expected_output - output) * inputs * self.deriv_act_func(output)
             self.weights += delta_w
 
+            # si hubiesen muchos datos deberia estar afuera, despues de recorrer una epoca (CREO)
             error = self.cuadratic_error(train_data)
             if error < error_min:
                 error_min = error
@@ -44,3 +46,4 @@ class Perceptron:
 
         self.weights = w_min
         print(f'Error min: {error_min}, iterations: {i}, weights: {self.weights}')
+        
