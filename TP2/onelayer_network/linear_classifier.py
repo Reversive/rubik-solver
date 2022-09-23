@@ -5,20 +5,22 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
+
 class LinearClassifier:
-    def __init__(self, linear_config):
 
-        self.perceptron = Perceptron(input_dim=3, learning_rate=0.01, epochs=5)
+    def __init__(self, dataset_df, learning_rate, epochs):
+        self.perceptron = Perceptron(input_dim=len(dataset_df.columns)-1, learning_rate=learning_rate, epochs=epochs)
+        self.dataset_df = dataset_df
+
+    def execute(self):
         print("Linear exercise")
-        dataset_df = pd.read_csv("./TP2-ej2-conjunto.csv", header=0)
-
         # standarize inputs
-        dataset_df.iloc[:,0:-1] = StandardScaler().fit_transform(dataset_df.iloc[:,0:-1])
+        self.dataset_df.iloc[:,0:-1] = StandardScaler().fit_transform(self.dataset_df.iloc[:,0:-1])
 
         # standarize expected outputs
-        dataset_df.iloc[:,-1:] = StandardScaler().fit_transform(dataset_df.iloc[:,-1:])
+        self.dataset_df.iloc[:,-1:] = StandardScaler().fit_transform(self.dataset_df.iloc[:,-1:])
 
-        train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(dataset_df, 0.8)
+        train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(self.dataset_df, 0.8)
 
         self.perceptron.train_online(train_dataset_df.values)
 

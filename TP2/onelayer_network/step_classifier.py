@@ -3,20 +3,11 @@ import numpy as np
 
 
 class StepClassifier:
-    def __init__(self, step_config):
-        UMBRAL = float(step_config['umbral'])
+    def __init__(self, dataset, learning_rate, epochs, umbral = 0):
+        self.perceptron = Perceptron(input_dim=len(dataset[0]) -1, learning_rate=learning_rate,\
+             epochs=epochs, act_func=lambda x: np.sign(x - umbral))
+        self.dataset = dataset
 
-        self.perceptron = Perceptron(input_dim=2, learning_rate=0.01, epochs=5, act_func=lambda x: np.sign(x - UMBRAL))
-
-        print("AND exercise")
-        and_train_dataset = [[-1, 1, -1], [1, -1, -1], [-1, -1, -1], [1, 1, 1]]
-        self.perceptron.train_online(and_train_dataset)
-  
-        print(f'Total error: {self.perceptron.test(and_train_dataset)}')
-                
-
-        print("XOR exercise")
-        xor_train_dataset = [[-1, 1, 1], [1, -1, 1], [-1, -1, -1], [1, 1, -1]]
-        self.perceptron.train_online(xor_train_dataset)
-
-        print(f'Total error: {self.perceptron.test(xor_train_dataset)}')
+    def execute(self):
+        self.perceptron.train_online(self.dataset)
+        print(f'Total error: {self.perceptron.test(self.dataset)}')
