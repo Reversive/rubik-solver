@@ -1,5 +1,5 @@
 import numpy as np
-
+import csv
 THRESHOLD = 0.00001
 
 class Perceptron:
@@ -9,6 +9,11 @@ class Perceptron:
         self.epochs = epochs
         self.act_func = act_func
         self.deriv_act_func= deriv_act_func
+        file = open('perceptron.csv', 'a', newline='')
+        self.writer = csv.writer(file)
+        self.writer.writerow(["EPOCH", "ERROR", "LEARNING_RATE"])
+        file.close()
+
 
     def classify(self, example):
         return self.act_func(np.dot(self.weights, np.append(1, example)))
@@ -27,6 +32,12 @@ class Perceptron:
     def train_online(self, train_data):
         continue_condition = lambda i, error_min: error_min > THRESHOLD and i < len(train_data)        
         self.train(train_data, continue_condition, lambda: np.random.choice(len(train_data)))
+
+    def write_to_csv(self, iteration, epoch_error, learning_rate):
+        file = open('perceptron.csv', 'a', newline='')
+        self.writer = csv.writer(file)
+        self.writer.writerow([str(iteration), str(epoch_error), str(learning_rate)])
+        file.close()
 
     def train(self, train_data, continue_condition, next_example_idx = None):
         error_min = float('inf')
@@ -52,6 +63,8 @@ class Perceptron:
                     epoch_w_min = self.weights
 
                 iteration += 1
+                self.write_to_csv(iteration,epoch_error,self.learning_rate)
+
 
             iterations += iteration
 
