@@ -1,10 +1,10 @@
 [general_config]
 dataset = ./TP2-ej2-conjunto.csv
-epochs = 5
+epochs = 250
 learning_rate = 0.01
 
-#Can be linaer;nolinear;step
-classifier = linear
+#Can be linear, nolinear, step
+classifier = nolinear
 
 [step_classifier]
 umbral = 0
@@ -12,6 +12,7 @@ umbral = 0
 [linear_classifier]
 
 [nolinear_classifier]
+#Can be TANH, EXP, RELU
 activation_function = TANH
 beta = 1.0
 

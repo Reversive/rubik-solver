@@ -22,9 +22,9 @@ class LinearClassifier:
 
         train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(self.dataset_df, 0.8)
 
-        self.perceptron.train_online(train_dataset_df.values)
+        self.perceptron.train_online(train_dataset_df.values, test_dataset_df.values)
 
                 
-        print(f'Total error: {self.perceptron.test(test_dataset_df.values)}')
+        print(f'Accuracy: {self.perceptron.test(test_dataset_df.values)}')
 
 

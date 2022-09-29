@@ -10,4 +10,4 @@ class StepClassifier:
 
     def execute(self):
         self.perceptron.train_online(self.dataset)
-        print(f'Total error: {self.perceptron.test(self.dataset)}')
+        print(f'Accuracy: {self.perceptron.test(self.dataset)}')

@@ -52,7 +52,7 @@ def ej1():
 
 if __name__ == '__main__':
 
-    ej1()
+    # ej1()
 
     config = configparser.ConfigParser()
     config.read("./config.yaml")
