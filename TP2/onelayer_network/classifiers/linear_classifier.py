@@ -1,6 +1,6 @@
 import math
-from utils.DatasetUtils import DivideDatasetToTrainAndTest
-from utils.Perceptron import Perceptron
+from ...utils.DatasetUtils import DivideDatasetToTrainAndTest
+from ...utils.Perceptron import Perceptron
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler

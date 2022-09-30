@@ -1,7 +1,7 @@
 import configparser
-from onelayer_network.linear_classifier import LinearClassifier
-from onelayer_network.nolinear_classifier import NoLinearClassifier, NoLinearClassifierType
-from onelayer_network.step_classifier import StepClassifier
+from .classifiers.linear_classifier import LinearClassifier
+from .classifiers.nolinear_classifier import NoLinearClassifier, NoLinearClassifierType
+from .classifiers.step_classifier import StepClassifier
 import numpy as np
 import pandas as pd
 
@@ -50,12 +50,12 @@ def ej1():
     classifier.execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # ej1()
 
     config = configparser.ConfigParser()
-    config.read("./config.yaml")
+    config.read("./TP2/onelayer_network/config.yaml")
 
     np.random.seed(12345)
     classifier = get_classifier(config)

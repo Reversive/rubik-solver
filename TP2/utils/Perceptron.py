@@ -2,7 +2,7 @@ import numpy as np
 import csv
 MIN_ERROR_TRESHOLD = np.exp(-10000000)
 PREDICTION_THRESHOLD = 0.01
-OUTPUT_FILE_PATH = "dump/perceptron_results.csv"
+OUTPUT_FILE_PATH = "./TP2/dump/perceptron_results.csv"
 
 class Perceptron:
     def __init__(self, input_dim, learning_rate, epochs, act_func = lambda x: x, deriv_act_func = lambda x: 1, output_path = OUTPUT_FILE_PATH):
