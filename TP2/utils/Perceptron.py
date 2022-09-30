@@ -38,11 +38,11 @@ class Perceptron:
 
     def train_batch(self, train_data, test_data = None):
         continue_condition = lambda i, error_min: i < len(train_data)
-        self.train(train_data, continue_condition, test_data=test_data)
+        return self.train(train_data, continue_condition, test_data=test_data)
 
     def train_online(self, train_data, test_data = None):
         continue_condition = lambda i, error_min: error_min > MIN_ERROR_TRESHOLD and i < len(train_data)        
-        self.train(train_data, continue_condition, lambda: np.random.choice(len(train_data)), test_data)
+        return self.train(train_data, continue_condition, lambda: np.random.choice(len(train_data)), test_data)
 
     def write_to_csv(self, iteration, train_epoch_error, train_epoc_accuracy, test_epoch_error, test_epoc_accuracy):
         self.writer.writerow([str(iteration), 
@@ -59,6 +59,9 @@ class Perceptron:
         error_min = float('inf')
         w_min = self.weights
         iterations = 0
+
+        train_accuracies = []
+        test_accuracies = []
 
         for epoch in range(self.epochs):
             epoch_error_min = float('inf')
@@ -84,8 +87,10 @@ class Perceptron:
 
             if test_data is not None:
                 epoch_test_accuracy = self.test(test_data)
+                test_accuracies.append(epoch_test_accuracy)
                 epoch_test_error = self.cuadratic_error(test_data)
             else: epoch_test_accuracy = epoch_test_error = None
+            train_accuracies.append(self.test(train_data))
             self.write_to_csv(epoch, epoch_error_min, self.test(train_data), epoch_test_error, epoch_test_accuracy)
 
             error = self.cuadratic_error(train_data)
@@ -98,5 +103,7 @@ class Perceptron:
         self.weights = w_min
         print(f'Error min: {error_min}, iterations: {iterations}, weights: {self.weights}')
         file.close()
+
+        return train_accuracies, test_accuracies
 
         

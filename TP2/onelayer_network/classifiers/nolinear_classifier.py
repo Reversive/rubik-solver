@@ -10,16 +10,16 @@ EXP_FUNC = lambda x, BETA: 1/(1+np.exp(-2*BETA*x))
 class NoLinearClassifierType(Enum):
     TANH = {
         "act_func": TANH_FUNC, 
-        "deriv_act_func" : lambda x, BETA: BETA*(1 - TANH_FUNC(x,BETA)**2),
+        "deriv_act_func" : lambda x, BETA: BETA*(1 - TANH_FUNC(x, BETA)**2),
         "OUTPUT_SCALER": MinMaxScaler(feature_range=(-1,1))
     }
     EXP = {
         "act_func": EXP_FUNC, 
-        "deriv_act_func" : lambda x, BETA: EXP_FUNC(x,BETA)*(1 - EXP_FUNC(x,BETA)),
+        "deriv_act_func" : lambda x, BETA: EXP_FUNC(x, BETA)*(1 - EXP_FUNC(x, BETA)),
         "OUTPUT_SCALER": MinMaxScaler() # default range is (0,1)
     }
     RELU = {
-        "act_func": lambda x, BETA: max(0,BETA*x),
+        "act_func": lambda x, BETA: max(0, BETA*x),
         "deriv_act_func" : lambda x, BETA: BETA if x > 0 else 0,
         "OUTPUT_SCALER": MinMaxScaler() # default range is (0,1)
     }
@@ -49,8 +49,9 @@ class NoLinearClassifier:
         train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(self.dataset_df, test_data_ratio)
 
         if batch_train:
-            self.perceptron.train_batch(train_dataset_df.values, test_dataset_df.values)
+            train_accuracies, test_accuracies = self.perceptron.train_batch(train_dataset_df.values, test_dataset_df.values)
         else:
-            self.perceptron.train_online(train_dataset_df.values, test_dataset_df.values)
+            train_accuracies, test_accuracies = self.perceptron.train_online(train_dataset_df.values, test_dataset_df.values)
         
         print(f'Accuracy: {self.perceptron.test(test_dataset_df.values)}')
+        return train_accuracies, test_accuracies
