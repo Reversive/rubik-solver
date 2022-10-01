@@ -1,6 +1,6 @@
 import numpy as np
 import csv
-MIN_ERROR_TRESHOLD = np.exp(-10000000)
+MIN_ERROR_TRESHOLD = np.exp(-1000000)
 PREDICTION_THRESHOLD = 0.01
 OUTPUT_FILE_PATH = "./TP2/dump/perceptron_results.csv"
 

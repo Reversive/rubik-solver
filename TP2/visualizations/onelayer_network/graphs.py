@@ -10,11 +10,13 @@ def read_results_csv(file):
     
     return train_accuracies, test_accuracies, iters
 
-def plot_epochs_error_evolution(train_accuracies, test_accuracies, iters):
-    plt.plot(iters, train_accuracies, label="Train", color='r')
-    plt.plot(iters, test_accuracies, label="Test", color='b')
+def plot_accuracy_of_epochs_curves_with_legend(curves, legends):
+    iters = range(1, len(curves[0]) + 1)
+    colors = sns.color_palette("hls", len(legends))
+    for i in range(len(curves)):
+        plt.plot(iters, curves[i], label=legends[i], color=colors[i])
+
     plt.legend()
     plt.xlabel("Epochs")
     plt.ylabel("Accuracy")
     plt.show()
-

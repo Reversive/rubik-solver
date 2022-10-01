@@ -31,7 +31,7 @@ class NoLinearClassifier:
                                     learning_rate=learning_rate, 
                                     epochs=epochs, 
                                     act_func=lambda x: CLASSIFIER_TYPE.value["act_func"](x, BETA), 
-                                    deriv_act_func=lambda x: CLASSIFIER_TYPE.value["deriv_act_func"](x, BETA),
+                                    deriv_act_func=lambda x: CLASSIFIER_TYPE.value["deriv_act_func"](x, BETA)
                                     )
         self.output_scaler = CLASSIFIER_TYPE.value["OUTPUT_SCALER"]
         self.classifier_type = CLASSIFIER_TYPE.name
