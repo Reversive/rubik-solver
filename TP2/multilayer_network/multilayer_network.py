@@ -1,33 +1,31 @@
-from .network_layer import NetworkLayer
+from typing import Deque
+from .output_layer import OutputLayer
+from .hidden_layer import HiddenLayer
 import numpy as np
 
 class MultilayerNetwork:
     def __init__(self, layers_qty):
-        hidden_layers = [NetworkLayer(4, 2, 0.01, lambda x: x, lambda x: 1) for i in range(layers_qty)]
-        output_layer = NetworkLayer(1, 4, 0.01, lambda x: x, lambda x: 1)
+        hidden_layers = [HiddenLayer(4, 2, 0.01, lambda x: x, lambda x: 1)]
+        output_layer = OutputLayer(1, 4, 0.01, lambda x: x, lambda x: 1)
 
         self.layers = hidden_layers + [output_layer]
 
     def train(self, train_data):
         for example in train_data:
-            activation_per_layer = [example[:-1]]
-            for index, layer in enumerate(self.layers):
-                input = activation_per_layer[index] # input for each layer is the output of the previous layer
-                activation_per_layer.append(layer.classify(input))
+            input = example[:-1]
+            layers_input = [input]
 
+            for layer in self.layers:
+                layers_input.append(layer.classify(layers_input[-1]))
 
-            input = activation_per_layer[-1]
-            inherit_error = [a - b for a, b in zip(example[-1], input)]
-            inherit_sigmas = self.layers[-1].get_sigmas(input, inherit_error)
+            weighted_sigmas = Deque()
+            weighted_sigmas.appendleft(self.layers[-1].get_weighted_sigmas(layers_input[-2], example[2]))
+            self.layers[-1].update_weights(weighted_sigmas[0])
 
-            for index in range(len(self.layers) - 1, -1, -1):
-                current_layer = self.layers[index]
-                current_layer.update_weights(activation_per_layer[index], inherit_sigmas)
-
-                non_bias_weights = np.delete(current_layer.perceptrons_weights, 0, 1)
-                inherit_sigmas = current_layer.get_sigmas(activation_per_layer[index], 
-                                        np.dot(inherit_sigmas, non_bias_weights))
-
+            for m in range(len(self.layers) - 2, -1, -1):
+                weighted_sigmas.appendleft(self.layers[m].get_weighted_sigmas(layers_input[m], weighted_sigmas[0]))
+                self.layers[m].update_weights(weighted_sigmas[0])
+        
 
     def classify(self, example):
         for layer in self.layers:

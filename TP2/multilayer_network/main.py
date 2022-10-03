@@ -7,7 +7,7 @@ if __name__ == "__main__":
     # train data
     train_data = [[1, 1, [1]], [-1, 1, [-1]], [1, -1, [-1]], [-1, -1, [-1]]]
 
-    for i in range(1000):
+    for i in range(2):
         multilayer_network.train(train_data)
 
     for example in train_data:
