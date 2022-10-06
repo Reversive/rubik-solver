@@ -20,7 +20,7 @@ class LinearClassifier:
         # standarize expected outputs
         self.dataset_df.iloc[:,-1:] = StandardScaler().fit_transform(self.dataset_df.iloc[:,-1:])
 
-        train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(self.dataset_df, 0.8)
+        train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(self.dataset_df, 0.75)
 
         self.perceptron.train_online(train_dataset_df.values, test_dataset_df.values)
 
