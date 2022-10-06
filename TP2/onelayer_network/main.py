@@ -1,9 +1,11 @@
 import configparser
+import numpy as np
+import pandas as pd
+
 from .classifiers.linear_classifier import LinearClassifier
 from .classifiers.nolinear_classifier import NoLinearClassifier, NoLinearClassifierType
 from .classifiers.step_classifier import StepClassifier
-import numpy as np
-import pandas as pd
+
 
 def config_nolinear_classifier(dataset_df, general_config, nolinear_config):
     return NoLinearClassifier(dataset_df,
@@ -52,11 +54,11 @@ def ej1():
 
 if __name__ == "__main__":
 
-    # ej1()
+    ej1()
 
-    config = configparser.ConfigParser()
-    config.read("./TP2/onelayer_network/config.yaml")
-
-    np.random.seed(12345)
-    classifier = get_classifier(config)
-    classifier.execute()
+    # config = configparser.ConfigParser()
+    # config.read("./onelayer_network/config.yaml")
+    #
+    # np.random.seed(12345)
+    # classifier = get_classifier(config)
+    # classifier.execute()

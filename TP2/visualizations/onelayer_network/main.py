@@ -1,7 +1,7 @@
 import pandas as pd
 
-from ...visualizations.onelayer_network.graphs import read_results_csv, plot_accuracy_of_epochs_curves_with_legend
-from ...onelayer_network.classifiers.nolinear_classifier import NoLinearClassifier, NoLinearClassifierType
+from visualizations.onelayer_network.graphs import read_results_csv, plot_accuracy_of_epochs_curves_with_legend
+from onelayer_network.classifiers.nolinear_classifier import NoLinearClassifier, NoLinearClassifierType
 
 
 def epochs_error_evolution_test_division(dataset_df):
@@ -37,7 +37,7 @@ def epochs_error_evolution(dataset_df):
 
 
 if __name__ == "__main__":
-    dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
+    dataset_df = pd.read_csv("./onelayer_network/TP2-ej2-conjunto.csv", header=0)
     # epochs_error_evolution_test_division(dataset_df)
     epochs_error_evolution(dataset_df)
     
