@@ -4,7 +4,7 @@ epochs = 250
 learning_rate = 0.01
 
 #Can be linear, nolinear, step
-classifier = nolinear
+classifier = linear
 
 [step_classifier]
 umbral = 0
@@ -13,7 +13,7 @@ umbral = 0
 
 [nolinear_classifier]
 #Can be TANH, EXP, RELU
-activation_function = TANH
+activation_function = RELU
 beta = 1.0
 
 

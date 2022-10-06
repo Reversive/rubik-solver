@@ -1,12 +1,17 @@
 from typing import Deque
 import numpy as np
 
+
+MIN_ERROR_TRESHOLD = np.exp(-10000)
+PREDICTION_THRESHOLD = 0.0001
 class MultilayerNetwork:
-    def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate):
-        self.act_func = lambda x: np.sign(x)
-        self.deriv_act_func = lambda x: 1
+    def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func, deriv_act_func):
+        self.act_func = act_func
+        self.deriv_act_func = deriv_act_func
         self.learning_rate = learning_rate
-        
+        self.epochs = epochs
+        self.output_dim = output_dim
+
         self.hidden_layers_perceptron_qty = hidden_layers_perceptron_qty
         self.layers_size = [input_dim] + hidden_layers_perceptron_qty + [output_dim]
         self.layers_weights = []
@@ -14,7 +19,7 @@ class MultilayerNetwork:
             self.layers_weights.append(np.random.uniform(low=-1, high=1, size=(self.layers_size[i+1], self.layers_size[i] +1))) 
             # cantidad de pesos es lo que toma de input +1 por el BIAS
 
-    def feed_forward(self, example):
+    def forward_propagation(self, example):
         example = np.append(example, 1) # add bias
         self.V = [example]
         self.H = [example]
@@ -45,10 +50,76 @@ class MultilayerNetwork:
         for m in range(len(self.layers_weights)):
             self.layers_weights[m] += deltas[m]
 
-    def train(self, examples, epochs):
-        for epoch in range(epochs):
-            for example in examples:
+    def train_batch(self, train_data, test_data = None):
+        continue_condition = lambda i, error_min: i < len(train_data)
+        return self.train(train_data, continue_condition, test_data=test_data)
+
+    def train_online(self, train_data, test_data = None):
+        continue_condition = lambda i, error_min: error_min > MIN_ERROR_TRESHOLD and i < len(train_data)        
+        return self.train(train_data, continue_condition, lambda: np.random.choice(len(train_data)), test_data)
+
+    def cuadratic_error(self, test_data):
+        error = 0
+        for i in range(len(test_data)):
+            output = self.forward_propagation(test_data[i][:-1])
+            expected = test_data[i][-1]
+            for j in range(self.output_dim):
+                error += pow(expected[j] - output[j], 2)
+
+        return error / len(test_data)
+
+    def test(self, test_data):
+        correct_predictions = 0
+        for example in test_data:
+            if abs(self.forward_propagation(example[:-1]) - example[-1]) < PREDICTION_THRESHOLD:
+                correct_predictions += 1
+
+        return correct_predictions / len(test_data)
+
+    def train(self, train_data, continue_condition, next_example_idx_generator = None, test_data = None):
+        error_min = float('inf')
+        w_min = self.layers_weights
+        iterations = 0
+
+        train_accuracies = []
+        test_accuracies = []
+        for epoch in range(self.epochs):
+            epoch_error_min = float('inf')
+            iteration = 0
+
+            while continue_condition(iteration, error_min):
+                example = train_data[next_example_idx_generator() if next_example_idx_generator is not None else iteration]
                 input = example[:-1]
                 output = example[-1]
-                self.feed_forward(input)
+                self.forward_propagation(input)
                 self.back_propagation(output)
+
+                epoch_error = self.cuadratic_error(train_data)
+                if epoch_error < epoch_error_min:
+                    epoch_error_min = epoch_error
+                    epoch_w_min = self.layers_weights
+
+                iteration += 1
+
+            # use best epoch weights
+            self.layers_weights = epoch_w_min
+
+            if test_data is not None:
+                epoch_test_accuracy = self.test(test_data)
+                test_accuracies.append(epoch_test_accuracy)
+            train_accuracies.append(self.test(train_data))
+
+            error = self.cuadratic_error(train_data)
+            if error < error_min:
+                error_min = error
+                w_min = self.layers_weights
+
+            iterations += iteration # add epoc iterations to total iterations
+
+        self.layers_weights = w_min
+        print(f'Error min: {error_min}, iterations: {iterations}, weights: ')
+        for i in range(len(self.layers_weights)):
+            print("Layer ", i)
+            print(self.layers_weights[i])
+
+        return train_accuracies, test_accuracies
