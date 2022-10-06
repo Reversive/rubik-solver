@@ -2,8 +2,9 @@ import configparser
 import numpy as np
 import pandas as pd
 
+from ..utils.activations_functions import ActivationFunctions
 from .classifiers.linear_classifier import LinearClassifier
-from .classifiers.nolinear_classifier import NoLinearClassifier, NoLinearClassifierType
+from .classifiers.nolinear_classifier import NoLinearClassifier
 from .classifiers.step_classifier import StepClassifier
 
 
@@ -11,7 +12,7 @@ def config_nolinear_classifier(dataset_df, general_config, nolinear_config):
     return NoLinearClassifier(dataset_df,
                             float(general_config['learning_rate']), 
                             int(general_config['epochs']),
-                            NoLinearClassifierType[nolinear_config['activation_function']],
+                            ActivationFunctions[nolinear_config['activation_function']],
                             float(nolinear_config['beta']))
 
 def config_linear_classifier(dataset_df, general_config, linear_config):

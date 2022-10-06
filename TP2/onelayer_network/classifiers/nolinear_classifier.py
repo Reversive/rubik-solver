@@ -5,36 +5,16 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
 
-TANH_FUNC = lambda x, BETA: np.tanh(BETA * x)
-EXP_FUNC = lambda x, BETA: 1/(1+np.exp(-2*BETA*x))
-class NoLinearClassifierType(Enum):
-    TANH = {
-        "act_func": TANH_FUNC, 
-        "deriv_act_func" : lambda x, BETA: BETA*(1 - TANH_FUNC(x, BETA)**2),
-        "OUTPUT_SCALER": MinMaxScaler(feature_range=(-1,1))
-    }
-    EXP = {
-        "act_func": EXP_FUNC, 
-        "deriv_act_func" : lambda x, BETA: EXP_FUNC(x, BETA)*(1 - EXP_FUNC(x, BETA)),
-        "OUTPUT_SCALER": MinMaxScaler() # default range is (0,1)
-    }
-    RELU = {
-        "act_func": lambda x, BETA: max(0, BETA*x),
-        "deriv_act_func" : lambda x, BETA: BETA if x > 0 else 0,
-        "OUTPUT_SCALER": MinMaxScaler() # default range is (0,1)
-    }
-
-
 class NoLinearClassifier:
-    def __init__(self, dataset_df, learning_rate, epochs, CLASSIFIER_TYPE, BETA = 0.5):
+    def __init__(self, dataset_df, learning_rate, epochs, act_functions, BETA = 0.5):
         self.perceptron = Perceptron(input_dim=len(dataset_df.columns)-1, 
                                     learning_rate=learning_rate, 
                                     epochs=epochs, 
-                                    act_func=lambda x: CLASSIFIER_TYPE.value["act_func"](x, BETA), 
-                                    deriv_act_func=lambda x: CLASSIFIER_TYPE.value["deriv_act_func"](x, BETA)
+                                    act_func=lambda x: act_functions.value["act_func"](x, BETA), 
+                                    deriv_act_func=lambda x: act_functions.value["deriv_act_func"](x, BETA)
                                     )
-        self.output_scaler = CLASSIFIER_TYPE.value["OUTPUT_SCALER"]
-        self.classifier_type = CLASSIFIER_TYPE.name
+        self.output_scaler = act_functions.value["OUTPUT_SCALER"]
+        self.classifier_type = act_functions.name
         self.dataset_df = dataset_df
 
     def execute(self, test_data_ratio = 0.1, batch_train = False):

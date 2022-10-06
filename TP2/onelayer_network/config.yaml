@@ -13,7 +13,7 @@ umbral = 0
 
 [nolinear_classifier]
 #Can be TANH, EXP, RELU
-activation_function = TANH
+activation_function = RELU
 beta = 1.0
 
 
