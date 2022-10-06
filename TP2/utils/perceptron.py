@@ -7,7 +7,7 @@ OUTPUT_FILE_PATH = "./TP2/dump/perceptron_results.csv"
 
 class Perceptron:
     def __init__(self, input_dim, learning_rate, epochs, act_func = lambda x: x, deriv_act_func = lambda x: 1, output_path = OUTPUT_FILE_PATH):
-        self.weights = np.random.uniform(low=0, high=0.3,size=1 + input_dim)
+        self.weights = np.random.uniform(low=0, high=0.3, size=1 + input_dim)
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.act_func = act_func

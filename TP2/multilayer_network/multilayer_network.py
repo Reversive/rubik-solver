@@ -3,7 +3,7 @@ import numpy as np
 
 
 MIN_ERROR_TRESHOLD = np.exp(-10000)
-PREDICTION_THRESHOLD = 0.0001
+PREDICTION_THRESHOLD = 0.001
 class MultilayerNetwork:
     def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func, deriv_act_func):
         self.act_func = act_func
@@ -49,6 +49,7 @@ class MultilayerNetwork:
 
         for m in range(len(self.layers_weights)):
             self.layers_weights[m] += deltas[m]
+            # self.layers_weights[m] = np.add(self.layers_weights[m], deltas[m])
 
     def train_batch(self, train_data, test_data = None):
         continue_condition = lambda i, error_min: i < len(train_data)
@@ -58,23 +59,21 @@ class MultilayerNetwork:
         continue_condition = lambda i, error_min: error_min > MIN_ERROR_TRESHOLD and i < len(train_data)        
         return self.train(train_data, continue_condition, lambda: np.random.choice(len(train_data)), test_data)
 
-    def cuadratic_error(self, test_data):
+    def cuadratic_error(self, output, expected):
+        error = 0
+        for j in range(self.output_dim):
+            error += pow(expected[j] - output[j], 2)
+        return error
+
+    def cuadratic_mean_error(self, test_data):
         error = 0
         for i in range(len(test_data)):
-            output = self.forward_propagation(test_data[i][:-1])
-            expected = test_data[i][-1]
+            output = self.forward_propagation(test_data[i][0])
+            expected = test_data[i][1]
             for j in range(self.output_dim):
                 error += pow(expected[j] - output[j], 2)
 
         return error / len(test_data)
-
-    def test(self, test_data):
-        correct_predictions = 0
-        for example in test_data:
-            if abs(self.forward_propagation(example[:-1]) - example[-1]) < PREDICTION_THRESHOLD:
-                correct_predictions += 1
-
-        return correct_predictions / len(test_data)
 
     def train(self, train_data, continue_condition, next_example_idx_generator = None, test_data = None):
         error_min = float('inf')
@@ -86,15 +85,16 @@ class MultilayerNetwork:
         for epoch in range(self.epochs):
             epoch_error_min = float('inf')
             iteration = 0
+            epoch_w_min = self.layers_weights
 
             while continue_condition(iteration, error_min):
                 example = train_data[next_example_idx_generator() if next_example_idx_generator is not None else iteration]
-                input = example[:-1]
-                output = example[-1]
+                input = example[0]
+                output = example[1]
                 self.forward_propagation(input)
                 self.back_propagation(output)
 
-                epoch_error = self.cuadratic_error(train_data)
+                epoch_error = self.cuadratic_mean_error(train_data)
                 if epoch_error < epoch_error_min:
                     epoch_error_min = epoch_error
                     epoch_w_min = self.layers_weights
@@ -104,12 +104,7 @@ class MultilayerNetwork:
             # use best epoch weights
             self.layers_weights = epoch_w_min
 
-            if test_data is not None:
-                epoch_test_accuracy = self.test(test_data)
-                test_accuracies.append(epoch_test_accuracy)
-            train_accuracies.append(self.test(train_data))
-
-            error = self.cuadratic_error(train_data)
+            error = self.cuadratic_mean_error(train_data)
             if error < error_min:
                 error_min = error
                 w_min = self.layers_weights
@@ -117,9 +112,10 @@ class MultilayerNetwork:
             iterations += iteration # add epoc iterations to total iterations
 
         self.layers_weights = w_min
-        print(f'Error min: {error_min}, iterations: {iterations}, weights: ')
-        for i in range(len(self.layers_weights)):
-            print("Layer ", i)
-            print(self.layers_weights[i])
+        print(f'Error min: {error_min}, iterations: {iterations}')
+        # print("weights: ")
+        # for i in range(len(self.layers_weights)):
+        #     print("Layer ", i)
+        #     print(self.layers_weights[i])
 
         return train_accuracies, test_accuracies

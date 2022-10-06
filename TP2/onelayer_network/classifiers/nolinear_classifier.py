@@ -1,6 +1,6 @@
 from enum import Enum
-from ...utils.DatasetUtils import DivideDatasetToTrainAndTest
-from ...utils.Perceptron import Perceptron
+from ...utils.dataset_utils import DivideDatasetDfToTrainAndTest
+from ...utils.perceptron import Perceptron
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
@@ -13,7 +13,7 @@ class NoLinearClassifier:
                                     act_func=lambda x: act_functions.value["act_func"](x, BETA), 
                                     deriv_act_func=lambda x: act_functions.value["deriv_act_func"](x, BETA)
                                     )
-        self.output_scaler = act_functions.value["OUTPUT_SCALER"]
+        self.output_transform = act_functions.value["OUTPUT_TRANSFORM"]
         self.classifier_type = act_functions.name
         self.dataset_df = dataset_df
 
@@ -24,9 +24,9 @@ class NoLinearClassifier:
         self.dataset_df.iloc[:,0:-1] = StandardScaler().fit_transform(self.dataset_df.iloc[:,0:-1])
 
         # scalar expected outputs
-        self.dataset_df.iloc[:,-1:] = self.output_scaler.fit_transform(self.dataset_df.iloc[:,-1:])
+        self.dataset_df.iloc[:,-1:] = self.output_transform.fit_transform(self.dataset_df.iloc[:,-1:])
 
-        train_dataset_df, test_dataset_df = DivideDatasetToTrainAndTest(self.dataset_df, test_data_ratio)
+        train_dataset_df, test_dataset_df = DivideDatasetDfToTrainAndTest(self.dataset_df, test_data_ratio)
 
         if batch_train:
             train_accuracies, test_accuracies = self.perceptron.train_batch(train_dataset_df.values, test_dataset_df.values)
