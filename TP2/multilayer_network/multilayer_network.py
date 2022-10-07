@@ -70,8 +70,7 @@ class MultilayerNetwork:
         for i in range(len(test_data)):
             output = self.forward_propagation(test_data[i][0])
             expected = test_data[i][1]
-            for j in range(self.output_dim):
-                error += pow(expected[j] - output[j], 2)
+            error += self.cuadratic_error(output, expected)
 
         return error / len(test_data)
 

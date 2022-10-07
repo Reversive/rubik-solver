@@ -13,7 +13,7 @@ class NoLinearClassifier:
                                     act_func=lambda x: act_functions.value["act_func"](x, BETA), 
                                     deriv_act_func=lambda x: act_functions.value["deriv_act_func"](x, BETA)
                                     )
-        self.output_transform = act_functions.value["OUTPUT_TRANSFORM"]
+        self.output_transform = act_functions.value["output_transform"]
         self.classifier_type = act_functions.name
         self.dataset_df = dataset_df
 

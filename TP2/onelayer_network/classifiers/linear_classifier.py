@@ -15,7 +15,7 @@ class LinearClassifier:
         self.dataset_df = dataset_df
         self.act_func = ActivationFunctions.LINEAR.value["act_func"]
         self.deriv_act_func= ActivationFunctions.LINEAR.value["deriv_act_func"]
-        self.output_transform = ActivationFunctions.LINEAR.value["OUTPUT_TRANSFORM"]
+        self.output_transform = ActivationFunctions.LINEAR.value["output_transform"]
 
     def execute(self):
         print("Linear exercise")
