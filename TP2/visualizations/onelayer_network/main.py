@@ -1,12 +1,13 @@
 import pandas as pd
 
-from visualizations.onelayer_network.graphs import read_results_csv, plot_accuracy_of_epochs_curves_with_legend
-from onelayer_network.classifiers.nolinear_classifier import NoLinearClassifier, NoLinearClassifierType
+from .graphs import read_results_csv, plot_accuracy_of_epochs_curves_with_legend
+from ...onelayer_network.classifiers.nolinear_classifier import NoLinearClassifier
+from ...utils.activations_functions import ActivationFunctions
 
 
 def epochs_error_evolution_test_division(dataset_df):
-    classifier = NoLinearClassifier(dataset_df, learning_rate=0.01, epochs=10000,
-                        CLASSIFIER_TYPE=NoLinearClassifierType.RELU,
+    classifier = NoLinearClassifier(dataset_df, learning_rate=0.01, epochs=250,
+                        act_functions=ActivationFunctions.RELU,
                         BETA=0.5)
 
     curves = []
@@ -22,8 +23,8 @@ def epochs_error_evolution_test_division(dataset_df):
     plot_accuracy_of_epochs_curves_with_legend(curves, legends)
 
 def epochs_error_evolution(dataset_df):
-    classifier = NoLinearClassifier(dataset_df, learning_rate=0.01, epochs=20000,
-                        CLASSIFIER_TYPE=NoLinearClassifierType.RELU,
+    classifier = NoLinearClassifier(dataset_df, learning_rate=0.01, epochs=250,
+                        act_functions=ActivationFunctions.RELU,
                         BETA=1)
     curves = []
     legends = []
@@ -37,7 +38,7 @@ def epochs_error_evolution(dataset_df):
 
 
 if __name__ == "__main__":
-    dataset_df = pd.read_csv("./onelayer_network/TP2-ej2-conjunto.csv", header=0)
+    dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
     # epochs_error_evolution_test_division(dataset_df)
     epochs_error_evolution(dataset_df)
     

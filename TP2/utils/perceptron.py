@@ -2,7 +2,7 @@ import numpy as np
 import csv
 
 MIN_ERROR_TRESHOLD = np.exp(-1000000)
-PREDICTION_THRESHOLD = 0.01
+PREDICTION_THRESHOLD = 0.1
 OUTPUT_FILE_PATH = "./TP2/dump/perceptron_results.csv"
 
 class Perceptron:
@@ -76,7 +76,6 @@ class Perceptron:
 
                 delta_w = self.learning_rate * (expected_output - output) * inputs * self.deriv_act_func(output)
                 self.weights += delta_w
-                print(str(-(self.weights[1]/self.weights[2])) + "*x + " + str(-self.weights[0]/self.weights[2]))
                 epoch_error = self.cuadratic_error(train_data)
                 if epoch_error < epoch_error_min:
                     epoch_error_min = epoch_error
@@ -86,6 +85,8 @@ class Perceptron:
 
             # use best epoch weights
             self.weights = epoch_w_min
+            print('Epoch: ' + str(epoch))
+            print(str(-(self.weights[1] / self.weights[2])) + "*x + " + str(-self.weights[0] / self.weights[2]))
 
             if test_data is not None:
                 epoch_test_accuracy = self.test(test_data)

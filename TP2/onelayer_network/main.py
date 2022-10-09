@@ -42,10 +42,10 @@ def ej1():
     epochs = 5
     umbral = 0
 
-    print("AND exercise")
-    and_train_dataset = [[-1, 1, -1], [1, -1, -1], [-1, -1, -1], [1, 1, 1]]
-    classifier = StepClassifier(and_train_dataset, learning_rate, epochs, umbral)
-    classifier.execute()
+    # print("AND exercise")
+    # and_train_dataset = [[-1, 1, -1], [1, -1, -1], [-1, -1, -1], [1, 1, 1]]
+    # classifier = StepClassifier(and_train_dataset, learning_rate, epochs, umbral)
+    # classifier.execute()
     
     print("XOR exercise")
     xor_train_dataset = [[-1, 1, 1], [1, -1, 1], [-1, -1, -1], [1, 1, -1]]
@@ -55,11 +55,12 @@ def ej1():
 
 if __name__ == "__main__":
 
-    ej1()
+    # ej1()
 
-    # config = configparser.ConfigParser()
-    # config.read("./onelayer_network/config.yaml")
-    #
-    # np.random.seed(12345)
-    # classifier = get_classifier(config)
-    # classifier.execute()
+    config = configparser.ConfigParser()
+    config.read("./TP2/onelayer_network/config.yaml")
+
+    np.random.seed(12345)
+    classifier = get_classifier(config)
+    classifier.execute()
+

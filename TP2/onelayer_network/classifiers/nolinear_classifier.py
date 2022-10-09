@@ -35,3 +35,7 @@ class NoLinearClassifier:
         
         print(f'Accuracy: {self.perceptron.test(test_dataset_df.values)}')
         return train_accuracies, test_accuracies
+
+
+class NoLinearClassifierType:
+    pass
