@@ -59,10 +59,10 @@ class MultilayerNetwork:
             sigmas.appendleft(self.deriv_act_func(self.H[m + 1]) * np.dot(self.layers_weights[m + 1].T, sigmas[0]))
             sigmas[0] = sigmas[0][:-1]  # remove bias of the one just added
 
-        if False:
+        if True:
             self.gradient_descent(sigmas)
         else:
-            self.adam(sigmas)
+            print("otro metodo de activacion")
 
     def gradient_descent(self, sigmas):
         deltas = Deque()
@@ -72,17 +72,17 @@ class MultilayerNetwork:
             self.layers_weights[m] += deltas[m]
             # self.layers_weights[m] = np.add(self.layers_weights[m], deltas[m])
 
-    def adam(self, sigmas):
-        for m in range(len(self.layers_weights)):
-            # g_t = sigmas, tita = self.layers_weights
-            self.adam_m[m] = self.beta_1 * self.adam_m[m] + (1 - self.beta_1) * sigmas[m]
-            self.adam_v[m] = self.beta_2 * self.adam_v[m] + (1 - self.beta_2) * np.power(sigmas[m], 2)
-            adam_prime_m = self.adam_m[m] / (1 - (np.power(self.beta_1, self.t)))
-            adam_prime_v = self.adam_v[m] / (1 - (np.power(self.beta_2, self.t)))
-
-            self.layers_weights[m] = np.subtract(np.matrix(self.layers_weights[m]),
-                                                 self.alpha * np.matrix(adam_prime_m).T / (
-                                                         np.sqrt(adam_prime_v) + self.adam_error))
+    # def adam(self, sigmas):
+    #     for m in range(len(self.layers_weights)):
+    #         # g_t = sigmas, tita = self.layers_weights
+    #         self.adam_m[m] = self.beta_1 * self.adam_m[m] + (1 - self.beta_1) * sigmas[m]
+    #         self.adam_v[m] = self.beta_2 * self.adam_v[m] + (1 - self.beta_2) * np.power(sigmas[m], 2)
+    #         adam_prime_m = self.adam_m[m] / (1 - (np.power(self.beta_1, self.t)))
+    #         adam_prime_v = self.adam_v[m] / (1 - (np.power(self.beta_2, self.t)))
+    #
+    #         self.layers_weights[m] = np.subtract(np.matrix(self.layers_weights[m]),
+    #                                              self.alpha * np.matrix(adam_prime_m).T / (
+    #                                                      np.sqrt(adam_prime_v) + self.adam_error))
 
     def train_batch(self, train_data, test_data=None):
         continue_condition = lambda i, error_min: i < len(train_data)
