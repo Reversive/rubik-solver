@@ -1,6 +1,6 @@
 [general_config]
-dataset = ./TP2/onelayer_network/TP2-ej2-conjunto.csv
-epochs = 10000
+dataset = TP2/onelayer_network/TP2-ej2-conjunto.csv
+epochs = 250
 learning_rate = 0.01
 
 #Can be linear, nolinear, step
