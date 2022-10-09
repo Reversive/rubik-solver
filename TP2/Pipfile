@@ -9,6 +9,7 @@ pandas = "*"
 seaborn = "*"
 sklearn = "*"
 configparser = "*"
+pygame = "*"
 
 [dev-packages]
 

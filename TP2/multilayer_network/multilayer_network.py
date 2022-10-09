@@ -20,17 +20,22 @@ class MultilayerNetwork:
         self.layers_weights = []
 
         # adam
-        self.alpha = 0.001
-        self.beta_1 = 0.9
-        self.beta_2 = 0.999
-        self.adam_error = 10 ^ -8
-        self.t = 1
-        self.adam_m = []
-        self.adam_v = []
+        # self.alpha = 0.001
+        # self.beta_1 = 0.9
+        # self.beta_2 = 0.999
+        # self.adam_error = 10 ^ -8
+        # self.t = 1
+        # self.adam_m = []
+        # self.adam_v = []
+
+        # momentum
+        self.deltas = []
+        self.alpha = 0.8
 
         for i in range(len(self.layers_size) - 1):
-            self.adam_m.append(np.zeros(self.layers_size[i + 1]))
-            self.adam_v.append(np.zeros(self.layers_size[i + 1]))
+            # self.adam_m.append(np.zeros(self.layers_size[i + 1]))
+            # self.adam_v.append(np.zeros(self.layers_size[i + 1]))
+            self.deltas.append(np.zeros(self.layers_size[i + 1]))
             self.layers_weights.append(
                 np.random.uniform(low=-1, high=1, size=(self.layers_size[i + 1], self.layers_size[i] + 1)))
             # cantidad de pesos es lo que toma de input +1 por el BIAS
@@ -62,7 +67,7 @@ class MultilayerNetwork:
         if True:
             self.gradient_descent(sigmas)
         else:
-            print("otro metodo de activacion")
+            self.momentum(sigmas)
 
     def gradient_descent(self, sigmas):
         deltas = Deque()
@@ -71,6 +76,15 @@ class MultilayerNetwork:
         for m in range(len(self.layers_weights)):
             self.layers_weights[m] += deltas[m]
             # self.layers_weights[m] = np.add(self.layers_weights[m], deltas[m])
+
+    def momentum(self, sigmas):
+        for m in range(len(self.layers_weights)):
+            print(sigmas[m])
+            print(self.deltas[m])
+            self.deltas[m] = (-self.learning_rate * np.matrix(sigmas[m])) + (self.alpha * np.matrix(self.deltas[m]))
+
+        for m in range(len(self.layers_weights)):
+            self.layers_weights[m] += self.deltas[m]
 
     # def adam(self, sigmas):
     #     for m in range(len(self.layers_weights)):
@@ -83,7 +97,6 @@ class MultilayerNetwork:
     #         self.layers_weights[m] = np.subtract(np.matrix(self.layers_weights[m]),
     #                                              self.alpha * np.matrix(adam_prime_m).T / (
     #                                                      np.sqrt(adam_prime_v) + self.adam_error))
-
     def train_batch(self, train_data, test_data=None):
         continue_condition = lambda i, error_min: i < len(train_data)
         return self.train(train_data, continue_condition, test_data=test_data)
