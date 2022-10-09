@@ -55,11 +55,12 @@ def ej1():
 
 if __name__ == "__main__":
 
-    ej1()
+    # ej1()
 
-    # config = configparser.ConfigParser()
-    # config.read("./onelayer_network/config.yaml")
-    #
-    # np.random.seed(12345)
-    # classifier = get_classifier(config)
-    # classifier.execute()
+    config = configparser.ConfigParser()
+    config.read("TP2/onelayer_network/config.yaml", encoding='utf-8')
+    general_config = config['general_config']
+    
+    np.random.seed(12345)
+    classifier = get_classifier(config)
+    classifier.execute()
