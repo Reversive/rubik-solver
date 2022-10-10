@@ -25,7 +25,7 @@ def epochs_accuracy_evolution_test_division(dataset_df):
     legends = []
     division_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
     for division in division_list:
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=division)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=division)
         # curves.append(train_accuracies)
         # legends.append(f"Train {division}")
         curves.append(test_accuracies)
@@ -42,7 +42,7 @@ def accurracy_vs_epochs_over_beta_evolution(dataset_df):
             classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.RELU,
                         BETA=i/10)
-            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3)
+            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
             # curves.append(train_accuracies)
             curves.append(test_accuracies)
             # legends.append(f"Test")
@@ -59,7 +59,7 @@ def accurracy_vs_epochs_over_learning_rate(dataset_df):
             classifier = NoLinearClassifier(dataset_df, learning_rate=i/10, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3)
+            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
             curves.append(train_accuracies)
             # curves.append(test_accuracies)
             # legends.append(f"Test")
@@ -89,18 +89,18 @@ def act_function(dataset_df):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.EXP,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3,batch_train=True)
-        curves.append(test_errors)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
+        curves.append(train_accuracies)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3,batch_train=True)
-        curves.append(test_errors)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
+        curves.append(train_accuracies)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.RELU,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3,batch_train=True)
-        curves.append(test_errors)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
+        curves.append(train_accuracies)
         # curves.append(train_accuracies)
     legends.append(f"Act: EXP")
     legends.append(f"Act: TANH")
@@ -116,14 +116,14 @@ def train_vs_batch(dataset_df):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3,batch_train=True)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
         curves.append(train_accuracies)
 
         curves.append(test_accuracies)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3,batch_train=False)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=False)
         curves.append(train_accuracies)
         curves.append(test_accuracies)
     legends.append(f"Batch: Train")
