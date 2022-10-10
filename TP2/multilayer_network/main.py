@@ -91,7 +91,7 @@ def even_numbers_exercise():
 
 def train_guess_number():
     BETA = 1
-    act_func_data = ActivationFunctions.EXP  # TODO: RELU NOT WORKING
+    act_func_data = ActivationFunctions.RELU  # TODO: RELU NOT WORKING
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
     output_transform = act_func_data.value["output_transform"]
@@ -198,5 +198,5 @@ if __name__ == "__main__":
     random.seed(123456789)
     # xor_exercise()
     # even_numbers_exercise()
-    # guess_numbers_exercise()
-    interactive_guess_numbers()
+    guess_numbers_exercise()
+    # interactive_guess_numbers()

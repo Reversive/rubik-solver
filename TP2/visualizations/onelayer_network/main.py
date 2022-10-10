@@ -1,11 +1,21 @@
 import pandas as pd
 
+from ...onelayer_network.main import cross_validation
+
 from .graphs import read_results_csv, plot_accuracy_of_epochs_curves_with_legend
 from ...onelayer_network.classifiers.nolinear_classifier import NoLinearClassifier
 from ...utils.activations_functions import ActivationFunctions
 
 
-def epochs_error_evolution_test_division(dataset_df):
+def epochs_accuracy_evolution_crossvalidation():
+    k=5
+    train_curves, test_curves = cross_validation(k)
+    legends = [f"Conjunto {i}" for i in range(k)]
+
+    plot_accuracy_of_epochs_curves_with_legend(test_curves, legends)
+
+
+def epochs_accuracy_evolution_test_division(dataset_df):
     classifier = NoLinearClassifier(dataset_df, learning_rate=0.01, epochs=200,
                         act_functions=ActivationFunctions.TANH,
                         BETA=0.5)
@@ -99,5 +109,5 @@ def train_vs_batch(dataset_df):
 if __name__ == "__main__":
     dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
     # epochs_error_evolution_test_division(dataset_df)
-    accurracy_vs_epochs_over_learning_rate(dataset_df)
-    
+    #accurracy_vs_epochs_over_learning_rate(dataset_df)
+    epochs_accuracy_evolution_crossvalidation()
