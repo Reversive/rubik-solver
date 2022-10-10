@@ -17,7 +17,7 @@ class NoLinearClassifier:
         self.classifier_type = act_functions.name
         self.dataset_df = dataset_df
 
-    def execute(self, test_data_ratio = 0.1, batch_train = False):
+    def execute(self, train_dataset_df = None, test_dataset_df = None, test_data_ratio = 0.1, batch_train = False):
         print(self.classifier_type + " exercise")
 
         # standarize inputs
@@ -26,15 +26,16 @@ class NoLinearClassifier:
         # scalar expected outputs
         self.dataset_df.iloc[:,-1:] = self.output_transform.fit_transform(self.dataset_df.iloc[:,-1:])
 
-        train_dataset_df, test_dataset_df = DivideDatasetDfToTrainAndTest(self.dataset_df, test_data_ratio)
+        if train_dataset_df is None or test_dataset_df is None:
+            train_dataset_df, test_dataset_df = DivideDatasetDfToTrainAndTest(self.dataset_df, test_data_ratio)
 
         if batch_train:
-            train_accuracies, test_accuracies = self.perceptron.train_batch(train_dataset_df.values, test_dataset_df.values)
+            train_accuracies, test_accuracies, train_errors, test_errors = self.perceptron.train_batch(train_dataset_df.values, test_dataset_df.values)
         else:
-            train_accuracies, test_accuracies = self.perceptron.train_online(train_dataset_df.values, test_dataset_df.values)
+            train_accuracies, test_accuracies, train_errors, test_errors = self.perceptron.train_online(train_dataset_df.values, test_dataset_df.values)
         
-        print(f'Accuracy: {self.perceptron.test(test_dataset_df.values)}')
-        return train_accuracies, test_accuracies
+        print(f'Accuracy: {test_accuracies[-1]}')
+        return train_accuracies, test_accuracies, train_errors, test_errors
 
 
 class NoLinearClassifierType:

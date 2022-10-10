@@ -63,6 +63,8 @@ class Perceptron:
 
         train_accuracies = []
         test_accuracies = []
+        train_errors = []
+        test_errors = []
 
         for epoch in range(self.epochs):
             epoch_error_min = float('inf')
@@ -89,9 +91,13 @@ class Perceptron:
             if test_data is not None:
                 epoch_test_accuracy = self.test(test_data)
                 test_accuracies.append(epoch_test_accuracy)
+                
                 epoch_test_error = self.cuadratic_error(test_data)
+                test_errors.append(epoch_test_error)
             else: epoch_test_accuracy = epoch_test_error = None
+
             train_accuracies.append(self.test(train_data))
+            train_errors.append(epoch_error_min)
             self.write_to_csv(epoch, epoch_error_min, self.test(train_data), epoch_test_error, epoch_test_accuracy)
 
             error = self.cuadratic_error(train_data)
@@ -105,6 +111,6 @@ class Perceptron:
         print(f'Error min: {error_min}, iterations: {iterations}, weights: {self.weights}')
         file.close()
 
-        return train_accuracies, test_accuracies
+        return train_accuracies, test_accuracies, train_errors, test_errors
 
         
