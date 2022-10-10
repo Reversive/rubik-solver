@@ -131,8 +131,37 @@ def guess_numbers_exercise():
     print_results(multilayer_network, train_dataset)
 
 
-def interactive_guess_numbers():
-    multilayer_network, train_dataset = train_guess_number()
+def interactive_guess_numbers(act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=1000):
+    BETA = 1
+    act_func = lambda x: act_func_data.value["act_func"](x, BETA)
+    deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
+    output_transform = act_func_data.value["output_transform"]
+
+    multilayer_network = MultilayerNetwork(hidden_layers_perceptron_qty=[COLUMNS_PER_NUMBER * ROWS_PER_NUMBER,
+                                                                         COLUMNS_PER_NUMBER * ROWS_PER_NUMBER],
+                                           input_dim=COLUMNS_PER_NUMBER * ROWS_PER_NUMBER,
+                                           output_dim=10, learning_rate=learning_rate, epochs=epochs,
+                                           act_func=act_func, deriv_act_func=deriv_act_func)
+
+    expected_output = [
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 0
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
+        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  # 8
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]   # 9
+    ]
+
+    dataset = get_numbers_dataset(expected_output, output_transform)
+
+    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, 1)
+
+    multilayer_network.train_online(train_dataset, None)
+
     board = NumbersGrid(multilayer_network.forward_propagation)
     board.numbers_grid()
 
@@ -187,7 +216,7 @@ def print_results(multilayer_network, dataset):
 
 if __name__ == "__main__":
     random.seed(123456789)
-    xor_exercise()
+    # xor_exercise()
     # even_numbers_exercise()
     # guess_numbers_exercise()
-    # interactive_guess_numbers()
+    interactive_guess_numbers()
