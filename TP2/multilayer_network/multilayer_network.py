@@ -8,7 +8,7 @@ PREDICTION_THRESHOLD = 0.001
 
 class MultilayerNetwork:
     def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func,
-                 deriv_act_func):
+                 deriv_act_func, momentum_alpha = 0.8):
         self.act_func = act_func
         self.deriv_act_func = deriv_act_func
         self.learning_rate = learning_rate
@@ -20,7 +20,7 @@ class MultilayerNetwork:
         self.layers_weights = []
 
         # adam
-        # self.alpha = 0.001
+        # self.momentum_alpha = 0.001
         # self.beta_1 = 0.9
         # self.beta_2 = 0.999
         # self.adam_error = 10 ^ -8
@@ -30,12 +30,12 @@ class MultilayerNetwork:
 
         # momentum
         self.deltas = []
-        self.alpha = 0.8
+        self.momentum_alpha = momentum_alpha
 
         for i in range(len(self.layers_size) - 1):
             # self.adam_m.append(np.zeros(self.layers_size[i + 1]))
             # self.adam_v.append(np.zeros(self.layers_size[i + 1]))
-            self.deltas.append(np.zeros(self.layers_size[i + 1]))
+            self.deltas.append(np.zeros([self.layers_size[i + 1], self.layers_size[i] + 1]))
             self.layers_weights.append(
                 np.random.uniform(low=-1, high=1, size=(self.layers_size[i + 1], self.layers_size[i] + 1)))
             # cantidad de pesos es lo que toma de input +1 por el BIAS
@@ -64,25 +64,13 @@ class MultilayerNetwork:
             sigmas.appendleft(self.deriv_act_func(self.H[m + 1]) * np.dot(self.layers_weights[m + 1].T, sigmas[0]))
             sigmas[0] = sigmas[0][:-1]  # remove bias of the one just added
 
-        if True:
-            self.gradient_descent(sigmas)
-        else:
-            self.momentum(sigmas)
+        self.gradient_descent(sigmas)
 
     def gradient_descent(self, sigmas):
-        deltas = Deque()
         for m in range(len(self.layers_weights)):
-            deltas.append(self.learning_rate * np.dot(np.matrix(sigmas[m]).T, np.matrix(self.V[m])))
-        for m in range(len(self.layers_weights)):
-            self.layers_weights[m] += deltas[m]
-            # self.layers_weights[m] = np.add(self.layers_weights[m], deltas[m])
-
-    def momentum(self, sigmas):
-        for m in range(len(self.layers_weights)):
-            print(sigmas[m])
-            print(self.deltas[m])
-            self.deltas[m] = (-self.learning_rate * np.matrix(sigmas[m])) + (self.alpha * np.matrix(self.deltas[m]))
-
+            new_delta = self.learning_rate * np.dot(np.matrix(sigmas[m]).T, np.matrix(self.V[m]))
+            self.deltas[m] = self.momentum_alpha * self.deltas[m] + new_delta
+            
         for m in range(len(self.layers_weights)):
             self.layers_weights[m] += self.deltas[m]
 
@@ -95,7 +83,7 @@ class MultilayerNetwork:
     #         adam_prime_v = self.adam_v[m] / (1 - (np.power(self.beta_2, self.t)))
     #
     #         self.layers_weights[m] = np.subtract(np.matrix(self.layers_weights[m]),
-    #                                              self.alpha * np.matrix(adam_prime_m).T / (
+    #                                              self.momentum_alpha * np.matrix(adam_prime_m).T / (
     #                                                      np.sqrt(adam_prime_v) + self.adam_error))
     def train_batch(self, train_data, test_data=None):
         continue_condition = lambda i, error_min: i < len(train_data)
