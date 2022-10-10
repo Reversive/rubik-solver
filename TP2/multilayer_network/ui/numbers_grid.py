@@ -25,8 +25,8 @@ def write(text, screen, position, color, size):
 def set_board(screen):
     screen.fill(NAVY_BLUE)
 
-    start_image = pg.image.load('TP2/multilayer_network/board/utils/start.png').convert_alpha()
-    reset_image = pg.image.load('TP2/multilayer_network/board/utils/restart.png').convert_alpha()
+    start_image = pg.image.load('TP2/multilayer_network/ui/utils/start.png').convert_alpha()
+    reset_image = pg.image.load('TP2/multilayer_network/ui/utils/restart.png').convert_alpha()
 
     start_button = Button(WIDTH * BLOCK_SIZE + 25, S_BUTTON_Y, start_image, 2 / 12)
     reset_button = Button(WIDTH * BLOCK_SIZE + 20, R_BUTTON_Y, reset_image, 2 / 24)
@@ -36,7 +36,7 @@ def set_board(screen):
     write('The drawn number is', screen, (WIDTH * BLOCK_SIZE + 20, 15), BLACK, 12)
 
 
-class NumbersBoard:
+class NumbersGrid:
     def __init__(self, function) -> None:
         self.layers = []
         self.width = WIDTH
@@ -65,11 +65,11 @@ class NumbersBoard:
     def get_positions(self, pos):
         return int(pos[0] // ((WINDOW_WIDTH - SIDE_DIFF) / self.width)), int(pos[1] // (WINDOW_HEIGHT / self.height))
 
-    def numbers_board(self):
+    def numbers_grid(self):
         pg.init()
         screen = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pg.display.set_caption('SIA TP2 - Grupo 1')
-        icon = pg.image.load('TP2/multilayer_network/board/utils/nn.png')
+        icon = pg.image.load('TP2/multilayer_network/ui/utils/nn.png')
         pg.display.set_icon(icon)
         set_board(screen)
         output = '?'

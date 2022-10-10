@@ -1,5 +1,5 @@
 import random
-from .board.numbers_board import NumbersBoard
+from .ui.numbers_grid import NumbersGrid
 from ..utils.files import read_numbers_from_file
 from ..utils.dataset_utils import DivideDatasetToTrainAndTest
 from .multilayer_network import MultilayerNetwork
@@ -142,8 +142,8 @@ def guess_numbers_exercise():
 
 def interactive_guess_numbers():
     multilayer_network, train_dataset = train_guess_number()
-    board = NumbersBoard(multilayer_network.forward_propagation)
-    board.numbers_board()
+    board = NumbersGrid(multilayer_network.forward_propagation)
+    board.numbers_grid()
 
 
 def apply_noise_over_dataset(dataset):
