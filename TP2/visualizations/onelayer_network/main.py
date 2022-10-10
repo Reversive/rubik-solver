@@ -44,9 +44,9 @@ def accurracy_vs_epochs_over_learning_rate(dataset_df):
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
         train_accuracies, test_accuracies = classifier.execute(test_data_ratio=0.3)
-        curves.append(train_accuracies)
+        # curves.append(train_accuracies)
         legends.append(f"Learning rate:" + str(i/10))
-        # curves.append(test_accuracies)
+        curves.append(test_accuracies)
         # legends.append(f"Test")
     plot_accuracy_of_epochs_curves_with_legend(curves, legends)
 
@@ -99,5 +99,5 @@ def train_vs_batch(dataset_df):
 if __name__ == "__main__":
     dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
     # epochs_error_evolution_test_division(dataset_df)
-    act_function(dataset_df)
+    accurracy_vs_epochs_over_learning_rate(dataset_df)
     
