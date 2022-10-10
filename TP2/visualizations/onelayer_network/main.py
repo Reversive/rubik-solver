@@ -66,6 +66,21 @@ def accurracy_vs_epochs_over_learning_rate(dataset_df):
         legends.append(f"Learning rate:" + str(i / 10))
     plot_accuracy_of_epochs_curves_with_legend(curves,N, legends)
 
+
+def linear_function(dataset_df):
+    curves = []
+    legends = []
+    N = 10
+    for j in range(N):
+        classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
+                        act_functions=ActivationFunctions.LINEAR,
+                        BETA=1.0)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3)
+        curves.append(train_accuracies)
+        curves.append(test_accuracies)
+    legends.append(f"Train")
+    legends.append(f"Test")
+    plot_accuracy_of_epochs_curves_with_legend(curves,N, legends)
 def act_function(dataset_df):
     curves = []
     legends = []
@@ -75,23 +90,23 @@ def act_function(dataset_df):
                         act_functions=ActivationFunctions.EXP,
                         BETA=1.0)
         train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3,batch_train=True)
-        curves.append(train_accuracies)
+        curves.append(test_errors)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
         train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3,batch_train=True)
-        curves.append(train_accuracies)
+        curves.append(test_errors)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.RELU,
                         BETA=1.0)
         train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3,batch_train=True)
-        curves.append(train_accuracies)
+        curves.append(test_errors)
         # curves.append(train_accuracies)
     legends.append(f"Act: EXP")
     legends.append(f"Act: TANH")
     legends.append(f"Act: RELU")
 
-    plot_accuracy_of_epochs_curves_with_legend(curves,N, legends)
+    plot_accuracy_of_epochs_curves_with_legend(curves,N, legends, y_axis_label="Error")
 
 def train_vs_batch(dataset_df):
     curves = []
@@ -122,5 +137,5 @@ def train_vs_batch(dataset_df):
 if __name__ == "__main__":
     dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
     # epochs_error_evolution_test_division(dataset_df)
-    train_vs_batch(dataset_df)
+    act_function(dataset_df)
     # epochs_accuracy_evolution_crossvalidation()
