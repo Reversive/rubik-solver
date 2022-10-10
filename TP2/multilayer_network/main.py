@@ -1,3 +1,4 @@
+import random
 from ..utils.files import read_numbers_from_file
 from ..utils.dataset_utils import DivideDatasetToTrainAndTest
 from .multilayer_network import MultilayerNetwork
@@ -72,12 +73,17 @@ def even_numbers_exercise():
 
     dataset = get_numbers_dataset(expected_output, output_transform)
 
-    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, 1)
+    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, 0.7)
 
     # multilayer_network.train_batch(train_data=dataset, test_data=dataset)
-    multilayer_network.train_online(train_data=train_dataset, test_data=train_dataset)
+    multilayer_network.train_online(train_data=train_dataset, test_data=test_dataset)
 
-    print_results(multilayer_network, train_dataset)
+    print("TEST DATASET RESULTS")
+    print_results(multilayer_network, test_dataset)
+
+    print("NOISY TEST DATASET RESULTS")
+    noisy_test_dataset = apply_noise_over_dataset(dataset)
+    print_results(multilayer_network, noisy_test_dataset)
 
 def guess_numbers_exercise():
     BETA = 1
@@ -89,7 +95,7 @@ def guess_numbers_exercise():
     multilayer_network = MultilayerNetwork(hidden_layers_perceptron_qty=[COLUMNS_PER_NUMBER*ROWS_PER_NUMBER,
                                                                         COLUMNS_PER_NUMBER*ROWS_PER_NUMBER], 
                                             input_dim=COLUMNS_PER_NUMBER*ROWS_PER_NUMBER, 
-                                            output_dim=10, learning_rate=0.01, epochs=10000,
+                                            output_dim=10, learning_rate=0.01, epochs=1000,
                                             act_func=act_func, deriv_act_func=deriv_act_func)
 
     expected_output = [
@@ -107,12 +113,35 @@ def guess_numbers_exercise():
 
     dataset = get_numbers_dataset(expected_output, output_transform)
 
-    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, 1)
+    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, 0.7)
 
     # multilayer_network.train_batch(train_data=dataset, test_data=dataset)
     multilayer_network.train_online(train_data=train_dataset, test_data=train_dataset)
 
-    print_results(multilayer_network, train_dataset)
+    print("DATASET RESULTS")
+    print_results(multilayer_network, dataset)
+
+    print("TEST DATASET RESULTS")
+    print_results(multilayer_network, test_dataset)
+
+    print("NOISY TEST DATASET RESULTS")
+    noisy_test_dataset = apply_noise_over_dataset(dataset)
+    print_results(multilayer_network, noisy_test_dataset)
+
+def apply_noise_over_dataset(dataset):
+    MAX_NOISE_CHANGES = 6
+    noisy_dataset = []
+    for example in dataset:
+        elements_to_change = random.randint(0, MAX_NOISE_CHANGES)
+        noisy_example = example[0].copy()
+        expected_result = example[1].copy()
+        for _ in range(elements_to_change):
+            index = random.randint(0, (ROWS_PER_NUMBER-1) * (COLUMNS_PER_NUMBER-1))
+            noisy_example[index] = 1 - noisy_example[index]
+            
+        noisy_dataset.append([noisy_example, expected_result])
+    
+    return noisy_dataset
 
 def get_numbers_dataset(expected_output, output_transform):
 
@@ -146,6 +175,7 @@ def print_results(multilayer_network, dataset):
     print("accuracy: ", corrects/len(dataset))
 
 if __name__ == "__main__":
+    random.seed(123456789)
     #xor_exercise()
-    even_numbers_exercise()
-    #guess_numbers_exercise()
+    #even_numbers_exercise()
+    guess_numbers_exercise()
