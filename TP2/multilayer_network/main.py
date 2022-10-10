@@ -62,7 +62,7 @@ def even_numbers_exercise():
     multilayer_network = MultilayerNetwork(hidden_layers_perceptron_qty=[COLUMNS_PER_NUMBER*ROWS_PER_NUMBER,
                                                                         COLUMNS_PER_NUMBER*ROWS_PER_NUMBER], 
                                             input_dim=COLUMNS_PER_NUMBER*ROWS_PER_NUMBER, 
-                                            output_dim=2, learning_rate=0.01, epochs=10000,
+                                            output_dim=2, learning_rate=0.01, epochs=100,
                                             act_func=act_func, deriv_act_func=deriv_act_func)
 
     expected_output = []

@@ -85,8 +85,6 @@ class Perceptron:
 
             # use best epoch weights
             self.weights = epoch_w_min
-            print('Epoch: ' + str(epoch))
-            print(str(-(self.weights[1] / self.weights[2])) + "*x + " + str(-self.weights[0] / self.weights[2]))
 
             if test_data is not None:
                 epoch_test_accuracy = self.test(test_data)
