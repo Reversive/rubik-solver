@@ -12,15 +12,16 @@ ROWS_PER_NUMBER = 7
 COLUMNS_PER_NUMBER = 5
 
 
-def xor_exercise():
+def xor_exercise(batch=False):
     BETA = 1
-    act_func_data = ActivationFunctions.SIGN
+    epochs = 250
+    act_func_data = ActivationFunctions.TANH
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
     output_transform = act_func_data.value["output_transform"]
 
     multilayer_network = MultilayerNetwork(hidden_layers_perceptron_qty=[2], input_dim=2,
-                                           output_dim=1, learning_rate=0.01, epochs=1000,
+                                           output_dim=1, learning_rate=0.05, epochs=epochs,
                                            act_func=act_func, deriv_act_func=deriv_act_func)
 
     input_dataset_df = pd.DataFrame([
@@ -37,7 +38,7 @@ def xor_exercise():
     # scalarize or standarize inputs according to function
     input_dataset_df[input_dataset_df.columns] = output_transform.fit_transform(input_dataset_df)
 
-    # scalarize eor standarize xpected outputs according to function
+    # scalarize eor standarize expected outputs according to function
     output_dataset_df[output_dataset_df.columns] = output_transform.fit_transform(output_dataset_df)
 
     train_data = []
@@ -46,27 +47,25 @@ def xor_exercise():
         train_data.append([input_dataset_df.iloc[i].tolist(), output_dataset_df.iloc[i].tolist()])
         test_data.append([input_dataset_df.iloc[i].tolist(), output_dataset_df.iloc[i].tolist()])
 
-    multilayer_network.train_batch(train_data, test_data)
-    #    multilayer_network.train_online(train_data, test_data)
+    if batch:
+        train_accuracies, test_accuracies, train_errors, test_errors = multilayer_network.train_batch(train_data, test_data)
+    else: train_accuracies, test_accuracies, train_er, test_errors = multilayer_network.train_online(train_data, test_data)
 
-    for example in test_data:
-        print("Input: ", example[:-1])
-        print("OUTPUT: ", multilayer_network.forward_propagation(example[:-1]), "EXPECTED: ", example[-1])
+    return train_accuracies, test_accuracies, train_errors, test_errors
 
 
-def even_numbers_exercise():
+def even_numbers_exercise(noisy_test=False, batch=False, momentum=0.8, train_percentage=0.7, act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=250):
     BETA = 1
     ROWS_PER_NUMBER = 7
     COLUMNS_PER_NUMBER = 5
-    act_func_data = ActivationFunctions.EXP  # TODO: RELU NOT WORKING
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
     output_transform = act_func_data.value["output_transform"]
 
     multilayer_network = MultilayerNetwork(hidden_layers_perceptron_qty=[COLUMNS_PER_NUMBER * ROWS_PER_NUMBER,
                                                                          COLUMNS_PER_NUMBER * ROWS_PER_NUMBER],
-                                           input_dim=COLUMNS_PER_NUMBER * ROWS_PER_NUMBER,
-                                           output_dim=2, learning_rate=0.01, epochs=100,
+                                           input_dim=COLUMNS_PER_NUMBER * ROWS_PER_NUMBER,momentum_alpha=momentum,
+                                           output_dim=2, learning_rate=learning_rate, epochs=epochs,
                                            act_func=act_func, deriv_act_func=deriv_act_func)
 
     expected_output = []
@@ -76,22 +75,20 @@ def even_numbers_exercise():
 
     dataset = get_numbers_dataset(expected_output, output_transform)
 
-    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, 0.7)
+    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, train_percentage)
 
-    # multilayer_network.train_batch(train_data=dataset, test_data=dataset)
-    multilayer_network.train_online(train_data=train_dataset, test_data=test_dataset)
+    if noisy_test:
+        test_dataset = apply_noise_over_dataset(dataset)
 
-    print("TEST DATASET RESULTS")
-    print_results(multilayer_network, test_dataset)
+    if batch:
+        train_accuracies, test_accuracies, train_errors, test_errors = multilayer_network.train_batch(train_dataset, test_dataset)
+    else: train_accuracies, test_accuracies, train_errors, test_errors = multilayer_network.train_online(train_dataset, test_dataset)
 
-    print("NOISY TEST DATASET RESULTS")
-    noisy_test_dataset = apply_noise_over_dataset(dataset)
-    print_results(multilayer_network, noisy_test_dataset)
+    return train_accuracies, test_accuracies, train_errors, test_errors
 
 
-def train_guess_number():
+def train_guess_number(noisy_test=False, batch=False, train_percentage=0.7, act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=250):
     BETA = 1
-    act_func_data = ActivationFunctions.RELU  # TODO: RELU NOT WORKING
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
     output_transform = act_func_data.value["output_transform"]
@@ -99,7 +96,7 @@ def train_guess_number():
     multilayer_network = MultilayerNetwork(hidden_layers_perceptron_qty=[COLUMNS_PER_NUMBER * ROWS_PER_NUMBER,
                                                                          COLUMNS_PER_NUMBER * ROWS_PER_NUMBER],
                                            input_dim=COLUMNS_PER_NUMBER * ROWS_PER_NUMBER,
-                                           output_dim=10, learning_rate=0.01, epochs=1000,
+                                           output_dim=10, learning_rate=learning_rate, epochs=epochs,
                                            act_func=act_func, deriv_act_func=deriv_act_func)
 
     expected_output = [
@@ -117,22 +114,16 @@ def train_guess_number():
 
     dataset = get_numbers_dataset(expected_output, output_transform)
 
-    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, 0.7)
+    train_dataset, test_dataset = DivideDatasetToTrainAndTest(dataset, train_percentage)
 
-    # multilayer_network.train_batch(train_data=dataset, test_data=dataset)
-    multilayer_network.train_online(train_data=train_dataset, test_data=train_dataset)
+    if noisy_test:
+        test_dataset = apply_noise_over_dataset(dataset)
 
-    print("DATASET RESULTS")
-    print_results(multilayer_network, dataset)
+    if batch:
+        train_accuracies, test_accuracies, train_errors, test_errors = multilayer_network.train_batch(train_dataset, test_dataset)
+    else: train_accuracies, test_accuracies, train_errors, test_errors = multilayer_network.train_online(train_dataset, test_dataset)
 
-    print("TEST DATASET RESULTS")
-    print_results(multilayer_network, test_dataset)
-
-    print("NOISY TEST DATASET RESULTS")
-    noisy_test_dataset = apply_noise_over_dataset(dataset)
-    print_results(multilayer_network, noisy_test_dataset)
-
-    return multilayer_network, train_dataset
+    return train_accuracies, test_accuracies, train_errors, test_errors
 
 
 def guess_numbers_exercise():
@@ -196,7 +187,7 @@ def print_results(multilayer_network, dataset):
 
 if __name__ == "__main__":
     random.seed(123456789)
-    # xor_exercise()
+    xor_exercise()
     # even_numbers_exercise()
-    guess_numbers_exercise()
+    # guess_numbers_exercise()
     # interactive_guess_numbers()

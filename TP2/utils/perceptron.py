@@ -1,23 +1,15 @@
 import numpy as np
-import csv
 
 MIN_ERROR_TRESHOLD = np.exp(-1000000)
 PREDICTION_THRESHOLD = 0.1
-OUTPUT_FILE_PATH = "./TP2/dump/perceptron_results.csv"
 
 class Perceptron:
-    def __init__(self, input_dim, learning_rate, epochs, act_func = lambda x: x, deriv_act_func = lambda x: 1, output_path = OUTPUT_FILE_PATH):
+    def __init__(self, input_dim, learning_rate, epochs, act_func = lambda x: x, deriv_act_func = lambda x: 1):
         self.weights = np.random.uniform(low=0, high=0.3, size=1 + input_dim)
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.act_func = act_func
         self.deriv_act_func= deriv_act_func
-
-        # output csv
-        file = open(output_path, 'w', newline='')
-        self.writer = csv.writer(file)
-        self.writer.writerow(["EPOCH", "TRAIN_ERROR", "TRAIN_ACCURACY", "TEST_ERROR", "TEST_ACCURACY"])
-        file.close()
 
     def classify(self, example):
         return self.act_func(np.dot(self.weights, np.append(1, example)))
@@ -52,10 +44,6 @@ class Perceptron:
 
     def train(self, train_data, continue_condition, next_example_idx_generator = None, test_data = None):
         # test_data is only used to calculate the error in each epoch for the test_dataset, NOT for training
-
-        # output csv
-        file = open(OUTPUT_FILE_PATH, 'a', newline='')
-        self.writer = csv.writer(file)
 
         error_min = float('inf')
         w_min = self.weights
@@ -98,18 +86,15 @@ class Perceptron:
 
             train_accuracies.append(self.test(train_data))
             train_errors.append(epoch_error_min)
-            self.write_to_csv(epoch, epoch_error_min, self.test(train_data), epoch_test_error, epoch_test_accuracy)
 
-            error = self.cuadratic_error(train_data)
-            if error < error_min:
-                error_min = error
+            if epoch_error_min < error_min:
+                error_min = epoch_error_min
                 w_min = self.weights
 
             iterations += iteration # add epoc iterations to total iterations
 
         self.weights = w_min
         print(f'Error min: {error_min}, iterations: {iterations}, weights: {self.weights}')
-        file.close()
 
         return train_accuracies, test_accuracies, train_errors, test_errors
 

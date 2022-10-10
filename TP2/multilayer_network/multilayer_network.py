@@ -3,7 +3,6 @@ import numpy as np
 import math
 
 MIN_ERROR_TRESHOLD = np.exp(-10000)
-PREDICTION_THRESHOLD = 0.001
 
 
 class MultilayerNetwork:
@@ -93,6 +92,14 @@ class MultilayerNetwork:
         continue_condition = lambda i, error_min: error_min > MIN_ERROR_TRESHOLD and i < len(train_data)
         return self.train(train_data, continue_condition, lambda: np.random.choice(len(train_data)), test_data)
 
+    def test(self, test_data):
+        correct_predictions = 0
+        for example in test_data:
+            if np.argmax(self.forward_propagation(example[:-1])) == np.argmax(example[-1]):
+                correct_predictions += 1
+
+        return correct_predictions / len(test_data)
+
     def cuadratic_error(self, output, expected):
         error = 0
         for j in range(self.output_dim):
@@ -115,6 +122,9 @@ class MultilayerNetwork:
 
         train_accuracies = []
         test_accuracies = []
+        train_errors = []
+        test_errors = []
+
         for epoch in range(self.epochs):
             epoch_error_min = float('inf')
             iteration = 0
@@ -140,9 +150,19 @@ class MultilayerNetwork:
             # use best epoch weights
             self.layers_weights = epoch_w_min
 
-            error = self.cuadratic_mean_error(train_data)
-            if error < error_min:
-                error_min = error
+            if test_data is not None:
+                epoch_test_accuracy = self.test(test_data)
+                test_accuracies.append(epoch_test_accuracy)
+                
+                epoch_test_error = self.cuadratic_mean_error(test_data)
+                test_errors.append(epoch_test_error)
+            else: epoch_test_accuracy = epoch_test_error = None
+
+            train_accuracies.append(self.test(train_data))
+            train_errors.append(epoch_error_min)
+
+            if epoch_error_min < error_min:
+                error_min = epoch_error_min
                 w_min = self.layers_weights
 
             iterations += iteration  # add epoc iterations to total iterations
@@ -154,4 +174,4 @@ class MultilayerNetwork:
         #     print("Layer ", i)
         #     print(self.layers_weights[i])
 
-        return train_accuracies, test_accuracies
+        return train_accuracies, test_accuracies, train_errors, test_errors
