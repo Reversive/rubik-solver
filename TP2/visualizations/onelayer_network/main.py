@@ -50,16 +50,18 @@ def accurracy_vs_epochs_over_beta_evolution(dataset_df):
 def accurracy_vs_epochs_over_learning_rate(dataset_df):
     curves = []
     legends = []
+    N = 10
     for i in [0.1,0.5,1,1.5,2]:
-        classifier = NoLinearClassifier(dataset_df, learning_rate=i/10, epochs=200,
+        for j in range(N):
+            classifier = NoLinearClassifier(dataset_df, learning_rate=i/10, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3)
-        # curves.append(train_accuracies)
-        legends.append(f"Learning rate:" + str(i/10))
-        curves.append(test_accuracies)
-        # legends.append(f"Test")
-    plot_accuracy_of_epochs_curves_with_legend(curves, legends)
+            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3)
+            # curves.append(train_accuracies)
+            curves.append(test_accuracies)
+            # legends.append(f"Test")
+        legends.append(f"Learning rate:" + str(i / 10))
+    plot_accuracy_of_epochs_curves_with_legend(curves,N, legends)
 
 def act_function(dataset_df):
     curves = []
@@ -110,5 +112,5 @@ def train_vs_batch(dataset_df):
 if __name__ == "__main__":
     dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
     # epochs_error_evolution_test_division(dataset_df)
-    #accurracy_vs_epochs_over_learning_rate(dataset_df)
-    epochs_accuracy_evolution_crossvalidation()
+    accurracy_vs_epochs_over_learning_rate(dataset_df)
+    # epochs_accuracy_evolution_crossvalidation()
