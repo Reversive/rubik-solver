@@ -16,9 +16,9 @@ def read_results_csv(file):
 def plot_accuracy_of_epochs_curves_with_legend(curves, N, legends, y_axis_label="Accuracy", x_axis_label="Epochs"):
     iters = range(1, len(curves[0]) + 1)
     colors = sns.color_palette("hls", len(legends))
-    for i in range(int(len(curves) / N) - 1):
+    for i in range(int(len(curves) / N)):
         aux_avg, aux_std = get_average_and_std(curves[i * N:(i + 1) * N])
-        plt.errorbar(iters, aux_avg, fmt='o-', yerr=aux_std)
+        plt.errorbar(iters, aux_avg, fmt='-', elinewidth=0.5,yerr=aux_std)
     # for i in range(len(curves)):
     #     plt.plot(iters, curves[i], label=legends[i], color=colors[i])
 
