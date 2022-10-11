@@ -75,7 +75,7 @@ def guess_variating_noise():
     legends = []
 
     for i in range(N):
-        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(noisy_test=True)
+        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(act_func_data=ActivationFunctions.LINEAR,noisy_test=True)
         traineroo_errors.append(train_accuracies)
         testeroo_errors.append(test_accuracies)
 
