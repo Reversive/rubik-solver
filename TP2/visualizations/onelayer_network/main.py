@@ -9,7 +9,7 @@ from ...utils.activations_functions import ActivationFunctions
 
 def epochs_accuracy_evolution_crossvalidation():
     k=3
-    accuracies = True
+    accuracies = False
     train_results_list, test_results_list = cross_validation(k = k, accuracies=accuracies)
     legends = [f"Conjunto {i}" for i in range(k)]
 
@@ -48,9 +48,9 @@ def accurracy_vs_epochs_over_beta_evolution(dataset_df):
             classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.RELU,
                         BETA=i/10)
-            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
+            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
             # curves.append(train_accuracies)
-            curves.append(test_accuracies)
+            curves.append(train_accuracies)
             # legends.append(f"Test")
         legends.append(f"Beta:" + str(i/10))
 
@@ -65,7 +65,7 @@ def accurracy_vs_epochs_over_learning_rate(dataset_df):
             classifier = NoLinearClassifier(dataset_df, learning_rate=i/10, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
+            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
             curves.append(train_accuracies)
             # curves.append(test_accuracies)
             # legends.append(f"Test")
@@ -79,14 +79,16 @@ def linear_function(dataset_df):
     N = 10
     for j in range(N):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.LINEAR,
-                        BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(test_data_ratio=0.3)
-        curves.append(train_accuracies)
-        curves.append(test_accuracies)
+                        act_functions=ActivationFunctions.LINEAR,BETA=1.0)
+
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
+        curves.append(train_errors)
+        curves.append(test_errors)
+    
     legends.append(f"Train")
     legends.append(f"Test")
-    plot_accuracy_of_epochs_curves_with_legend(curves,N, legends)
+    plot_accuracy_of_epochs_curves_with_legend(curves, N, legends, y_axis_label="Error")
+
 def act_function(dataset_df):
     curve_exp = []
     curve_tanh = []
@@ -97,17 +99,17 @@ def act_function(dataset_df):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.EXP,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
         curve_exp.append(test_errors)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
         curve_tanh.append(test_errors)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.RELU,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
         curve_relu.append(test_errors)
         # curves.append(train_accuracies)
     legends.append(f"Act: EXP")
@@ -127,13 +129,13 @@ def train_vs_batch(dataset_df):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.EXP,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3,batch_train=True)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
         batch_train.append(train_accuracies)
         batch_test.append(test_accuracies)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.EXP,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3,batch_train=False)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=False)
         online_train.append(train_accuracies)
         online_test.append(test_accuracies)
     legends.append(f"Batch: Train")
@@ -168,5 +170,7 @@ if __name__ == "__main__":
     dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
     # epochs_error_evolution_test_division(dataset_df)
     # act_function(dataset_df)
-    # epochs_accuracy_evolution_crossvalidation()
-    plot_accuracy_of_epochs_simple_perceptron()
+    epochs_accuracy_evolution_crossvalidation()
+    # plot_accuracy_of_epochs_simple_perceptron()
+    # accurracy_vs_epochs_over_beta_evolution(dataset_df)
+    # linear_function(dataset_df)
