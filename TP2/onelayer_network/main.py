@@ -103,7 +103,7 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read("./TP2/onelayer_network/config.yaml")
 
-    cross_validation()
-    # classifier = get_classifier(config)
-    # classifier.execute()
+    # cross_validation()
+    classifier = get_classifier(config)
+    classifier.execute()
 

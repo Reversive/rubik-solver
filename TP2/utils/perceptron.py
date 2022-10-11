@@ -94,7 +94,14 @@ class Perceptron:
             iterations += iteration # add epoc iterations to total iterations
 
         self.weights = w_min
-        print(f'Error min: {error_min}, iterations: {iterations}, weights: {self.weights}')
+
+        max_train_accuracy = max(train_accuracies)
+        max_test_accuracy = max(test_accuracies)
+        min_train_error = min(train_errors)
+        min_test_error = min(test_errors)
+        print(f'Error min en training: {min_train_error}\nError min en test: {min_test_error}\
+            \nAccuracy max en training: {max_train_accuracy}\nAccuracy max en test: {max_test_accuracy}\
+            \nIterations: {iterations}')
 
         return train_accuracies, test_accuracies, train_errors, test_errors
 

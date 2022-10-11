@@ -167,7 +167,14 @@ class MultilayerNetwork:
             iterations += iteration  # add epoc iterations to total iterations
 
         self.layers_weights = w_min
-        print(f'Error min: {error_min}, iterations: {iterations}')
+
+        max_train_accuracy = max(train_accuracies)
+        max_test_accuracy = max(test_accuracies)
+        min_train_error = min(train_errors)
+        min_test_error = min(test_errors)
+        print(f'Error min en training: {min_train_error}\nError min en test: {min_test_error}\
+            \nAccuracy max en training: {max_train_accuracy}\nAccuracy max en test: {max_test_accuracy}\
+            \nIterations: {iterations}')
         # print("weights: ")
         # for i in range(len(self.layers_weights)):
         #     print("Layer ", i)

@@ -7,21 +7,19 @@ from sklearn.preprocessing import StandardScaler
 from ..utils.activations_functions import ActivationFunctions
 import numpy as np
 import pandas as pd
+import configparser
 
 ROWS_PER_NUMBER = 7
 COLUMNS_PER_NUMBER = 5
 
 
-def xor_exercise(batch=False):
-    BETA = 1
-    epochs = 250
-    act_func_data = ActivationFunctions.TANH
+def xor_exercise(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.EXP, BETA=1, batch=False):
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
     output_transform = act_func_data.value["output_transform"]
 
     multilayer_network = MultilayerNetwork(hidden_layers_perceptron_qty=[2], input_dim=2,
-                                           output_dim=1, learning_rate=0.05, epochs=epochs,
+                                           output_dim=1, learning_rate=learning_rate, epochs=epochs,
                                            act_func=act_func, deriv_act_func=deriv_act_func)
 
     input_dataset_df = pd.DataFrame([
@@ -49,12 +47,13 @@ def xor_exercise(batch=False):
 
     if batch:
         train_accuracies, test_accuracies, train_errors, test_errors = multilayer_network.train_batch(train_data, test_data)
-    else: train_accuracies, test_accuracies, train_er, test_errors = multilayer_network.train_online(train_data, test_data)
+    else: train_accuracies, test_accuracies, train_errors, test_errors = multilayer_network.train_online(train_data, test_data)
 
     return train_accuracies, test_accuracies, train_errors, test_errors
 
 
-def even_numbers_exercise(noisy_test=False, batch=False, momentum=0.8, train_percentage=0.7, act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=250):
+def even_numbers_exercise(learning_rate=0.05, epochs=250, BETA=1, 
+            noisy_test=False, batch=False, momentum=0.8, train_percentage=0.7, act_func_data=ActivationFunctions.EXP):
     BETA = 1
     ROWS_PER_NUMBER = 7
     COLUMNS_PER_NUMBER = 5
@@ -87,8 +86,8 @@ def even_numbers_exercise(noisy_test=False, batch=False, momentum=0.8, train_per
     return train_accuracies, test_accuracies, train_errors, test_errors
 
 
-def train_guess_number(noisy_test=False, batch=False, train_percentage=1.0, act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=250):
-    BETA = 1
+def train_guess_number(noisy_test=True, batch=False, train_percentage=1.0, act_func_data=ActivationFunctions.EXP, 
+                        learning_rate=0.05, epochs=250, BETA = 1):
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
     output_transform = act_func_data.value["output_transform"]
@@ -129,15 +128,15 @@ def train_guess_number(noisy_test=False, batch=False, train_percentage=1.0, act_
     return train_accuracies, test_accuracies, train_errors, test_errors
 
 
-def guess_numbers_exercise():
-    multilayer_network, train_dataset = train_guess_number()
-    print_results(multilayer_network, train_dataset)
+def guess_numbers_exercise(noise, learning_rate, epochs, act_func_data, beta):
+    train_accuracies, test_accuracies, train_errors, test_errors = \
+            train_guess_number(noise_test=noise,learning_rate=learning_rate, epochs=epochs, act_func_data=act_func_data, BETA=beta)
+    # print_results(multilayer_network, train_dataset)
 
 
-def interactive_guess_numbers(act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=1000):
-    BETA = 1
-    act_func = lambda x: act_func_data.value["act_func"](x, BETA)
-    deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
+def interactive_guess_numbers(learning_rate=0.05, epochs=1000, act_func_data=ActivationFunctions.EXP, beta=1):
+    act_func = lambda x: act_func_data.value["act_func"](x, beta)
+    deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, beta)
     output_transform = act_func_data.value["output_transform"]
 
     multilayer_network = MultilayerNetwork(hidden_layers_perceptron_qty=[COLUMNS_PER_NUMBER * ROWS_PER_NUMBER,
@@ -219,7 +218,35 @@ def print_results(multilayer_network, dataset):
 
 if __name__ == "__main__":
     random.seed(123456789)
+    config = configparser.ConfigParser()
+    config.read("./TP2/multilayer_network/config.yaml")
+
+    general_config = config["general_config"]
+    program_to_exec = general_config["exercise"]
+
+
+    learning_rate = float(general_config['learning_rate'])
+    epochs = int(general_config['epochs'])
+    act_func_data = ActivationFunctions[general_config['activation_function']]
+    beta = float(general_config['beta'])
+    noise = bool(general_config['noise'])
+
+
+    if program_to_exec == "guess_numbers":
+        print("Guess numbers exercise")
+        guess_numbers_exercise(noise = noise,learning_rate=learning_rate, epochs=epochs, act_func_data=act_func_data, beta=beta)
+    elif program_to_exec == "interactive_guess_numbers":
+        print("Interactive guess numbers exercise")
+        interactive_guess_numbers(learning_rate=learning_rate, epochs=epochs, act_func_data=act_func_data, beta=beta)
+    elif program_to_exec == "xor":
+        print("xor exercise")
+        xor_exercise(learning_rate=learning_rate, epochs=epochs, act_func_data=act_func_data, BETA=beta)
+    else: 
+        print("Even numbers exercise")
+        even_numbers_exercise(noisy_test = noise, learning_rate=learning_rate, epochs=epochs, act_func_data=act_func_data, BETA=beta)
+
+
     # xor_exercise()
     # even_numbers_exercise()
-    guess_numbers_exercise()
+    #guess_numbers_exercise()
     # interactive_guess_numbers()
