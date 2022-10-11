@@ -1,7 +1,7 @@
 import numpy as np
 
 MIN_ERROR_TRESHOLD = np.exp(-1000000)
-PREDICTION_THRESHOLD = 0.1
+PREDICTION_THRESHOLD = 0.01
 
 class Perceptron:
     def __init__(self, input_dim, learning_rate, epochs, act_func = lambda x: x, deriv_act_func = lambda x: 1):

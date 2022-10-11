@@ -18,20 +18,26 @@ def epochs_accuracy_evolution_crossvalidation():
 
 def epochs_accuracy_evolution_test_division(dataset_df):
     classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.TANH,
+                        act_functions=ActivationFunctions.EXP,
                         BETA=0.5)
 
     curves = []
     legends = []
-    division_list = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+    division_list = [0.1, 0.3, 0.5, 0.7, 0.9]
+    N = 10
     for division in division_list:
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=division)
-        # curves.append(train_accuracies)
-        # legends.append(f"Train {division}")
-        curves.append(test_accuracies)
-        legends.append(f"Test {division}")
+        for i in range(N):
+            classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
+                        act_functions=ActivationFunctions.TANH,
+                        BETA=1.0)
+            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=division)
+            # curves.append(train_accuracies)
 
-    plot_accuracy_of_epochs_curves_with_legend(curves, legends)
+            curves.append(test_errors)
+        # legends.append(f"Train {division}")
+        legends.append(f"Train rate: {division}")
+
+    plot_accuracy_of_epochs_curves_with_legend(curves,N, legends,y_axis_label="Errors")
 
 def accurracy_vs_epochs_over_beta_evolution(dataset_df):
     curves = []
@@ -42,7 +48,7 @@ def accurracy_vs_epochs_over_beta_evolution(dataset_df):
             classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.RELU,
                         BETA=i/10)
-            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
+            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
             # curves.append(train_accuracies)
             curves.append(test_accuracies)
             # legends.append(f"Test")
@@ -59,7 +65,7 @@ def accurracy_vs_epochs_over_learning_rate(dataset_df):
             classifier = NoLinearClassifier(dataset_df, learning_rate=i/10, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
+            train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
             curves.append(train_accuracies)
             # curves.append(test_accuracies)
             # legends.append(f"Test")
@@ -82,57 +88,61 @@ def linear_function(dataset_df):
     legends.append(f"Test")
     plot_accuracy_of_epochs_curves_with_legend(curves,N, legends)
 def act_function(dataset_df):
-    curves = []
+    curve_exp = []
+    curve_tanh = []
+    curve_relu = []
     legends = []
     N = 10
     for i in range(N):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.EXP,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
-        curves.append(train_accuracies)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
+        curve_exp.append(test_errors)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.TANH,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
-        curves.append(train_accuracies)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
+        curve_tanh.append(test_errors)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
                         act_functions=ActivationFunctions.RELU,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
-        curves.append(train_accuracies)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3)
+        curve_relu.append(test_errors)
         # curves.append(train_accuracies)
     legends.append(f"Act: EXP")
     legends.append(f"Act: TANH")
     legends.append(f"Act: RELU")
 
-    plot_accuracy_of_epochs_curves_with_legend(curves,N, legends, y_axis_label="Error")
+    plot_accuracy_of_epochs_curves_with_legend(curve_exp + curve_tanh + curve_relu,N, legends,y_axis_label="Errors")
 
 def train_vs_batch(dataset_df):
-    curves = []
     legends = []
-    N = 100
+    N = 10
+    batch_train = []
+    batch_test = []
+    online_train = []
+    online_test = []
     for i in range(N):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.TANH,
+                        act_functions=ActivationFunctions.EXP,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
-        curves.append(train_accuracies)
-
-        curves.append(test_accuracies)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3,batch_train=True)
+        batch_train.append(train_accuracies)
+        batch_test.append(test_accuracies)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.TANH,
+                        act_functions=ActivationFunctions.EXP,
                         BETA=1.0)
-        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=False)
-        curves.append(train_accuracies)
-        curves.append(test_accuracies)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.3,batch_train=False)
+        online_train.append(train_accuracies)
+        online_test.append(test_accuracies)
     legends.append(f"Batch: Train")
     legends.append(f"Batch: Test")
     legends.append(f"Online: Train")
     legends.append(f"Online: Test")
 
     # legends.append(f"Test")
-    plot_accuracy_of_epochs_curves_with_legend(curves,N, legends)
+    plot_accuracy_of_epochs_curves_with_legend(batch_train + batch_test + online_train + online_test,N, legends)
 
 if __name__ == "__main__":
     dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
