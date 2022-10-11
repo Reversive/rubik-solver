@@ -87,7 +87,7 @@ def even_numbers_exercise(noisy_test=False, batch=False, momentum=0.8, train_per
     return train_accuracies, test_accuracies, train_errors, test_errors
 
 
-def train_guess_number(noisy_test=False, batch=False, train_percentage=0.7, act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=250):
+def train_guess_number(noisy_test=False, batch=False, train_percentage=1.0, act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=250):
     BETA = 1
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
