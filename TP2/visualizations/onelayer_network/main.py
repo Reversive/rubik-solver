@@ -9,11 +9,11 @@ from ...utils.activations_functions import ActivationFunctions
 
 def epochs_accuracy_evolution_crossvalidation():
     k=3
-    accuracies = False
+    accuracies = True
     train_results_list, test_results_list = cross_validation(k = k, accuracies=accuracies)
     legends = [f"Conjunto {i}" for i in range(k)]
 
-    plot_accuracy_of_epochs_curves_with_legend(test_results_list, legends, y_axis_label="Accuracy" if accuracies else "Error")
+    plot_accuracy_of_epochs_curves_with_legend(test_results_list, 1, legends, y_axis_label="Accuracy" if accuracies else "Error")
 
 
 def epochs_accuracy_evolution_test_division(dataset_df):
@@ -144,8 +144,29 @@ def train_vs_batch(dataset_df):
     # legends.append(f"Test")
     plot_accuracy_of_epochs_curves_with_legend(batch_train + batch_test + online_train + online_test,N, legends)
 
+def plot_accuracy_of_epochs_simple_perceptron():
+    legends = []
+    N = 10
+    train = []
+    test = []
+    for i in range(N):
+        classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
+                        act_functions=ActivationFunctions.EXP,
+                        BETA=1.0)
+        train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
+        train.append(train_accuracies)
+        test.append(test_accuracies)
+
+    legends.append(f"Train")
+    legends.append(f"Test")
+
+    # legends.append(f"Test")
+    plot_accuracy_of_epochs_curves_with_legend(train + test,N, legends)
+
+
 if __name__ == "__main__":
     dataset_df = pd.read_csv("./TP2/onelayer_network/TP2-ej2-conjunto.csv", header=0)
     # epochs_error_evolution_test_division(dataset_df)
-    act_function(dataset_df)
+    # act_function(dataset_df)
     # epochs_accuracy_evolution_crossvalidation()
+    plot_accuracy_of_epochs_simple_perceptron()

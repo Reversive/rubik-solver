@@ -4,7 +4,6 @@ import math
 
 MIN_ERROR_TRESHOLD = np.exp(-10000)
 
-
 class MultilayerNetwork:
     def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func,
                  deriv_act_func, momentum_alpha = 0.8):

@@ -1,7 +1,7 @@
 [general_config]
 dataset = TP2/onelayer_network/TP2-ej2-conjunto.csv
 epochs = 250
-learning_rate = 0.01
+learning_rate = 0.05
 
 #Can be linear, nolinear, step
 classifier = nolinear
@@ -13,5 +13,5 @@ umbral = 0
 
 [nolinear_classifier]
 #Can be TANH, EXP, RELU
-activation_function = RELU
-beta = 0.9
+activation_function = EXP
+beta = 1
