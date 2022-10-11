@@ -70,20 +70,23 @@ def even_with_noise():
 
 def guess_variating_noise():
     N = 10
-    traineroo_errors = []
-    testeroo_errors = []
+    curve_exp = []
+    curve_tanh = []
+
     legends = []
 
     for i in range(N):
-        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(act_func_data=ActivationFunctions.LINEAR,noisy_test=True)
-        traineroo_errors.append(train_accuracies)
-        testeroo_errors.append(test_accuracies)
+        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(act_func_data=ActivationFunctions.EXP,noisy_test=True)
+        curve_exp.append(test_accuracies)
+        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(act_func_data=ActivationFunctions.TANH, noisy_test=True)
+        curve_tanh.append(test_accuracies)
+        # testeroo_errors.append(test_accuracies)
 
 
-    legends.append(f"Train")
-    legends.append(f"Test")
+    legends.append(f"Act: EXP")
+    legends.append(f"Act: TANH")
 
-    plot_accuracy_of_epochs_curves_with_legend(traineroo_errors + testeroo_errors, N, legends=legends,y_axis_label="Accuracy")
+    plot_accuracy_of_epochs_curves_with_legend(curve_exp + curve_tanh, N, legends=legends,y_axis_label="Accuracy")
 
 if __name__ == "__main__":
     guess_variating_noise()
