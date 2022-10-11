@@ -118,6 +118,9 @@ def train_guess_number(noisy_test=False, batch=False, train_percentage=1.0, act_
 
     if noisy_test:
         test_dataset = apply_noise_over_dataset(dataset)
+    else:
+        if train_percentage == 1.0:
+            test_dataset = train_dataset
 
     if batch:
         train_accuracies, test_accuracies, train_errors, test_errors = multilayer_network.train_batch(train_dataset, test_dataset)
@@ -218,5 +221,5 @@ if __name__ == "__main__":
     random.seed(123456789)
     # xor_exercise()
     # even_numbers_exercise()
-    # guess_numbers_exercise()
-    interactive_guess_numbers()
+    guess_numbers_exercise()
+    # interactive_guess_numbers()
