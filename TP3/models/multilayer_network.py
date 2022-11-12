@@ -42,7 +42,6 @@ class MultilayerNetwork:
         example = np.append(example, 1)  # add bias
         self.V = [example]
         self.H = [example]
-
         for m in range(len(self.layers_weights) - 1):
             self.H.append(np.append(np.dot(self.layers_weights[m], example), 1))
             self.V.append(self.act_func(self.H[-1]))
@@ -83,21 +82,13 @@ class MultilayerNetwork:
     #         self.layers_weights[m] = np.subtract(np.matrix(self.layers_weights[m]),
     #                                              self.momentum_alpha * np.matrix(adam_prime_m).T / (
     #                                                      np.sqrt(adam_prime_v) + self.adam_error))
-    def train_batch(self, train_data, test_data=None):
-        continue_condition = lambda i, error_min: i < len(train_data)
-        return self.train(train_data, continue_condition, test_data=test_data)
+    def train_batch(self, X_train, y_train, X_test = None, y_test = None):
+        continue_condition = lambda i, error_min: i < len(X_train)
+        return self.train(X_train, y_train, continue_condition, X_test, y_test)
 
-    def train_online(self, train_data, test_data=None):
-        continue_condition = lambda i, error_min: error_min > MIN_ERROR_TRESHOLD and i < len(train_data)
-        return self.train(train_data, continue_condition, lambda: np.random.choice(len(train_data)), test_data)
-
-    def test(self, test_data):
-        correct_predictions = 0
-        for example in test_data:
-            if np.argmax(self.forward_propagation(example[:-1])) == np.argmax(example[-1]):
-                correct_predictions += 1
-
-        return correct_predictions / len(test_data)
+    def train_online(self, X_train, y_train, X_test = None, y_test = None):
+        continue_condition = lambda i, error_min: error_min > MIN_ERROR_TRESHOLD and i < len(X_train)
+        return self.train(X_train, y_train, continue_condition, lambda: np.random.choice(len(X_train)), X_test, y_test)
 
     def cuadratic_error(self, output, expected):
         error = 0
@@ -105,16 +96,16 @@ class MultilayerNetwork:
             error += pow(expected[j] - output[j], 2)
         return error
 
-    def cuadratic_mean_error(self, test_data):
+    def cuadratic_mean_error(self, X_test, y_test):
         error = 0
-        for i in range(len(test_data)):
-            output = self.forward_propagation(test_data[i][0])
-            expected = test_data[i][1]
+        for i in range(len(X_test)):
+            output = self.forward_propagation(X_test[i])
+            expected = y_test[i]
             error += self.cuadratic_error(output, expected)
 
-        return error / len(test_data)
+        return error / len(X_test)
 
-    def train(self, train_data, continue_condition, next_example_idx_generator=None, test_data=None):
+    def train(self, X_train, y_train, continue_condition, next_example_idx_generator=None, X_test = None, y_test = None):
         error_min = float('inf')
         w_min = self.layers_weights
         iterations = 0
@@ -131,14 +122,13 @@ class MultilayerNetwork:
             epoch_w_min = self.layers_weights
 
             while continue_condition(iteration, error_min):
-                example = train_data[
-                    next_example_idx_generator() if next_example_idx_generator is not None else iteration]
-                input = example[0]
-                output = example[1]
+                next_example_id = next_example_idx_generator() if next_example_idx_generator is not None else iteration
+                input = X_train[next_example_id]
+                output = y_train[next_example_id]
                 self.forward_propagation(input)
                 self.back_propagation(output)
 
-                epoch_error = self.cuadratic_mean_error(train_data)
+                epoch_error = self.cuadratic_mean_error(X_train, y_train)
                 if epoch_error < epoch_error_min:
                     epoch_error_min = epoch_error
                     epoch_w_min = self.layers_weights
@@ -149,15 +139,15 @@ class MultilayerNetwork:
             # use best epoch weights
             self.layers_weights = epoch_w_min
 
-            if test_data is not None:
-                epoch_test_accuracy = self.test(test_data)
+            if X_test is not None:
+                # epoch_test_accuracy = self.test(X_test) TODO implement accuracy
                 test_accuracies.append(epoch_test_accuracy)
                 
-                epoch_test_error = self.cuadratic_mean_error(test_data)
+                epoch_test_error = self.cuadratic_mean_error(X_test, y_test)
                 test_errors.append(epoch_test_error)
             else: epoch_test_accuracy = epoch_test_error = None
 
-            train_accuracies.append(self.test(train_data))
+            # train_accuracies.append(self.test(X_train)) TODO implement accuracy
             train_errors.append(epoch_error_min)
 
             if epoch_error_min < error_min:
@@ -167,7 +157,16 @@ class MultilayerNetwork:
             iterations += iteration  # add epoc iterations to total iterations
 
         self.layers_weights = w_min
-        print('Error min: {error_min}, iterations: {iterations}')
+
+        # max_train_accuracy = max(train_accuracies) TODO implement accuracy
+        # max_test_accuracy = max(test_accuracies) TODO implement accuracy
+        min_train_error = min(train_errors)
+        if X_test is None:
+            min_test_error = None
+        else: min_test_error = min(test_errors)
+        #            \nAccuracy max en training: {max_train_accuracy}\nAccuracy max en test: {max_test_accuracy}\
+        print(f'Error min en training: {min_train_error}\nError min en test: {min_test_error}\
+            \nIterations: {iterations}')
         # print("weights: ")
         # for i in range(len(self.layers_weights)):
         #     print("Layer ", i)
