@@ -38,13 +38,14 @@ class MultilayerNetwork:
                 np.random.uniform(low=-1, high=1, size=(self.layers_size[i + 1], self.layers_size[i] + 1)))
             # cantidad de pesos es lo que toma de input +1 por el BIAS
 
-    def forward_propagation(self, example):
+    def forward_propagation(self, example, start_layer=0):
         example = np.append(example, 1)  # add bias
         self.V = [example]
         self.H = [example]
-        for m in range(len(self.layers_weights) - 1):
+        for m in range(start_layer,len(self.layers_weights) - 1):
             self.H.append(np.append(np.dot(self.layers_weights[m], example), 1))
             self.V.append(self.act_func(self.H[-1]))
+            self.V[-1][-1] = 1
             example = self.V[-1]
 
         # output layer doesnt have BIAS

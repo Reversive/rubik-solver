@@ -9,7 +9,7 @@ from .data.font import SYMBOLS_IMAGE, SYMBOLS_VALUE
 
 VALUES_PER_INPUT = 7
 
-def train_guess_number(batch=False, act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=2000):
+def train_guess_number(batch=False, act_func_data=ActivationFunctions.EXP, learning_rate=0.05, epochs=200):
     BETA = 1
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
@@ -31,13 +31,20 @@ def train_guess_number(batch=False, act_func_data=ActivationFunctions.EXP, learn
     
     classify_result = scaler.inverse_transform([network.forward_propagation(X_train[0])])[0]
     expected_result = scaler.inverse_transform([X_train[0]])[0]
+    print(network.V[2])
+    print(network.H[2])
     print("Classify result: ", classify_result)
     visualize_output(classify_result)
     print("Expected result: ", expected_result)
     visualize_output(expected_result)
 
-    return train_accuracies, test_accuracies, train_errors, test_errors
+    return train_accuracies, test_accuracies, train_errors, test_errors, network, scaler
 
+def latent_space_exercise(network, scaler, latent_space, layer):
+    classify_result = scaler.inverse_transform([network.forward_propagation(latent_space, layer)])[0]
+    print("Classify result: ", classify_result)
+    visualize_output(classify_result)
+    
 def visualize_output(output):
     for num in output:
         for bit in bin(int(num)):
@@ -47,5 +54,11 @@ def visualize_output(output):
         
 if __name__ == "__main__":
     random.seed(123456789)
-    train_guess_number()
+    train_accuracies, test_accuracies, train_errors, test_errors, network, scaler = train_guess_number()
+    while(True):
+        print("Mandame los dos numeros")
+        a = float(input())
+        b = float(input())
+        latent_space_exercise(network, scaler, np.transpose([a, b]),2)
+    
     
