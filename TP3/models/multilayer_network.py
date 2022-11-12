@@ -42,7 +42,7 @@ class MultilayerNetwork:
         example = np.append(example, 1)  # add bias
         self.V = [example]
         self.H = [example]
-        for m in range(start_layer,len(self.layers_weights) - 1):
+        for m in range(start_layer, len(self.layers_weights) - 1):
             self.H.append(np.append(np.dot(self.layers_weights[m], example), 1))
             self.V.append(self.act_func(self.H[-1]))
             self.V[-1][-1] = 1
@@ -53,6 +53,9 @@ class MultilayerNetwork:
         self.V.append(self.act_func(self.H[-1]))
 
         return self.V[-1]
+
+    def forward_propagation_from_latent_space(self, example):
+        return self.forward_propagation(example, start_layer=int((len(self.layers_size)-1)/2))
 
     def back_propagation(self, expected_output):
         sigmas = Deque()
