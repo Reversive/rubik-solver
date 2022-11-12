@@ -1,8 +1,10 @@
 from typing import Deque
 import numpy as np
 import math
+import csv
 
 MIN_ERROR_TRESHOLD = np.exp(-10000)
+WEIGHTS_BACKUP_DIR = 'TP3/data/weights_backup.csv'
 
 class MultilayerNetwork:
     def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func,
@@ -171,9 +173,22 @@ class MultilayerNetwork:
         #            \nAccuracy max en training: {max_train_accuracy}\nAccuracy max en test: {max_test_accuracy}\
         print(f'Error min en training: {min_train_error}\nError min en test: {min_test_error}\
             \nIterations: {iterations}')
-        # print("weights: ")
-        # for i in range(len(self.layers_weights)):
-        #     print("Layer ", i)
-        #     print(self.layers_weights[i])
+        
+
+        with open(WEIGHTS_BACKUP_DIR, 'w') as file:
+            writer = csv.writer(file)
+            for layer_weights in self.layers_weights:
+                writer.writerow(layer_weights)
+
+            writer.writerow([])
+            writer.writerow(["epochs", "train_dataset_len"])
+            writer.writerow([self.epochs, len(X_train)])
 
         return train_accuracies, test_accuracies, train_errors, test_errors
+
+    def load_backup_weights(self):
+        with open(WEIGHTS_BACKUP_DIR, 'r') as file:
+            reader = csv.reader(file)
+            for i, row in enumerate(reader):
+                if i < len(self.layers_weights):
+                    self.layers_weights[i] = np.array(row).astype(float)
