@@ -1,0 +1,11 @@
+[general_config]
+#Can be latent_space_exercise, even_numbers, guess_numbers, guess_numbers_game
+exercise = latent_space_exercise
+load_backup_weights = False
+#Can be True, False
+noise = False
+epochs = 250
+learning_rate = 0.05
+#Can be TANH, EXP, RELU
+activation_function = EXP
+beta = 1

@@ -6,6 +6,7 @@ from .utils.activations_functions import ActivationFunctions
 import numpy as np
 import pandas as pd
 from .data.font import SYMBOLS_IMAGE, SYMBOLS_VALUE
+import configparser
 
 VALUES_PER_INPUT = 7
 
@@ -63,17 +64,30 @@ def visualize_output(output):
         
 if __name__ == "__main__":
     random.seed(123456789)
-    
-    # TODO: Add config file and readme with instructions
-    act_func_data=ActivationFunctions.EXP
-    train_accuracies, test_accuracies, train_errors, test_errors, network = \
-        train_guess_number(act_func_data=act_func_data, learning_rate=0.05, epochs=25000, 
-                load_backup_weights=True)
+    config = configparser.ConfigParser()
+    config.read("./TP3/config.yaml")
 
-    while(True):
-        print("Insert latent space numbers [0,1]")
-        a = float(input())
-        b = float(input())
-        latent_space_exercise(network, act_func_data.value["output_transform"], [a, b])
+    general_config = config["general_config"]
+    program_to_exec = general_config["exercise"]
+
+    learning_rate = float(general_config['learning_rate'])
+    epochs = int(general_config['epochs'])
+    act_func_data = ActivationFunctions[general_config['activation_function']]
+    beta = float(general_config['beta'])
+    noise = general_config['noise'] == 'True'
+    load_backup_weights = general_config['load_backup_weights'] == 'True'
+    # TODO: Add config file and readme with instructions
+    
+    
+    
+    train_accuracies, test_accuracies, train_errors, test_errors, network = \
+        train_guess_number(act_func_data=act_func_data, learning_rate=learning_rate, epochs=epochs, 
+                load_backup_weights=load_backup_weights)
+    if program_to_exec == "latent_space_exercise":
+        while(True):
+            print("Insert latent space numbers [0,1]")
+            a = float(input())
+            b = float(input())
+            latent_space_exercise(network, act_func_data.value["output_transform"], [a, b])
     
     
