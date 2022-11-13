@@ -10,14 +10,12 @@ import configparser
 
 VALUES_PER_INPUT = 7
 
-def train_guess_number(batch=False, act_func_data=ActivationFunctions.EXP, 
-                        learning_rate=0.05, epochs=1000, load_backup_weights=False):
+def create_network(act_func_data=ActivationFunctions.EXP,
+                        learning_rate=0.05, epochs=1000):
     BETA = 1
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
-    output_transform = act_func_data.value["output_transform"]    
-
-    network = MultilayerNetwork(
+    return MultilayerNetwork(
                                                 input_dim=      VALUES_PER_INPUT,
                                 hidden_layers_perceptron_qty=[  VALUES_PER_INPUT, 
                                                                 VALUES_PER_INPUT,
@@ -28,27 +26,20 @@ def train_guess_number(batch=False, act_func_data=ActivationFunctions.EXP,
                                 learning_rate=learning_rate, epochs=epochs,
                                 act_func=act_func, deriv_act_func=deriv_act_func)
 
-    X = output_transform.fit_transform(SYMBOLS_IMAGE) # input = expected output
-    X_train, X_test, y_train, y_test = train_test_split(X, X, test_size=0.5)
-
-    if load_backup_weights:
-        # Para tomar pesos del ultimo entrenamiento
-        network.load_backup_weights()
-    else:
-        # Para entrenar de cero:
-        if batch:
-            train_accuracies, test_accuracies, train_errors, test_errors = network.train_batch(X_train, y_train)
-        else: train_accuracies, test_accuracies, train_errors, test_errors = network.train_online(X_train, y_train)
+def train_guess_number(network, scaler,X_train, X_test, y_train, y_test, batch=False):
+    if batch:
+        train_accuracies, test_accuracies, train_errors, test_errors = network.train_batch(X_train, y_train)
+    else: train_accuracies, test_accuracies, train_errors, test_errors = network.train_online(X_train, y_train)
     
-    classify_result = output_transform.inverse_transform([network.forward_propagation(X_train[0])])[0]
-    expected_result = output_transform.inverse_transform([X_train[0]])[0]
+    classify_result = scaler.inverse_transform([network.forward_propagation(X_train[0])])[0]
+    expected_result = scaler.inverse_transform([X_train[0]])[0]
     print("Latent space of this classification: ", network.V[2])
     print("Classification result: ", classify_result)
     visualize_output(classify_result)
     print("Expected result: ", expected_result)
     visualize_output(expected_result)
 
-    return train_accuracies, test_accuracies, train_errors, test_errors, network
+    return train_accuracies, test_accuracies, train_errors, test_errors
 
 def latent_space_exercise(network, output_transform, latent_space):
     classify_result = output_transform.inverse_transform([network.forward_propagation_from_latent_space(latent_space)])[0]
@@ -73,21 +64,31 @@ if __name__ == "__main__":
     learning_rate = float(general_config['learning_rate'])
     epochs = int(general_config['epochs'])
     act_func_data = ActivationFunctions[general_config['activation_function']]
+    scaler = act_func_data.value["output_transform"]
     beta = float(general_config['beta'])
     noise = general_config['noise'] == 'True'
     load_backup_weights = general_config['load_backup_weights'] == 'True'
-    # TODO: Add config file and readme with instructions
+    test_size = float(general_config['test_size'])
     
+    X = scaler.fit_transform(SYMBOLS_IMAGE) # input = expected output
+    X_train, X_test, y_train, y_test = train_test_split(X, X, test_size=test_size)
+
+    network = create_network(act_func_data=act_func_data, 
+            learning_rate=learning_rate, 
+            epochs=epochs)
+
+    if load_backup_weights:
+        network.load_backup_weights()
+    else:
+        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(
+            network, scaler,  X_train, X_test, y_train, y_test,
+            batch = program_to_exec == "batch")
     
-    
-    train_accuracies, test_accuracies, train_errors, test_errors, network = \
-        train_guess_number(act_func_data=act_func_data, learning_rate=learning_rate, epochs=epochs, 
-                load_backup_weights=load_backup_weights)
     if program_to_exec == "latent_space_exercise":
         while(True):
             print("Insert latent space numbers [0,1]")
             a = float(input())
             b = float(input())
-            latent_space_exercise(network, act_func_data.value["output_transform"], [a, b])
+            latent_space_exercise(network, scaler, [a, b])
     
     

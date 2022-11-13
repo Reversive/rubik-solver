@@ -4,7 +4,7 @@ import math
 import csv
 
 MIN_ERROR_TRESHOLD = np.exp(-10000)
-WEIGHTS_BACKUP_DIR = 'TP3/data/weights_backup.csv'
+WEIGHTS_BACKUP_DIR = 'TP3/data/weights_backup.txt'
 
 class MultilayerNetwork:
     def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func,
@@ -176,19 +176,28 @@ class MultilayerNetwork:
         
 
         with open(WEIGHTS_BACKUP_DIR, 'w') as file:
-            writer = csv.writer(file)
+            file.write("Layers weights\n")
             for layer_weights in self.layers_weights:
-                writer.writerow(layer_weights)
+                for neuron_weights in layer_weights:
+                    for weight in neuron_weights:
+                        file.write(str(weight) + " ")
+                    file.write("\n")
 
-            writer.writerow([])
-            writer.writerow(["epochs", "train_dataset_len"])
-            writer.writerow([self.epochs, len(X_train)])
+            file.write("\nEpochs: " + str(self.epochs))
+            file.write("\train_dataset_len: " + str(len(X_train)))
 
         return train_accuracies, test_accuracies, train_errors, test_errors
 
     def load_backup_weights(self):
         with open(WEIGHTS_BACKUP_DIR, 'r') as file:
-            reader = csv.reader(file)
-            for i, row in enumerate(reader):
-                if i < len(self.layers_weights):
-                    self.layers_weights[i] = np.array(row).astype(float)
+            lines = file.readlines()
+            lineCount = 1 # skip headers
+
+            for i in range(len(self.layers_weights)):
+                for j in range(len(self.layers_weights[i])):
+                    neuron_weights = lines[i + lineCount + j].split()
+                    self.layers_weights[i][j] = np.array(neuron_weights).astype(float)
+
+                lineCount += len(self.layers_weights[i]) -1
+            
+            lineCount += len(self.layers_weights) -1
