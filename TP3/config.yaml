@@ -3,7 +3,7 @@
 exercise = latent_space_exercise
 #Can be latent_space_exercise, even_numbers, guess_numbers, guess_numbers_game
 
-load_backup_weights = False
+load_backup_weights = True
 #Can be True, False
 
 noise = False
