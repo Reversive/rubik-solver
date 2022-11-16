@@ -59,3 +59,4 @@ def corrupt(letter, corrupt_chance = 0.2):
             current_num += str(bit)
          corrupted_letter.append(int(current_num,2))
    return corrupted_letter
+   
