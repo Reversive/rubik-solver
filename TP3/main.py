@@ -11,8 +11,8 @@ import sys
 
 
 VALUES_PER_INPUT = 56
-LATENT_SPACE_DIM = 2
-def create_network(act_func_data=ActivationFunctions.EXP,
+
+def create_network(act_func_data=ActivationFunctions.EXP,latent_space_dim=70,
                         learning_rate=0.05, epochs=1000):
     BETA = 1
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
@@ -21,7 +21,7 @@ def create_network(act_func_data=ActivationFunctions.EXP,
                                                 input_dim=      VALUES_PER_INPUT,
                                 hidden_layers_perceptron_qty=[  VALUES_PER_INPUT, 
                                                                 VALUES_PER_INPUT,
-                                                                LATENT_SPACE_DIM,
+                                                                latent_space_dim,
                                                                 VALUES_PER_INPUT, 
                                                                 VALUES_PER_INPUT],
                                                 output_dim=     VALUES_PER_INPUT, 
@@ -36,12 +36,15 @@ def train_guess_number(network, scaler,X_train, X_test, y_train, y_test, batch=F
     # classify_result = scaler.inverse_transform([network.forward_propagation(X_train[0])])[0]
     # expected_result = scaler.inverse_transform([X_train[0]])[0]
     classify_result = network.forward_propagation(X_train[0])
-    expected_result = X_train[0]
+    expected_result = y_train[0]
+    noisy_result = X_train[0]
     print("Latent space of this classification: ", network.V[3])
     print("Classification result: ")
     visualize_output(classify_result)
     print("Expected result: ")
     visualize_output(expected_result)
+    print("Noisy result: ")
+    visualize_output(noisy_result)
 
     return train_accuracies, test_accuracies, train_errors, test_errors
 
@@ -51,7 +54,6 @@ def latent_space_exercise(network, latent_space):
     visualize_output(classify_result)
     
 def visualize_output(output):
-    print('')
     count = 0
     #TODO: imprimir con escala de grises
     for num in output:
@@ -87,11 +89,14 @@ if __name__ == "__main__":
     noise_factor = float(general_config['noise_factor'])
     load_backup_weights = general_config['load_backup_weights'] == 'True'
     test_size = float(general_config['test_size'])
+    latent_space_dim = int(general_config['latent_space_dim'])
     
     X = []
     for img in SYMBOLS_IMAGE:
         X.append(get_bit_image(img))
-    y = X
+    y = []
+    for img in SYMBOLS_IMAGE:
+        y.append(get_bit_image(img))
 
     for i in range(len(X)):
         for j in range(len(X[i])):
@@ -100,9 +105,8 @@ if __name__ == "__main__":
 
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
-    print(X[0])
     network = create_network(act_func_data=act_func_data, 
-            learning_rate=learning_rate, 
+            learning_rate=learning_rate, latent_space_dim=latent_space_dim,
             epochs=epochs)
 
     if load_backup_weights:
@@ -114,9 +118,10 @@ if __name__ == "__main__":
     
     if program_to_exec == "latent_space_exercise":
         while(True):
+            latent_space_array = []
             print("Insert latent space numbers [0,1]")
-            a = float(input())
-            b = float(input())
-            latent_space_exercise(network, [a, b])
+            for i in range(latent_space_dim):
+                latent_space_array.append(float(input()))
+            latent_space_exercise(network, latent_space_array)
     
     

@@ -38,25 +38,3 @@ SYMBOLS_IMAGE = [
    [0x08, 0x15, 0x02, 0x00, 0x00, 0x00, 0x00],   # 0x7e, ~
    [0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f, 0x1f]   # 0x7f, DEL
 ]
-
-def get_corrupted_array(corrupt_chance = 0.2):
-   corrupted_symbols_image = []
-   for letter in SYMBOLS_IMAGE:
-      corrupted_symbols_image.append(corrupt(letter,corrupt_chance))
-   return corrupted_symbols_image
-
-def corrupt(letter, corrupt_chance = 0.2):
-   corrupted_letter = []
-   for num in letter:
-         current_num = ""
-         count =  0
-         for bit in bin(int(num)):
-            count+=1
-            if(count == 1 or count == 2):
-               continue
-            if random.random() < corrupt_chance:
-               bit = abs(int(bit) - 1) #si es 0 va a 1 si es 1 va a 0
-            current_num += str(bit)
-         corrupted_letter.append(int(current_num,2))
-   return corrupted_letter
-   
