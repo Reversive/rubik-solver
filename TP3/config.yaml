@@ -6,10 +6,10 @@ exercise = latent_space_exercise
 load_backup_weights = Falae
 #Can be True, False
 
-noise = True
-noise_factor = 0.0
+noise = True #Este noise de true y false no interactua con el noise factor, si no quieren noise ponganlo en 0
+noise_factor = 0.1
 
-epochs = 2500
+epochs = 250
 
 learning_rate = 0.05
 #Can be TANH, EXP, RELU
