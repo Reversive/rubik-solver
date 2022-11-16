@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from .utils.activations_functions import ActivationFunctions
 import numpy as np
 import pandas as pd
-from .data.font import SYMBOLS_IMAGE, SYMBOLS_VALUE
+from .data.font import SYMBOLS_IMAGE, SYMBOLS_VALUE, corrupt, get_corrupted_array
 import configparser
 
 VALUES_PER_INPUT = 7
@@ -48,7 +48,11 @@ def latent_space_exercise(network, output_transform, latent_space):
     
 def visualize_output(output):
     for num in output:
+        count = 0
         for bit in bin(int(num)):
+            count +=1
+            if count == 0 or count == 1:
+                continue
             if bit == '1': print('#', end='')
             else: print(' ', end='')
         print('')
@@ -67,11 +71,16 @@ if __name__ == "__main__":
     scaler = act_func_data.value["output_transform"]
     beta = float(general_config['beta'])
     noise = general_config['noise'] == 'True'
+    noise_factor = float(general_config['noise_factor'])
     load_backup_weights = general_config['load_backup_weights'] == 'True'
     test_size = float(general_config['test_size'])
     
     X = scaler.fit_transform(SYMBOLS_IMAGE) # input = expected output
-    X_train, X_test, y_train, y_test = train_test_split(X, X, test_size=test_size)
+    y = scaler.fit_transform(SYMBOLS_IMAGE)
+    X = X + noise_factor * np.random.normal(loc=0.0, scale=1.0, size=X.shape)
+    X = np.clip(X, 0.0,1.0)
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
 
     network = create_network(act_func_data=act_func_data, 
             learning_rate=learning_rate, 
