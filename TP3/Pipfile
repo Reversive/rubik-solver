@@ -9,6 +9,7 @@ pandas = "*"
 configparser = "*"
 scikit-learn = "*"
 tensorflow = "*"
+matplotlib = "*"
 
 [dev-packages]
 
