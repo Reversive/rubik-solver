@@ -1,24 +1,24 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-from keras import layers
-from keras.layers import Conv2D, Conv2DTranspose, Input, Flatten, Dense, Lambda, Reshape
+from keras.layers import Input, Dense, Lambda
 from keras import backend as K
 from keras.models import Model
 from keras.metrics import binary_crossentropy
+from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import os
 from tensorflow.python.framework.ops import disable_eager_execution
 disable_eager_execution()
 
-IMAGES_QTY = 4
 IMAGES_PATH = "TP3/data/pokemon_images/"
 NUM_CHANNELS = 3 # RGB
 IMAGE_SIZE = 96
 INPUT_DIM = IMAGE_SIZE * IMAGE_SIZE * NUM_CHANNELS
 FIRST_INTERMEDIATE_DIM = 1024
 SECOND_INTERMEDIATE_DIM = 256
-LATENT_DIM = 2
+LATENT_DIM = 2 # tiene que ser 2 para poder ser graficado en un plot
+EPOCHS = 20
 
 def sampling(args: tuple):
     z_mean, z_log_var = args
@@ -28,37 +28,41 @@ def sampling(args: tuple):
     return z_mean + K.exp(z_log_var / 2) * epsilon  # h(z)
 
 def read_pokemon_images():
-    images = []
+    X = []
+    y = []
     for image_file_name in os.listdir(IMAGES_PATH):
         image = keras.preprocessing.image.load_img(IMAGES_PATH + image_file_name, target_size=(IMAGE_SIZE, IMAGE_SIZE))
         image = keras.preprocessing.image.img_to_array(image)
         image = image / 255.0
-        images.append(image)
+        X.append(image)
+        # get id in file name
+        image_id = image_file_name.split(".")[0].split("/")[-1]
+        y.append(int(image_id))
 
-    images = np.array(images)
+    X = np.array(X)
     # reshape so its a 4d array
-    images = images.reshape(-1, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS)
-    print(images.shape)
-    images = images.reshape((len(images), np.prod(images.shape[1:])))
-    print(images.shape)
-
+    X = X.reshape(-1, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS)
+    X = X.reshape((len(X), np.prod(X.shape[1:])))
 
     # example of image
     # plt.figure(figsize=(10, 10))
     # plt.imshow(images[0][:, :, 0])
     # plt.show()
 
-    return images
+    return X, y
 
 
 if __name__ == "__main__":
     # load input
-    x_train = y_train = read_pokemon_images()
+    X, y = read_pokemon_images()
+    X_train = X_test = X 
+    y_train = y_test = y
 
     # --------------------------- encoder ---------------------------
     x = Input(shape=(INPUT_DIM,), name="input")
     # intermediate layer
     h = Dense(FIRST_INTERMEDIATE_DIM, activation='relu', name="encoding")(x)
+    h = Dense(SECOND_INTERMEDIATE_DIM, activation='relu', name="encoding2")(x)
     # defining the mean of the latent space
     z_mean = Dense(LATENT_DIM, name="mean")(h)
     # defining the log variance of the latent space
@@ -73,6 +77,7 @@ if __name__ == "__main__":
     # --------------------------- decoder --------------------------- 
     input_decoder = Input(shape=(LATENT_DIM,), name="decoder_input")
     # taking the latent space to intermediate dimension
+    decoder_h = Dense(SECOND_INTERMEDIATE_DIM, activation='relu', name="decoder_h2")(input_decoder)
     decoder_h = Dense(FIRST_INTERMEDIATE_DIM, activation='relu', name="decoder_h")(input_decoder)
     # getting the mean from the original dimension
     x_decoded = Dense(INPUT_DIM, activation='sigmoid', name="flat_decoded")(decoder_h)
@@ -97,17 +102,24 @@ if __name__ == "__main__":
     vae.compile(loss=vae_loss)
     vae.summary()
 
-    vae.fit(x_train, x_train,
-        epochs=300,
-        batch_size=IMAGES_QTY)
+    vae.fit(X_train, X_train,
+        epochs=EPOCHS)
+    
+    # Para ver el rango de latent space
+    x_test_encoded = encoder.predict(X_test)[0]
+    plt.figure(figsize=(6, 6))
+    plt.scatter(x_test_encoded[:,0], x_test_encoded[:,1], c=y_test, cmap='viridis')
+    plt.colorbar()
+    plt.show()
 
-    n = 5  # generate nxn samples
+
+    n = 10  # generate nxn samples
     figure = np.zeros((IMAGE_SIZE * n, IMAGE_SIZE * n, NUM_CHANNELS))
 
     #Create a Grid of latent variables, to be provided as inputs to decoder.predict
     #Creating vectors within range -5 to 5 as that seems to be the range in latent space
-    grid_x = np.linspace(-5, 5, n)
-    grid_y = np.linspace(-5, 5, n)[::-1]
+    grid_x = np.linspace(0.05, 0.95, n)
+    grid_y = np.linspace(0.05, 0.95, n)[::-1]
 
     # decoder for each square in the grid
     for i, yi in enumerate(grid_y):

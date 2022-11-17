@@ -1,11 +1,10 @@
 import random
 from .models.multilayer_network import MultilayerNetwork
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
 from .utils.activations_functions import ActivationFunctions
 import numpy as np
 import pandas as pd
-from .data.font import SYMBOLS_IMAGE, SYMBOLS_VALUE, corrupt, get_corrupted_array
+from .data.font import SYMBOLS_IMAGE, SYMBOLS_VALUE
 import configparser
 import sys
 
