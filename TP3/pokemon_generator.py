@@ -8,6 +8,7 @@ from keras.metrics import binary_crossentropy
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import os
+from .visualizations.graphs import generate_latent_space_matrix_plot
 from tensorflow.python.framework.ops import disable_eager_execution
 disable_eager_execution()
 
@@ -105,34 +106,12 @@ if __name__ == "__main__":
     vae.fit(X_train, X_train,
         epochs=EPOCHS)
     
-    # Para ver el rango de latent space
-    x_test_encoded = encoder.predict(X_test)[0]
-    plt.figure(figsize=(6, 6))
-    plt.scatter(x_test_encoded[:,0], x_test_encoded[:,1], c=y_test, cmap='viridis')
-    plt.colorbar()
-    plt.show()
+    # Para ver el rango de latent space?
+    
+    # x_test_encoded = encoder.predict(X_test)[0]
+    # plt.figure(figsize=(6, 6))
+    # plt.scatter(x_test_encoded[:,0], x_test_encoded[:,1], c=y_test, cmap='viridis')
+    # plt.colorbar()
+    # plt.show()
 
-
-    n = 10  # generate nxn samples
-    figure = np.zeros((IMAGE_SIZE * n, IMAGE_SIZE * n, NUM_CHANNELS))
-
-    #Create a Grid of latent variables, to be provided as inputs to decoder.predict
-    #Creating vectors within range -5 to 5 as that seems to be the range in latent space
-    grid_x = np.linspace(0.05, 0.95, n)
-    grid_y = np.linspace(0.05, 0.95, n)[::-1]
-
-    # decoder for each square in the grid
-    for i, yi in enumerate(grid_y):
-        for j, xi in enumerate(grid_x):
-            z_sample = np.array([[xi, yi]])
-            x_decoded = decoder.predict(z_sample)
-            image = x_decoded[0].reshape(IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS)
-            figure[i * IMAGE_SIZE: (i + 1) * IMAGE_SIZE,
-                j * IMAGE_SIZE: (j + 1) * IMAGE_SIZE] = image
-
-    plt.figure(figsize=(10, 10))
-    fig_shape = np.shape(figure)
-    figure = figure.reshape((fig_shape[0], fig_shape[1], fig_shape[2]))
-
-    plt.imshow(figure)
-    plt.show()  
+    generate_latent_space_matrix_plot(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 10)

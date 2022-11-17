@@ -1,7 +1,7 @@
 [general_config]
 
-exercise = latent_space_exercise
-#Can be latent_space_exercise, even_numbers, guess_numbers, guess_numbers_game
+exercise = latent_plot
+#Can be latent_space_exercise, latent_plot
 
 load_backup_weights = False
 #Can be True, False
@@ -19,5 +19,8 @@ activation_function = EXP
 latent_space_dim = 2
 
 test_size = 0.5
+
+batch_training = False
+#Can be True, False
 
 beta = 1

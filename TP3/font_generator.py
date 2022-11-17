@@ -7,9 +7,12 @@ import pandas as pd
 from .data.font import SYMBOLS_IMAGE, SYMBOLS_VALUE
 import configparser
 import sys
+from .visualizations.graphs import generate_latent_space_matrix_plot
 
 
-VALUES_PER_INPUT = 56
+IMAGE_WIDTH = 8
+IMAGE_HEIGHT = 7
+INPUT_SIZE = 7*IMAGE_WIDTH
 
 def create_network(act_func_data=ActivationFunctions.EXP,latent_space_dim=70,
                         learning_rate=0.05, epochs=1000):
@@ -17,33 +20,32 @@ def create_network(act_func_data=ActivationFunctions.EXP,latent_space_dim=70,
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
     return MultilayerNetwork(
-                                                input_dim=      VALUES_PER_INPUT,
-                                hidden_layers_perceptron_qty=[  VALUES_PER_INPUT, 
-                                                                VALUES_PER_INPUT,
+                                                input_dim=      INPUT_SIZE,
+                                hidden_layers_perceptron_qty=[  INPUT_SIZE, 
+                                                                IMAGE_WIDTH,
                                                                 latent_space_dim,
-                                                                VALUES_PER_INPUT, 
-                                                                VALUES_PER_INPUT],
-                                                output_dim=     VALUES_PER_INPUT, 
+                                                                IMAGE_WIDTH, 
+                                                                INPUT_SIZE],
+                                                output_dim=     INPUT_SIZE, 
                                 learning_rate=learning_rate, epochs=epochs,
                                 act_func=act_func, deriv_act_func=deriv_act_func)
 
-def train_guess_number(network, scaler,X_train, X_test, y_train, y_test, batch=False):
+def train_guess_number(network, X_train, X_test, y_train, y_test, batch=False, noise=False):
     if batch:
         train_accuracies, test_accuracies, train_errors, test_errors = network.train_batch(X_train, y_train)
     else: train_accuracies, test_accuracies, train_errors, test_errors = network.train_online(X_train, y_train)
     
-    # classify_result = scaler.inverse_transform([network.forward_propagation(X_train[0])])[0]
-    # expected_result = scaler.inverse_transform([X_train[0]])[0]
     classify_result = network.forward_propagation(X_train[0])
     expected_result = y_train[0]
     noisy_result = X_train[0]
     print("Latent space of this classification: ", network.V[3])
-    print("Classification result: ")
+    print("Network output: ")
     visualize_output(classify_result)
     print("Expected result: ")
     visualize_output(expected_result)
-    print("Noisy result: ")
-    visualize_output(noisy_result)
+    if noise:
+        print("Network input: ")
+        visualize_output(noisy_result)
 
     return train_accuracies, test_accuracies, train_errors, test_errors
 
@@ -78,6 +80,7 @@ if __name__ == "__main__":
 
     general_config = config["general_config"]
     program_to_exec = general_config["exercise"]
+    batch = general_config["batch_training"] == "True"
 
     learning_rate = float(general_config['learning_rate'])
     epochs = int(general_config['epochs'])
@@ -112,8 +115,8 @@ if __name__ == "__main__":
         network.load_backup_weights()
     else:
         train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(
-            network, scaler,  X_train, X_test, y_train, y_test,
-            batch = program_to_exec == "batch")
+            network=network, X_train=X_train, X_test=X_test, y_train=y_train, 
+            y_test=y_test, batch = batch, noise = noise)
     
     if program_to_exec == "latent_space_exercise":
         while(True):
@@ -122,5 +125,7 @@ if __name__ == "__main__":
             for i in range(latent_space_dim):
                 latent_space_array.append(float(input()))
             latent_space_exercise(network, latent_space_array)
-    
+    elif program_to_exec == "latent_plot":
+        generate_latent_space_matrix_plot(network.forward_propagation_from_latent_space, IMAGE_WIDTH, IMAGE_HEIGHT, 1, 10)
+
     
