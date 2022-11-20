@@ -1,26 +1,23 @@
 [general_config]
 
-exercise = latent_plot
-#Can be latent_space_exercise, latent_plot
+exercise = latent_space_exercise
+#Can be latent_space_exercise, even_numbers, guess_numbers, guess_numbers_game
 
 load_backup_weights = False
 #Can be True, False
 
 noise = True #Este noise de true y false no interactua con el noise factor, si no quieren noise ponganlo en 0
-noise_factor = 0.0
+noise_factor = 0.3
 
-epochs = 2500
+epochs = 250
 
 learning_rate = 0.05
 #Can be TANH, EXP, RELU
 
 activation_function = EXP
 
-latent_space_dim = 2
+latent_space_dim = 70
 
 test_size = 0.5
-
-batch_training = False
-#Can be True, False
 
 beta = 1
