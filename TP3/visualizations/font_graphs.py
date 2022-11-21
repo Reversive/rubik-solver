@@ -55,7 +55,7 @@ def plot_error_and_accuracy_changing_adam():
 
 def plot_error_and_accuracy_changing_layers():
     possible_hidden_layers_dim = [
-        [   LATENT_SPACE_DIM    ],
+        [   LATENT_SPACE_DIM   ],
         [   INPUT_SIZE,
             LATENT_SPACE_DIM,
             INPUT_SIZE],

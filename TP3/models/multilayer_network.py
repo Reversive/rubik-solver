@@ -5,16 +5,19 @@ import csv
 
 MIN_ERROR_TRESHOLD = np.exp(-10000)
 WEIGHTS_BACKUP_DIR = 'TP3/data/weights_backup.txt'
+ADAPTATIVE_LEARNING_RATE_ALPHA = 0.01
+ADAPTATIVE_LEARNING_RATE_BETA = 0.03
 
 class MultilayerNetwork:
     def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func,
-                 deriv_act_func, momentum_alpha = 0.8, with_adam=False):
+                 deriv_act_func, momentum_alpha = 0.8, with_adam=False, adaptative_learning_rate = False):
         self.act_func = act_func
         self.deriv_act_func = deriv_act_func
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.output_dim = output_dim
-
+        self.error_consistent_since = 0
+        self.adaptative_learning_rate = adaptative_learning_rate
         self.hidden_layers_perceptron_qty = hidden_layers_perceptron_qty
         self.layers_size = [input_dim] + hidden_layers_perceptron_qty + [output_dim]
         self.layers_weights = []
@@ -142,6 +145,8 @@ class MultilayerNetwork:
             
             train_indexes = list(range(len(X_train)))
             np.random.shuffle(train_indexes)
+            self.update_learning_rate(train_errors)
+
             for i in train_indexes:
                 # ONLINE TRAINING
                 input = X_train[i]
@@ -151,7 +156,6 @@ class MultilayerNetwork:
 
             epoch_error = self.cuadratic_mean_error(X_train, y_train)
             self.t += 1
-
 
             if X_test is not None:
                 epoch_test_accuracy = self.accuracy(X_test, y_test)
@@ -191,6 +195,23 @@ class MultilayerNetwork:
             file.write("\train_dataset_len: " + str(len(X_train)))
 
         return train_accuracies, test_accuracies, train_errors, test_errors
+
+    def update_learning_rate(self, errors):
+        if(self.adaptative_learning_rate and len(errors) > 3):
+            error_was_increasing = errors[-2] > errors[-3]
+            error_is_increasing = errors[-1] > errors[-2]
+            if error_was_increasing != error_is_increasing:
+                # changed direction
+                self.error_consistent_since = 0
+            else:
+                self.error_consistent_since += 1
+                if self.error_consistent_since > 2:
+                    if error_is_increasing:
+                        self.learning_rate -= ADAPTATIVE_LEARNING_RATE_BETA*self.learning_rate
+                    else:
+                        self.learning_rate += ADAPTATIVE_LEARNING_RATE_ALPHA
+
+        return self.learning_rate
 
     def load_backup_weights(self):
         with open(WEIGHTS_BACKUP_DIR, 'r') as file:

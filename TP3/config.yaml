@@ -9,6 +9,9 @@ load_backup_weights = False
 with_adam = True
 #Can be True, False
 
+adaptative_learning_rate = True
+#Can be True, False
+
 noise = True #Este noise de true y false no interactua con el noise factor, si no quieren noise ponganlo en 0
 noise_factor = 0.3
 

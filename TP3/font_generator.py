@@ -19,8 +19,13 @@ def create_network(act_func_data=ActivationFunctions.LOGISTICA,latent_space_dim=
                                                                 IMAGE_WIDTH,
                                                                 2,
                                                                 IMAGE_WIDTH, 
+<<<<<<< HEAD
                                                                 INPUT_SIZE], momentum_alpha=0,
                         learning_rate=0.05, epochs=1000, with_adam=False):
+=======
+                                                                INPUT_SIZE],
+                        learning_rate=0.05, epochs=1000, with_adam=False, adaptative_learning_rate=False):
+>>>>>>> 572f265631e073e2f5f81aead5d763b9dd9b52e1
     BETA = 1
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
@@ -29,7 +34,12 @@ def create_network(act_func_data=ActivationFunctions.LOGISTICA,latent_space_dim=
                                 hidden_layers_perceptron_qty=hidden_layers_dim,
                                                 output_dim=     INPUT_SIZE, 
                                 learning_rate=learning_rate, epochs=epochs,
+<<<<<<< HEAD
                                 act_func=act_func, momentum_alpha=momentum_alpha,deriv_act_func=deriv_act_func, with_adam=with_adam)
+=======
+                                act_func=act_func, deriv_act_func=deriv_act_func, with_adam=with_adam,
+                                adaptative_learning_rate=adaptative_learning_rate)
+>>>>>>> 572f265631e073e2f5f81aead5d763b9dd9b52e1
 
 def train_guess_number(network, X_train, X_test, y_train, y_test, noise=False, verbose=True):
     train_accuracies, test_accuracies, train_errors, test_errors = network.train(X_train, y_train, X_test, y_test)
@@ -92,11 +102,10 @@ def get_config():
     latent_space_dim = int(general_config['latent_space_dim'])
     with_adam = general_config['with_adam'] == 'True'
     momentum_alpha = float(general_config['momentum_alpha'])
-    return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim, with_adam, momentum_alpha
-
+    return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim, with_adam, adaptative_learning_rate,momentum_alpha
 
 def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.LOGISTICA, 
-                noise=False, noise_factor=0.0, test_size=0.2, with_adam=False, momentum_alpha=0.0,
+                noise=False, noise_factor=0.0, test_size=0, with_adam=False, momentum_alpha=0.0,adaptative_learning_rate=False,
                 hidden_layers_dim=[ INPUT_SIZE, 
                                     IMAGE_WIDTH,
                                     2,
@@ -123,7 +132,7 @@ def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFun
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
     network = create_network(act_func_data=act_func_data, 
             learning_rate=learning_rate, hidden_layers_dim=hidden_layers_dim, momentum_alpha=momentum_alpha,
-            epochs=epochs, with_adam=with_adam)
+            epochs=epochs, adaptative_learning_rate=adaptative_learning_rate,with_adam=with_adam)
 
     train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(
             network=network, X_train=X_train, X_test=X_test, y_train=y_train, 
@@ -136,7 +145,7 @@ if __name__ == "__main__":
     random.seed(123456789)
     program_to_exec, learning_rate, epochs, act_func_data, scaler, \
     beta, noise, noise_factor, load_backup_weights, test_size, \
-    latent_space_dim, with_adam = get_config()
+    latent_space_dim, with_adam, adaptative_learning_rate = get_config()
     
     X = []
     for img in SYMBOLS_IMAGE:
@@ -160,7 +169,7 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
     network = create_network(act_func_data=act_func_data, 
             learning_rate=learning_rate, hidden_layers_dim=hidden_layers_dim,
-            epochs=epochs, with_adam=with_adam)
+            epochs=epochs, with_adam=with_adam, adaptative_learning_rate=adaptative_learning_rate)
 
     if load_backup_weights:
         network.load_backup_weights()
