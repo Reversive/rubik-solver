@@ -15,7 +15,7 @@ IMAGE_HEIGHT = 7
 INPUT_SIZE = 7*IMAGE_WIDTH
 
 def create_network(act_func_data=ActivationFunctions.EXP,latent_space_dim=70,
-                        learning_rate=0.05, epochs=1000):
+                        learning_rate=0.05, epochs=1000, with_adam=False):
     BETA = 1
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
@@ -28,7 +28,7 @@ def create_network(act_func_data=ActivationFunctions.EXP,latent_space_dim=70,
                                                                 INPUT_SIZE],
                                                 output_dim=     INPUT_SIZE, 
                                 learning_rate=learning_rate, epochs=epochs,
-                                act_func=act_func, deriv_act_func=deriv_act_func)
+                                act_func=act_func, deriv_act_func=deriv_act_func, with_adam=with_adam)
 
 def train_guess_number(network, X_train, X_test, y_train, y_test, noise=False):
     train_accuracies, test_accuracies, train_errors, test_errors = network.train(X_train, y_train, X_test, y_test)
@@ -36,7 +36,7 @@ def train_guess_number(network, X_train, X_test, y_train, y_test, noise=False):
     classify_result = network.forward_propagation(X_train[0])
     expected_result = y_train[0]
     noisy_result = X_train[0]
-    print("Latent space of this classification: ", network.V[3])
+    print("Latent space of this classification: ", network.V[int(np.floor(len(network.V)/2))])
     print("Network output: ")
     visualize_output(classify_result)
     print("Expected result: ")
@@ -88,7 +88,8 @@ def get_config():
     load_backup_weights = general_config['load_backup_weights'] == 'True'
     test_size = float(general_config['test_size'])
     latent_space_dim = int(general_config['latent_space_dim'])
-    return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim
+    with_adam = general_config['with_adam'] == 'True'
+    return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim, with_adam
 
 
 def latent_space_run(learning_rate=0.05, epochs=2000, act_func_data=ActivationFunctions.EXP, beta=1, noise=True, noise_factor=0.0, test_size=0.5, latent_space_dim=2):
@@ -119,7 +120,9 @@ def latent_space_run(learning_rate=0.05, epochs=2000, act_func_data=ActivationFu
 
 if __name__ == "__main__":
     random.seed(123456789)
-    program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim = get_config()
+    program_to_exec, learning_rate, epochs, act_func_data, scaler, \
+    beta, noise, noise_factor, load_backup_weights, test_size, \
+    latent_space_dim, with_adam = get_config()
     
     X = []
     for img in SYMBOLS_IMAGE:
@@ -138,7 +141,7 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
     network = create_network(act_func_data=act_func_data, 
             learning_rate=learning_rate, latent_space_dim=latent_space_dim,
-            epochs=epochs)
+            epochs=epochs, with_adam=with_adam)
 
     if load_backup_weights:
         network.load_backup_weights()

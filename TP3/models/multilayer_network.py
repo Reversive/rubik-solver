@@ -8,7 +8,7 @@ WEIGHTS_BACKUP_DIR = 'TP3/data/weights_backup.txt'
 
 class MultilayerNetwork:
     def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func,
-                 deriv_act_func, momentum_alpha = 0.8):
+                 deriv_act_func, momentum_alpha = 0.8, with_adam=False):
         self.act_func = act_func
         self.deriv_act_func = deriv_act_func
         self.learning_rate = learning_rate
@@ -20,21 +20,24 @@ class MultilayerNetwork:
         self.layers_weights = []
 
         # adam
-        # self.momentum_alpha = 0.001
-        # self.beta_1 = 0.9
-        # self.beta_2 = 0.999
-        # self.adam_error = 10 ^ -8
-        # self.t = 1
-        # self.adam_m = []
-        # self.adam_v = []
+        self.with_adam = with_adam
+        if with_adam:
+            self.momentum_alpha = 0.001
+            self.beta_1 = 0.9
+            self.beta_2 = 0.999
+            self.adam_error = 10 ^ -8
+            self.t = 1
+            self.adam_m = []
+            self.adam_v = []
+            for i in range(len(self.layers_size) - 1):
+                self.adam_m.append(np.zeros([self.layers_size[i + 1], self.layers_size[i] + 1]))
+                self.adam_v.append(np.zeros([self.layers_size[i + 1], self.layers_size[i] + 1]))
 
         # momentum
         self.deltas = []
         self.momentum_alpha = momentum_alpha
 
         for i in range(len(self.layers_size) - 1):
-            # self.adam_m.append(np.zeros(self.layers_size[i + 1]))
-            # self.adam_v.append(np.zeros(self.layers_size[i + 1]))
             self.deltas.append(np.zeros([self.layers_size[i + 1], self.layers_size[i] + 1]))
             self.layers_weights.append(
                 np.random.uniform(low=-1, high=1, size=(self.layers_size[i + 1], self.layers_size[i] + 1)))
@@ -67,7 +70,10 @@ class MultilayerNetwork:
             sigmas.appendleft(self.deriv_act_func(self.H[m + 1]) * np.dot(self.layers_weights[m + 1].T, sigmas[0]))
             sigmas[0] = sigmas[0][:-1]  # remove bias of the one just added
 
-        self.gradient_descent(sigmas)
+        if self.with_adam:
+            self.adam(sigmas)
+        else:
+            self.gradient_descent(sigmas)
 
     def gradient_descent(self, sigmas):
         for m in range(len(self.layers_weights)):
@@ -77,17 +83,16 @@ class MultilayerNetwork:
         for m in range(len(self.layers_weights)):
             self.layers_weights[m] += self.deltas[m]
 
-    # def adam(self, sigmas):
-    #     for m in range(len(self.layers_weights)):
-    #         # g_t = sigmas, tita = self.layers_weights
-    #         self.adam_m[m] = self.beta_1 * self.adam_m[m] + (1 - self.beta_1) * sigmas[m]
-    #         self.adam_v[m] = self.beta_2 * self.adam_v[m] + (1 - self.beta_2) * np.power(sigmas[m], 2)
-    #         adam_prime_m = self.adam_m[m] / (1 - (np.power(self.beta_1, self.t)))
-    #         adam_prime_v = self.adam_v[m] / (1 - (np.power(self.beta_2, self.t)))
-    #
-    #         self.layers_weights[m] = np.subtract(np.matrix(self.layers_weights[m]),
-    #                                              self.momentum_alpha * np.matrix(adam_prime_m).T / (
-    #                                                      np.sqrt(adam_prime_v) + self.adam_error))
+    def adam(self, sigmas):
+        for m in range(len(self.layers_weights)):
+            g = np.dot(np.matrix(sigmas[m]).T, np.matrix(self.V[m]))
+            # tita = self.layers_weights
+            self.adam_m[m] = self.beta_1 * self.adam_m[m] + (1 - self.beta_1) * g
+            self.adam_v[m] = self.beta_2 * self.adam_v[m] + (1 - self.beta_2) * np.square(g)
+            adam_m_hat = self.adam_m[m] / (1 - (np.power(self.beta_1, self.t)))
+            adam_v_hat = self.adam_v[m] / (1 - (np.power(self.beta_2, self.t)))
+    
+            self.layers_weights[m] -= self.momentum_alpha * adam_m_hat / (np.sqrt(adam_v_hat) + self.adam_error)
 
     def cuadratic_error(self, output, expected):
         error = 0
