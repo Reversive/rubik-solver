@@ -8,7 +8,7 @@ from keras.metrics import binary_crossentropy
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import os
-from .visualizations.graphs import generate_latent_space_matrix_plot
+from .visualizations.utils import generate_latent_space_matrix_plot
 from tensorflow.python.framework.ops import disable_eager_execution
 disable_eager_execution()
 
