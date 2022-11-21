@@ -76,14 +76,14 @@ def guess_variating_noise():
     legends = []
 
     for i in range(N):
-        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(act_func_data=ActivationFunctions.EXP,noisy_test=True)
+        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(act_func_data=ActivationFunctions.LOGISTICA,noisy_test=True)
         curve_exp.append(test_accuracies)
         train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(act_func_data=ActivationFunctions.TANH, noisy_test=True)
         curve_tanh.append(test_accuracies)
         # testeroo_errors.append(test_accuracies)
 
 
-    legends.append(f"Act: EXP")
+    legends.append(f"Act: LOGISTICA")
     legends.append(f"Act: TANH")
 
     plot_accuracy_of_epochs_curves_with_legend(curve_exp + curve_tanh, N, legends=legends,y_axis_label="Accuracy")

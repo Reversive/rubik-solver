@@ -3,7 +3,7 @@ from enum import Enum
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
 
 TANH_FUNC = lambda x, BETA: np.tanh(BETA * x)
-EXP_FUNC = lambda x, BETA: 1/(1+np.exp(-2*BETA*x))
+LOGISTICA_FUNC = lambda x, BETA: 1/(1+np.exp(-2*BETA*x))
 class ActivationFunctions(Enum):
     SIGN = {
         "act_func": lambda x, BETA: np.sign(x*BETA),
@@ -20,9 +20,9 @@ class ActivationFunctions(Enum):
         "deriv_act_func" : lambda x, BETA: BETA*(1 - TANH_FUNC(x, BETA)**2),
         "output_transform": MinMaxScaler(feature_range=(-1,1))
     }
-    EXP = {
-        "act_func": EXP_FUNC, 
-        "deriv_act_func" : lambda x, BETA: EXP_FUNC(x, BETA)*(1 - EXP_FUNC(x, BETA)),
+    LOGISTICA = {
+        "act_func": LOGISTICA_FUNC, 
+        "deriv_act_func" : lambda x, BETA: LOGISTICA_FUNC(x, BETA)*(1 - LOGISTICA_FUNC(x, BETA)),
         "output_transform": MinMaxScaler() # default range is (0,1)
     }
     RELU = {

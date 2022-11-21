@@ -12,6 +12,6 @@ umbral = 0
 [linear_classifier]
 
 [nolinear_classifier]
-#Can be TANH, EXP, RELU
-activation_function = EXP
+#Can be TANH, LOGISTICA, RELU
+activation_function = LOGISTICA
 beta = 1

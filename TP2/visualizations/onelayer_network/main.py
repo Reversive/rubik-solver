@@ -18,7 +18,7 @@ def epochs_accuracy_evolution_crossvalidation():
 
 def epochs_accuracy_evolution_test_division(dataset_df):
     classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.EXP,
+                        act_functions=ActivationFunctions.LOGISTICA,
                         BETA=0.5)
 
     curves = []
@@ -46,7 +46,7 @@ def accurracy_vs_epochs_over_beta_evolution(dataset_df):
     for i in [5,10,20]:
         for j in range(N):
             classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.EXP,
+                        act_functions=ActivationFunctions.LOGISTICA,
                         BETA=i/10)
             train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
             # curves.append(train_accuracies)
@@ -63,7 +63,7 @@ def accurracy_vs_epochs_over_learning_rate(dataset_df):
     for i in [0.1,0.5,1,2]:
         for j in range(N):
             classifier = NoLinearClassifier(dataset_df, learning_rate=i/10, epochs=250,
-                        act_functions=ActivationFunctions.EXP,
+                        act_functions=ActivationFunctions.LOGISTICA,
                         BETA=1.0)
             train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
             curves.append(train_accuracies)
@@ -96,7 +96,7 @@ def act_function(dataset_df):
     N = 10
     for i in range(N):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.EXP,
+                        act_functions=ActivationFunctions.LOGISTICA,
                         BETA=1.0)
         train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
         curve_exp.append(test_errors)
@@ -111,7 +111,7 @@ def act_function(dataset_df):
         train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
         curve_relu.append(test_errors)
         # curves.append(train_accuracies)
-    legends.append(f"Act: EXP")
+    legends.append(f"Act: LOGISTICA")
     legends.append(f"Act: TANH")
     legends.append(f"Act: RELU")
 
@@ -126,14 +126,14 @@ def train_vs_batch(dataset_df):
     online_test = []
     for i in range(N):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.EXP,
+                        act_functions=ActivationFunctions.LOGISTICA,
                         BETA=1.0)
         train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=True)
 
         batch_train.append(train_accuracies)
         batch_test.append(test_accuracies)
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.EXP,
+                        act_functions=ActivationFunctions.LOGISTICA,
                         BETA=1.0)
         train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7,batch_train=False)
         online_train.append(train_accuracies)
@@ -153,7 +153,7 @@ def plot_accuracy_of_epochs_simple_perceptron():
     test = []
     for i in range(N):
         classifier = NoLinearClassifier(dataset_df, learning_rate=0.05, epochs=250,
-                        act_functions=ActivationFunctions.EXP,
+                        act_functions=ActivationFunctions.LOGISTICA,
                         BETA=1.0)
         train_accuracies, test_accuracies, train_errors, test_errors = classifier.execute(train_data_ratio=0.7)
         train.append(train_accuracies)

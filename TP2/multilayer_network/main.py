@@ -13,7 +13,7 @@ ROWS_PER_NUMBER = 7
 COLUMNS_PER_NUMBER = 5
 
 
-def xor_exercise(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.EXP, BETA=1, batch=False):
+def xor_exercise(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.LOGISTICA, BETA=1, batch=False):
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
     output_transform = act_func_data.value["output_transform"]
@@ -53,7 +53,7 @@ def xor_exercise(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctio
 
 
 def even_numbers_exercise(learning_rate=0.05, epochs=250, BETA=1, 
-            noisy_test=False, batch=False, momentum=0.8, train_percentage=0.7, act_func_data=ActivationFunctions.EXP):
+            noisy_test=False, batch=False, momentum=0.8, train_percentage=0.7, act_func_data=ActivationFunctions.LOGISTICA):
     BETA = 1
     ROWS_PER_NUMBER = 7
     COLUMNS_PER_NUMBER = 5
@@ -86,7 +86,7 @@ def even_numbers_exercise(learning_rate=0.05, epochs=250, BETA=1,
     return train_accuracies, test_accuracies, train_errors, test_errors
 
 
-def train_guess_number(noisy_test=True, batch=False, train_percentage=1.0, act_func_data=ActivationFunctions.EXP, 
+def train_guess_number(noisy_test=True, batch=False, train_percentage=1.0, act_func_data=ActivationFunctions.LOGISTICA, 
                         learning_rate=0.05, epochs=250, BETA = 1):
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
@@ -134,7 +134,7 @@ def guess_numbers_exercise(noise, learning_rate, epochs, act_func_data, beta):
     # print_results(multilayer_network, train_dataset)
 
 
-def interactive_guess_numbers(learning_rate=0.05, epochs=1000, act_func_data=ActivationFunctions.EXP, beta=1):
+def interactive_guess_numbers(learning_rate=0.05, epochs=1000, act_func_data=ActivationFunctions.LOGISTICA, beta=1):
     act_func = lambda x: act_func_data.value["act_func"](x, beta)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, beta)
     output_transform = act_func_data.value["output_transform"]

@@ -20,7 +20,7 @@ class ActivationFunctions(Enum):
         "deriv_act_func" : lambda x, BETA: BETA*(1 - TANH_FUNC(x, BETA)**2),
         "output_transform": MinMaxScaler(feature_range=(-1,1))
     }
-    EXP = {
+    LOGISTICA = {
         "act_func": EXP_FUNC, 
         "deriv_act_func" : lambda x, BETA: EXP_FUNC(x, BETA)*(1 - EXP_FUNC(x, BETA)),
         "output_transform": MinMaxScaler() # default range is (0,1)

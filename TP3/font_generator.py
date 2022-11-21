@@ -14,7 +14,7 @@ IMAGE_WIDTH = 8
 IMAGE_HEIGHT = 7
 INPUT_SIZE = 7*IMAGE_WIDTH
 
-def create_network(act_func_data=ActivationFunctions.EXP,latent_space_dim=70,
+def create_network(act_func_data=ActivationFunctions.LOGISTICA,latent_space_dim=70,
                                         hidden_layers_dim=[  INPUT_SIZE, 
                                                                 IMAGE_WIDTH,
                                                                 2,
@@ -94,14 +94,13 @@ def get_config():
     return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim, with_adam
 
 
-def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.EXP, 
-                noise=True, noise_factor=0.0, test_size=0, 
-                with_adam=False,
-                hidden_layers_dim=[  INPUT_SIZE, 
-                                                                IMAGE_WIDTH,
-                                                                2,
-                                                                IMAGE_WIDTH, 
-                                                                INPUT_SIZE]):
+def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.LOGISTICA, 
+                noise=False, noise_factor=0.0, test_size=0, with_adam=False,
+                hidden_layers_dim=[ INPUT_SIZE, 
+                                    IMAGE_WIDTH,
+                                    2,
+                                    IMAGE_WIDTH, 
+                                    INPUT_SIZE]):
     X = []
     for img in SYMBOLS_IMAGE:
         X.append(get_bit_image(img))
@@ -113,7 +112,6 @@ def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFun
         for j in range(len(X[i])):
             X[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
         X[i] = np.clip(X[i], 0.0, 1.0)
-
 
     if test_size == 0:
         X_train = X
