@@ -39,6 +39,8 @@ def generate_latent_space_matrix_plot(predict, input_width, input_height, num_ch
     #Creating vectors within range -5 to 5 as that seems to be the range in latent space
     min_range = 0.05
     max_range = 0.95
+    # min_range = -5
+    # max_range = 5
 
     grid_x = np.linspace(min_range, max_range, n)
     grid_y = np.linspace(min_range, max_range, n)[::-1]

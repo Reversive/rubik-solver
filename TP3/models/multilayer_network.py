@@ -102,14 +102,33 @@ class MultilayerNetwork:
             error += pow(expected[j] - output[j], 2)
         return error
 
-    def cuadratic_mean_error(self, X_test, y_test):
+    def cuadratic_mean_error(self, X, y):
         error = 0
-        for i in range(len(X_test)):
-            output = self.forward_propagation(X_test[i])
-            expected = y_test[i]
+        for i in range(len(X)):
+            output = self.forward_propagation(X[i])
+            expected = y[i]
             error += self.cuadratic_error(output, expected)
 
-        return error / len(X_test)
+        return error / len(X)
+
+    def accuracy(self, X, y):
+        correct = 0
+        for i in range(len(X)):
+            output = self.forward_propagation(X[i])
+            expected = y[i]
+
+            output_is_correct = True
+            j = 0
+            output_rounded = output.round()
+            while output_is_correct and j < len(output):
+                output_is_correct = output_rounded[j] == expected[j]
+                j += 1
+
+            if output_is_correct:
+                correct += 1
+            
+
+        return correct / len(X)
 
     def train(self, X_train, y_train, continue_condition, next_example_idx_generator=None, X_test = None, y_test = None):
         error_min = float('inf')
@@ -146,14 +165,14 @@ class MultilayerNetwork:
             self.layers_weights = epoch_w_min
 
             if X_test is not None:
-                # epoch_test_accuracy = self.test(X_test) TODO implement accuracy
+                epoch_test_accuracy = self.accuracy(X_test, y_test)
                 test_accuracies.append(epoch_test_accuracy)
                 
                 epoch_test_error = self.cuadratic_mean_error(X_test, y_test)
                 test_errors.append(epoch_test_error)
             else: epoch_test_accuracy = epoch_test_error = None
 
-            # train_accuracies.append(self.test(X_train)) TODO implement accuracy
+            train_accuracies.append(self.accuracy(X_train, y_train))
             train_errors.append(epoch_error_min)
 
             if epoch_error_min < error_min:
@@ -164,15 +183,13 @@ class MultilayerNetwork:
 
         self.layers_weights = w_min
 
-        # max_train_accuracy = max(train_accuracies) TODO implement accuracy
-        # max_test_accuracy = max(test_accuracies) TODO implement accuracy
+        max_train_accuracy = max(train_accuracies)
+        max_test_accuracy = max(test_accuracies) if X_test is not None else None
         min_train_error = min(train_errors)
-        if X_test is None:
-            min_test_error = None
-        else: min_test_error = min(test_errors)
-        #            \nAccuracy max en training: {max_train_accuracy}\nAccuracy max en test: {max_test_accuracy}\
+        min_test_error = min(test_errors) if X_test is not None else None
         print(f'Error min en training: {min_train_error}\nError min en test: {min_test_error}\
-            \nIterations: {iterations}')
+                   \nAccuracy max en training: {max_train_accuracy}\nAccuracy max en test: {max_test_accuracy}\
+                    \nIterations: {iterations}')
         
 
         with open(WEIGHTS_BACKUP_DIR, 'w') as file:

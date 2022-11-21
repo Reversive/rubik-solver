@@ -32,8 +32,8 @@ def create_network(act_func_data=ActivationFunctions.EXP,latent_space_dim=70,
 
 def train_guess_number(network, X_train, X_test, y_train, y_test, batch=False, noise=False):
     if batch:
-        train_accuracies, test_accuracies, train_errors, test_errors = network.train_batch(X_train, y_train)
-    else: train_accuracies, test_accuracies, train_errors, test_errors = network.train_online(X_train, y_train)
+        train_accuracies, test_accuracies, train_errors, test_errors = network.train_batch(X_train, y_train, X_test, y_test)
+    else: train_accuracies, test_accuracies, train_errors, test_errors = network.train_online(X_train, y_train, X_test, y_test)
     
     classify_result = network.forward_propagation(X_train[0])
     expected_result = y_train[0]
@@ -94,7 +94,7 @@ def get_config():
     return program_to_exec, batch, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim
 
 
-def latent_space_run(batch=False, learning_rate=0.05, epochs=2000, act_func_data=EXP, beta=1, noise=True, noise_factor=0.0, test_size=0.5, latent_space_dim=2):
+def latent_space_run(batch=False, learning_rate=0.05, epochs=2000, act_func_data=ActivationFunctions.EXP, beta=1, noise=True, noise_factor=0.0, test_size=0.5, latent_space_dim=2):
     scaler = act_func_data.value["output_transform"]
     X = []
     for img in SYMBOLS_IMAGE:
@@ -135,6 +135,7 @@ if __name__ == "__main__":
     for i in range(len(X)):
         for j in range(len(X[i])):
             X[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
+            
         X[i] = np.clip(X[i], 0.0,1.0)
 
 

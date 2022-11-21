@@ -19,7 +19,7 @@ INPUT_DIM = IMAGE_SIZE * IMAGE_SIZE * NUM_CHANNELS
 FIRST_INTERMEDIATE_DIM = 1024
 SECOND_INTERMEDIATE_DIM = 256
 LATENT_DIM = 2 # tiene que ser 2 para poder ser graficado en un plot
-EPOCHS = 20
+EPOCHS = 300
 
 def sampling(args: tuple):
     z_mean, z_log_var = args
@@ -108,10 +108,10 @@ if __name__ == "__main__":
     
     # Para ver el rango de latent space?
     
-    # x_test_encoded = encoder.predict(X_test)[0]
-    # plt.figure(figsize=(6, 6))
-    # plt.scatter(x_test_encoded[:,0], x_test_encoded[:,1], c=y_test, cmap='viridis')
-    # plt.colorbar()
-    # plt.show()
+    x_test_encoded = encoder.predict(X_test)[0]
+    plt.figure(figsize=(6, 6))
+    plt.scatter(x_test_encoded[:,0], x_test_encoded[:,1], c=y_test, cmap='viridis')
+    plt.colorbar()
+    plt.show()
 
     generate_latent_space_matrix_plot(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 10)

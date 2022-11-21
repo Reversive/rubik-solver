@@ -9,7 +9,7 @@ load_backup_weights = False
 noise = True #Este noise de true y false no interactua con el noise factor, si no quieren noise ponganlo en 0
 noise_factor = 0.3
 
-epochs = 250
+epochs = 2500
 
 learning_rate = 0.05
 #Can be TANH, EXP, RELU
@@ -18,6 +18,9 @@ activation_function = EXP
 
 latent_space_dim = 70
 
-test_size = 0.5
+batch_training = False
+#Can be True, False
+
+test_size = 0.7
 
 beta = 1
