@@ -8,7 +8,7 @@ def plot_accuracy_of_epochs_curves_with_legend(curves, N, legends, y_axis_label=
     colors = sns.color_palette("hls", len(legends))
     for i in range(int(len(curves) / N)):
         aux_avg, aux_std = get_average_and_std(curves[i * N:(i + 1) * N])
-        plt.errorbar(iters, aux_avg, fmt='-', elinewidth=0.3,yerr=aux_std)
+        plt.errorbar(iters, aux_avg, fmt='-', elinewidth=0.3, yerr=aux_std)
     # for i in range(len(curves)):
     #     plt.plot(iters, curves[i], label=legends[i], color=colors[i])
 
@@ -16,6 +16,7 @@ def plot_accuracy_of_epochs_curves_with_legend(curves, N, legends, y_axis_label=
     plt.xlabel(x_axis_label)
     plt.ylabel(y_axis_label)
     plt.show()
+
 
 def get_average_and_std(curves):
     average = []
@@ -31,12 +32,13 @@ def get_average_and_std(curves):
 
     return average, std
 
+
 def generate_latent_space_matrix_plot(predict, input_width, input_height, num_channels, n):
     # generate nxn samples
     figure = np.zeros((input_width * n, input_height * n, num_channels))
 
-    #Create a Grid of latent variables, to be provided as inputs to decoder.predict
-    #Creating vectors within range -5 to 5 as that seems to be the range in latent space
+    # Create a Grid of latent variables, to be provided as inputs to decoder.predict
+    # Creating vectors within range -5 to 5 as that seems to be the range in latent space
     min_range = 0.05
     max_range = 0.95
     # min_range = -5
@@ -52,7 +54,7 @@ def generate_latent_space_matrix_plot(predict, input_width, input_height, num_ch
             x_decoded = predict(z_sample)
             image = x_decoded.reshape(input_width, input_height, num_channels)
             figure[i * input_width: (i + 1) * input_width,
-                j * input_height: (j + 1) * input_height] = image
+            j * input_height: (j + 1) * input_height] = image
 
     plt.figure(figsize=(10, 10))
     fig_shape = np.shape(figure)
@@ -62,5 +64,8 @@ def generate_latent_space_matrix_plot(predict, input_width, input_height, num_ch
         plt.imshow(figure, cmap='Greys_r')
     else:
         plt.imshow(figure)
-    plt.show()  
 
+    plt.axis('off')
+    plt.savefig('TP3/ui/utils/pokemon.png', bbox_inches='tight', pad_inches=0)
+    plt.axis('on')
+    # plt.show()
