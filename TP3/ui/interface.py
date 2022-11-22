@@ -7,7 +7,7 @@ from .utils.variables import *
 
 
 def set_interface(screen):
-    screen.fill(LIGHT_BLUE)
+    screen.fill(BLACK)
 
 
 def scale(value, max_value):
