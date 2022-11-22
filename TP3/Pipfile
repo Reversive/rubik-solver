@@ -11,6 +11,9 @@ scikit-learn = "*"
 tensorflow = "*"
 matplotlib = "*"
 seaborn = "*"
+# tensorflow-macos = "*"
+# tensorflow-metal = "*"
+pygame = "*"
 
 [dev-packages]
 
