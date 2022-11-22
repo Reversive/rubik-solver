@@ -1,0 +1,10 @@
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+LIGHT_BLUE = (235, 245, 255)
+SCALE = 0.5
+ZERO = 0
+MIN_RANGE = 0.05
+MAX_RANGE = 0.95
+ICON_PATH = 'TP3/ui/utils/images/gengar.png'
+IMAGE_PATH = 'TP3/ui/utils/images/pokemon.png'
+CAPTION = 'SIA TP3 - Grupo 1'

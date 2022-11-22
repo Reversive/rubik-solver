@@ -8,18 +8,22 @@ from keras.metrics import binary_crossentropy
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import os
+
+from .ui.interface import Interface
 from .visualizations.utils import generate_latent_space_matrix_plot
 from tensorflow.python.framework.ops import disable_eager_execution
+
 disable_eager_execution()
 
 IMAGES_PATH = "TP3/data/pokemon_images/"
-NUM_CHANNELS = 3 # RGB
+NUM_CHANNELS = 3  # RGB
 IMAGE_SIZE = 96
 INPUT_DIM = IMAGE_SIZE * IMAGE_SIZE * NUM_CHANNELS
 FIRST_INTERMEDIATE_DIM = 1024
 SECOND_INTERMEDIATE_DIM = 256
-LATENT_DIM = 2 # tiene que ser 2 para poder ser graficado en un plot
+LATENT_DIM = 2  # tiene que ser 2 para poder ser graficado en un plot
 EPOCHS = 300
+
 
 def sampling(args: tuple):
     z_mean, z_log_var = args
@@ -27,6 +31,7 @@ def sampling(args: tuple):
     print(z_log_var)
     epsilon = K.random_normal(shape=(K.shape(z_mean)[0], LATENT_DIM), mean=0.)
     return z_mean + K.exp(z_log_var / 2) * epsilon  # h(z)
+
 
 def read_pokemon_images():
     X = []
@@ -56,7 +61,7 @@ def read_pokemon_images():
 if __name__ == "__main__":
     # load input
     X, y = read_pokemon_images()
-    X_train = X_test = X 
+    X_train = X_test = X
     y_train = y_test = y
 
     # --------------------------- encoder ---------------------------
@@ -75,7 +80,7 @@ if __name__ == "__main__":
     # print out summary of what we just did
     encoder.summary()
 
-    # --------------------------- decoder --------------------------- 
+    # --------------------------- decoder ---------------------------
     input_decoder = Input(shape=(LATENT_DIM,), name="decoder_input")
     # taking the latent space to intermediate dimension
     decoder_h = Dense(SECOND_INTERMEDIATE_DIM, activation='relu', name="decoder_h2")(input_decoder)
@@ -86,32 +91,37 @@ if __name__ == "__main__":
     decoder = Model(input_decoder, x_decoded, name="decoder")
     decoder.summary()
 
-    # --------------------------- VAE --------------------------- 
+    # --------------------------- VAE ---------------------------
     # grab the output. Recall, that we need to grab the 3rd element our sampling z
     output_combined = decoder(encoder(x)[2])
     # link the input and the overall output
     vae = Model(x, output_combined)
     # print out what the overall model looks like
     vae.summary()
+
+
     def vae_loss(x: tf.Tensor, x_decoded_mean: tf.Tensor):
         # Aca se computa la cross entropy entre los "labels" x que son los valores 0/1 de los pixeles, y lo que salió al final del Decoder.
-        xent_loss = INPUT_DIM * binary_crossentropy(x, x_decoded_mean) # x-^X
+        xent_loss = INPUT_DIM * binary_crossentropy(x, x_decoded_mean)  # x-^X
         kl_loss = - 0.5 * K.sum(1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis=-1)
         vae_loss = K.mean(xent_loss + kl_loss)
         return vae_loss
+
 
     vae.compile(loss=vae_loss)
     vae.summary()
 
     vae.fit(X_train, X_train,
-        epochs=EPOCHS)
-    
+            epochs=EPOCHS)
+
     # Para ver el rango de latent space?
-    
+
     x_test_encoded = encoder.predict(X_test)[0]
     plt.figure(figsize=(6, 6))
-    plt.scatter(x_test_encoded[:,0], x_test_encoded[:,1], c=y_test, cmap='viridis')
+    plt.scatter(x_test_encoded[:, 0], x_test_encoded[:, 1], c=y_test, cmap='viridis')
     plt.colorbar()
-    plt.show()
+    plt.show(block=False)
 
     generate_latent_space_matrix_plot(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 10)
+    interface = Interface(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS)
+    interface.show_interface()

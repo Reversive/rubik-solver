@@ -1,11 +1,6 @@
 from ..font_generator import latent_space_run
 from .utils import plot_accuracy_of_epochs_curves_with_legend
 from ..utils.activations_functions import ActivationFunctions
-IMAGE_WIDTH = 8
-IMAGE_HEIGHT = 7
-INPUT_SIZE = 7*IMAGE_WIDTH
-LATENT_SPACE_DIM = 2
-
 
 
 
@@ -83,32 +78,27 @@ def plot_error_and_accuracy_changing_noise_factor():
     plot_accuracy_of_epochs_curves_with_legend(accuracies_by_experiment, N, legends=legends, y_axis_label="Accuracy")
 
 def plot_error_and_accuracy_changing_layers():
-    possible_hidden_layers_dim = [
-        [   LATENT_SPACE_DIM   ],
-        [   INPUT_SIZE,
-            LATENT_SPACE_DIM,
-            INPUT_SIZE],
-        [   INPUT_SIZE, 
-            IMAGE_WIDTH*LATENT_SPACE_DIM,
-            LATENT_SPACE_DIM,
-            IMAGE_WIDTH*LATENT_SPACE_DIM, 
-            INPUT_SIZE],
-        [   INPUT_SIZE, 
-            IMAGE_WIDTH*LATENT_SPACE_DIM,
+    IMAGE_WIDTH = 8
+    IMAGE_HEIGHT = 7
+    INPUT_SIZE = 7*IMAGE_WIDTH # 56
+    HALF_INPUT_SIZE = int(INPUT_SIZE/2) # 28
+    LATENT_SPACE_DIM = 2
+
+    possible_left_hidden_layers_dim = [
+        [      ],
+        [   IMAGE_WIDTH*LATENT_SPACE_DIM # 14
+        ],
+        [   HALF_INPUT_SIZE],
+        [   HALF_INPUT_SIZE, 
+            IMAGE_WIDTH*LATENT_SPACE_DIM # 14
+        ],
+        [   HALF_INPUT_SIZE, 
+            IMAGE_WIDTH*LATENT_SPACE_DIM, # 14
+            IMAGE_WIDTH],
+        [   HALF_INPUT_SIZE, 
+            IMAGE_WIDTH*LATENT_SPACE_DIM, # 14
             IMAGE_WIDTH,
-            LATENT_SPACE_DIM,
-            IMAGE_WIDTH,
-            IMAGE_WIDTH*LATENT_SPACE_DIM, 
-            INPUT_SIZE],
-        [   INPUT_SIZE, 
-            IMAGE_WIDTH*LATENT_SPACE_DIM,
-            IMAGE_WIDTH,
-            LATENT_SPACE_DIM*LATENT_SPACE_DIM,
-            LATENT_SPACE_DIM,
-            LATENT_SPACE_DIM*LATENT_SPACE_DIM,
-            IMAGE_WIDTH,
-            IMAGE_WIDTH*LATENT_SPACE_DIM, 
-            INPUT_SIZE],
+            LATENT_SPACE_DIM*LATENT_SPACE_DIM],
     ]
 
     N = 5
@@ -116,7 +106,8 @@ def plot_error_and_accuracy_changing_layers():
     accuracies_by_experiment = []
     legends = []
 
-    for hidden_layers_dim in possible_hidden_layers_dim:
+    for left_hidden_layers_dim in possible_left_hidden_layers_dim:
+        hidden_layers_dim = left_hidden_layers_dim + [LATENT_SPACE_DIM] + left_hidden_layers_dim[::-1]
         print("Experimenting with hidden layers: ", hidden_layers_dim)
         for _ in range(N):
             train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(
@@ -126,7 +117,7 @@ def plot_error_and_accuracy_changing_layers():
             errors_by_experiment.append(train_errors)
             accuracies_by_experiment.append(train_accuracies)
 
-        legends.append("Hidden layers: " + str(hidden_layers_dim))
+        legends.append("Left hidden layers: " + str(left_hidden_layers_dim))
 
 
     plot_accuracy_of_epochs_curves_with_legend(errors_by_experiment, N, legends=legends, y_axis_label="Error")

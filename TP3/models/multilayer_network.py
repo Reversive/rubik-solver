@@ -192,7 +192,7 @@ class MultilayerNetwork:
                     file.write("\n")
 
             file.write("\nEpochs: " + str(self.epochs))
-            file.write("\train_dataset_len: " + str(len(X_train)))
+            file.write("\tTrain_dataset_len: " + str(len(X_train)))
 
         return train_accuracies, test_accuracies, train_errors, test_errors
 
