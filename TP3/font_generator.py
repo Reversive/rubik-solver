@@ -30,7 +30,7 @@ def create_network(act_func_data=ActivationFunctions.LOGISTICA,latent_space_dim=
                                                 output_dim=     INPUT_SIZE, 
                                 learning_rate=learning_rate, epochs=epochs,
                                 act_func=act_func, deriv_act_func=deriv_act_func, with_adam=with_adam,
-                                momentum_alpha=momentum_alpha, daptative_learning_rate=adaptative_learning_rate)
+                                momentum_alpha=momentum_alpha, adaptative_learning_rate=adaptative_learning_rate)
 
 def train_guess_number(network, X_train, X_test, y_train, y_test, noise=False, verbose=True):
     train_accuracies, test_accuracies, train_errors, test_errors = network.train(X_train, y_train, X_test, y_test)
