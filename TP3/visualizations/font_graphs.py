@@ -13,11 +13,11 @@ def plot_error_and_accuracy_changing_act_function():
     N = 5
     errors_by_experiment = []
     accuracies_by_experiment = []
-    legends = ["Signo","TanH","Logistica","ReLU"]
-    activation_functions = [ActivationFunctions.SIGN, ActivationFunctions.TANH, ActivationFunctions.LOGISTICA,  ActivationFunctions.RELU]
+    legends = ["Signo","TanH","Logistica"]
+    activation_functions = [ActivationFunctions.SIGN, ActivationFunctions.TANH, ActivationFunctions.LOGISTICA]
     for i in activation_functions:
         for j in range(N):
-            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(act_func_data=i,momentum_alpha=0.0,with_adam=True)
+            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(act_func_data=i,momentum_alpha=0.8,with_adam=False)
             errors_by_experiment.append(train_errors)
             accuracies_by_experiment.append(train_accuracies)
     plot_accuracy_of_epochs_curves_with_legend(errors_by_experiment, N, legends=legends, y_axis_label="Error")
@@ -52,6 +52,35 @@ def plot_error_and_accuracy_changing_adam():
     plot_accuracy_of_epochs_curves_with_legend(errors_by_experiment, N, legends=legends, y_axis_label="Error")
     plot_accuracy_of_epochs_curves_with_legend(accuracies_by_experiment, N, legends=legends, y_axis_label="Accuracy")
 
+
+def plot_error_and_accuracy_changing_learning_rate():
+    N = 5
+    errors_by_experiment = []
+    accuracies_by_experiment = []
+    legends = ["Adaptative learning rate: True", "Adaptative learning rate: False"]
+    cases = [True, False]
+    for i in cases:
+        for j in range(N):
+            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(act_func_data=ActivationFunctions.LOGISTICA,momentum_alpha=0.2,with_adam=False,adaptative_learning_rate=i)
+            errors_by_experiment.append(train_errors)
+            accuracies_by_experiment.append(train_accuracies)
+    plot_accuracy_of_epochs_curves_with_legend(errors_by_experiment, N, legends=legends, y_axis_label="Error")
+    plot_accuracy_of_epochs_curves_with_legend(accuracies_by_experiment, N, legends=legends, y_axis_label="Accuracy")
+
+def plot_error_and_accuracy_changing_noise_factor():
+    N = 5
+    errors_by_experiment = []
+    accuracies_by_experiment = []
+    legends = []
+    cases = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]
+    for i in cases:
+        for j in range(N):
+            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(act_func_data=ActivationFunctions.LOGISTICA,momentum_alpha=0.8,with_adam=True,noise=True,noise_factor=i)
+            errors_by_experiment.append(train_errors)
+            accuracies_by_experiment.append(train_accuracies)
+        legends.append("Noise Factor: " + str(i))
+    plot_accuracy_of_epochs_curves_with_legend(errors_by_experiment, N, legends=legends, y_axis_label="Error")
+    plot_accuracy_of_epochs_curves_with_legend(accuracies_by_experiment, N, legends=legends, y_axis_label="Accuracy")
 
 def plot_error_and_accuracy_changing_layers():
     possible_hidden_layers_dim = [
