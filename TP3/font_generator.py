@@ -20,7 +20,8 @@ def create_network(act_func_data=ActivationFunctions.LOGISTICA,latent_space_dim=
                                                             2,
                                                             16, 
                                                             28],
-                        learning_rate=0.05, epochs=1000, with_adam=False, momentum_alpha=0,adaptative_learning_rate=False):
+                        learning_rate=0.05, epochs=1000, with_adam=False, momentum_alpha=0,adaptative_learning_rate=False,
+                        noise = False, noise_factor=0):
     BETA = 1
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
     deriv_act_func = lambda x: act_func_data.value["deriv_act_func"](x, BETA)
@@ -29,9 +30,10 @@ def create_network(act_func_data=ActivationFunctions.LOGISTICA,latent_space_dim=
                                 hidden_layers_perceptron_qty=hidden_layers_dim,
                                                 output_dim=     INPUT_SIZE, 
                                 learning_rate=learning_rate, epochs=epochs,
+                                noise = noise, noise_factor=noise_factor,
                                 act_func=act_func, momentum_alpha=momentum_alpha,deriv_act_func=deriv_act_func, with_adam=with_adam, adaptative_learning_rate=adaptative_learning_rate)
 
-def train_guess_number(network, X_train, X_test, y_train, y_test, noise=False, verbose=True):
+def train_guess(network, X_train, X_test, y_train, y_test, noise=False, verbose=True):
     train_accuracies, test_accuracies, train_errors, test_errors = network.train(X_train, y_train, X_test, y_test)
     
     classify_result = network.forward_propagation(X_train[0])
@@ -110,11 +112,6 @@ def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFun
     for img in SYMBOLS_IMAGE:
         y.append(get_bit_image(img))
 
-    if noise:
-        for i in range(len(X)):
-            for j in range(len(X[i])):
-                X[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
-            X[i] = np.clip(X[i], 0.0, 1.0)
 
     if test_size == 0:
         X_train = X
@@ -128,7 +125,7 @@ def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFun
             hidden_layers_dim=hidden_layers_dim, momentum_alpha=momentum_alpha,
             epochs=epochs, adaptative_learning_rate=adaptative_learning_rate,with_adam=with_adam)
 
-    train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(
+    train_accuracies, test_accuracies, train_errors, test_errors = train_guess(
             network=network, X_train=X_train, X_test=X_test, y_train=y_train, 
             y_test=y_test, noise = noise, verbose=False)
     return train_accuracies, test_accuracies, train_errors, test_errors
@@ -149,13 +146,9 @@ if __name__ == "__main__":
         y.append(get_bit_image(img))
 
     if noise:
-        for i in range(len(X)):
-            for j in range(len(X[i])):
-                X[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
-                
-            X[i] = np.clip(X[i], 0.0, 1.0)
-
-    hidden_layers_dim = [  28, 
+        hidden_layers_dim = [56]
+    else:
+        hidden_layers_dim = [  28, 
                             16,
                             2,
                             16, 
@@ -171,14 +164,15 @@ if __name__ == "__main__":
 
     network = create_network(act_func_data=act_func_data, learning_rate=learning_rate, 
             hidden_layers_dim=hidden_layers_dim, momentum_alpha=momentum_alpha,
-            epochs=epochs, adaptative_learning_rate=adaptative_learning_rate,with_adam=with_adam)
+            epochs=epochs, adaptative_learning_rate=adaptative_learning_rate,with_adam=with_adam,
+            noise = noise, noise_factor=noise_factor)
     
     if load_backup_weights:
         network.load_backup_weights()
     else:
-        train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(
+        train_accuracies, test_accuracies, train_errors, test_errors = train_guess(
             network=network, X_train=X_train, X_test=X_test, y_train=y_train, 
-            y_test=y_test, noise = noise)
+            y_test=y_test)
     
     if program_to_exec == "latent_space_exercise":
         while(True):

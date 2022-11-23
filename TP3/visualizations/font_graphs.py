@@ -86,17 +86,17 @@ def plot_error_and_accuracy_changing_layers():
 
     possible_left_hidden_layers_dim = [
         [      ],
-        [   IMAGE_WIDTH*LATENT_SPACE_DIM # 14
+        [   IMAGE_WIDTH*LATENT_SPACE_DIM # 16
         ],
         [   HALF_INPUT_SIZE],
         [   HALF_INPUT_SIZE, 
-            IMAGE_WIDTH*LATENT_SPACE_DIM # 14
+            IMAGE_WIDTH*LATENT_SPACE_DIM # 16
         ],
         [   HALF_INPUT_SIZE, 
-            IMAGE_WIDTH*LATENT_SPACE_DIM, # 14
+            IMAGE_WIDTH*LATENT_SPACE_DIM, # 16
             IMAGE_WIDTH],
         [   HALF_INPUT_SIZE, 
-            IMAGE_WIDTH*LATENT_SPACE_DIM, # 14
+            IMAGE_WIDTH*LATENT_SPACE_DIM, # 16
             IMAGE_WIDTH,
             LATENT_SPACE_DIM*LATENT_SPACE_DIM],
     ]
@@ -118,6 +118,54 @@ def plot_error_and_accuracy_changing_layers():
             accuracies_by_experiment.append(train_accuracies)
 
         legends.append("Left hidden layers: " + str(left_hidden_layers_dim))
+
+
+    plot_accuracy_of_epochs_curves_with_legend(errors_by_experiment, N, legends=legends, y_axis_label="Error")
+
+    plot_accuracy_of_epochs_curves_with_legend(accuracies_by_experiment, N, legends=legends, y_axis_label="Accuracy")
+
+    
+
+def plot_error_and_accuracy_changing_layers_denoising():
+    IMAGE_WIDTH = 8
+    IMAGE_HEIGHT = 7
+    INPUT_SIZE = 7*IMAGE_WIDTH # 56
+    HALF_INPUT_SIZE = int(INPUT_SIZE/2) # 28
+    LATENT_SPACE_DIM = 2
+
+    possible_hidden_layers_dim = [
+        [   HALF_INPUT_SIZE, 
+            LATENT_SPACE_DIM,
+            HALF_INPUT_SIZE
+        ],
+        [   INPUT_SIZE, 
+            HALF_INPUT_SIZE,
+            INPUT_SIZE
+        ],
+        [   INPUT_SIZE  ],
+
+        [   INPUT_SIZE + HALF_INPUT_SIZE  ],
+        
+        [   INPUT_SIZE *2  ],
+    ]
+
+    N = 5
+    errors_by_experiment = []
+    accuracies_by_experiment = []
+    legends = []
+
+    for hidden_layers_dim in possible_hidden_layers_dim:
+        print("Experimenting with hidden layers: ", hidden_layers_dim)
+        for _ in range(N):
+            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(
+                noise=True, noise_factor=0.1,
+                hidden_layers_dim=hidden_layers_dim, epochs=1000, with_adam=True, adaptative_learning_rate=True, momentum_alpha=0.5
+            )
+
+            errors_by_experiment.append(train_errors)
+            accuracies_by_experiment.append(train_accuracies)
+
+        legends.append("Hidden layers: " + str(hidden_layers_dim))
 
 
     plot_accuracy_of_epochs_curves_with_legend(errors_by_experiment, N, legends=legends, y_axis_label="Error")
