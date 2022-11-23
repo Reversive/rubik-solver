@@ -10,7 +10,7 @@ ADAPTATIVE_LEARNING_RATE_BETA = 0.03
 
 class MultilayerNetwork:
     def __init__(self, hidden_layers_perceptron_qty, input_dim, output_dim, learning_rate, epochs, act_func,
-                 deriv_act_func, momentum_alpha = 0.8, with_adam=False, adaptative_learning_rate = False):
+                 deriv_act_func, momentum_alpha = 0.8, with_adam=False, adaptative_learning_rate = False, noise = False, noise_factor = 0):
         self.act_func = act_func
         self.deriv_act_func = deriv_act_func
         self.learning_rate = learning_rate
@@ -21,6 +21,9 @@ class MultilayerNetwork:
         self.hidden_layers_perceptron_qty = hidden_layers_perceptron_qty
         self.layers_size = [input_dim] + hidden_layers_perceptron_qty + [output_dim]
         self.layers_weights = []
+
+        self.noise = noise
+        self.noise_factor = noise_factor
 
         # adam
         self.with_adam = with_adam
@@ -130,6 +133,14 @@ class MultilayerNetwork:
             
 
         return correct / len(X)
+    
+    def add_noise(self, X):
+        for i in range(len(X)):
+            for j in range(len(X[i])):
+                X[i][j] += self.noise_factor * np.random.normal(loc=0.0, scale=1.0)
+            X[i] = np.clip(X[i], 0.0, 1.0)
+
+        return X + np.random.normal(0, self.noise, X.shape)
 
     def train(self, X_train, y_train, X_test = None, y_test = None):
         error_min = float('inf')
@@ -141,20 +152,24 @@ class MultilayerNetwork:
         test_errors = []
 
         for _ in range(self.epochs):
+            if self.noise:
+                X_train_epoch = self.add_noise(X_train)
+            else:
+                X_train_epoch = X_train
             self.t = 1
             
-            train_indexes = list(range(len(X_train)))
+            train_indexes = list(range(len(X_train_epoch)))
             np.random.shuffle(train_indexes)
             self.update_learning_rate(train_errors)
 
             for i in train_indexes:
                 # ONLINE TRAINING
-                input = X_train[i]
+                input = X_train_epoch[i]
                 output = y_train[i]
                 self.forward_propagation(input)
                 self.back_propagation(output)
 
-            epoch_error = self.cuadratic_mean_error(X_train, y_train)
+            epoch_error = self.cuadratic_mean_error(X_train_epoch, y_train)
             self.t += 1
 
             if X_test is not None:

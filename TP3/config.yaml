@@ -1,7 +1,7 @@
 [general_config]
 
-exercise = latent_space_exercise
-#Can be latent_space_exercise, even_numbers, guess_numbers, guess_numbers_game
+exercise = latent_space_exercise, latent_plot
+#Can be latent_space_exercise
 
 load_backup_weights = False
 #Can be True, False
@@ -9,23 +9,23 @@ load_backup_weights = False
 with_adam = True
 #Can be True, False
 
-adaptative_learning_rate = True
+adaptative_learning_rate = False
 #Can be True, False
 
-noise = True #Este noise de true y false no interactua con el noise factor, si no quieren noise ponganlo en 0
-noise_factor = 0.3
+noise = False #Este noise de true y false no interactua con el noise factor, si no quieren noise ponganlo en 0
+noise_factor = 0
 
-epochs = 250
+epochs = 2500
 
 learning_rate = 0.05
-#Can be TANH, LOGISTICA, RELU
 
+#Can be TANH, LOGISTICA
 activation_function = LOGISTICA
 
-latent_space_dim = 70
+latent_space_dim = 2
 
 
-test_size = 0.7
-momentum_alpha = 0.0
+test_size = 0
+momentum_alpha = 0.5
 
 beta = 1
