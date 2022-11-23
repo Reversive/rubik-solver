@@ -8,7 +8,7 @@ def plot_accuracy_of_epochs_curves_with_legend(curves, N, legends, y_axis_label=
     colors = sns.color_palette("hls", len(legends))
     for i in range(int(len(curves) / N)):
         aux_avg, aux_std = get_average_and_std(curves[i * N:(i + 1) * N])
-        plt.errorbar(iters, aux_avg, fmt='-', elinewidth=0.3, yerr=aux_std)
+        plt.errorbar(iters, aux_avg, fmt='-', elinewidth=0.05, yerr=aux_std)
     # for i in range(len(curves)):
     #     plt.plot(iters, curves[i], label=legends[i], color=colors[i])
 

@@ -94,13 +94,11 @@ def get_config():
     momentum_alpha = float(general_config['momentum_alpha'])
     return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim, with_adam, adaptative_learning_rate,momentum_alpha
 
-def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.LOGISTICA, 
-                noise=False, noise_factor=0.0, test_size=0, with_adam=False, momentum_alpha=0.0,adaptative_learning_rate=False,
-                hidden_layers_dim=[ INPUT_SIZE, 
-                                    IMAGE_WIDTH,
+def latent_space_run(learning_rate=0.05, epochs=10000, act_func_data=ActivationFunctions.LOGISTICA, 
+                noise=False, noise_factor=0.0, test_size=0, with_adam=True, momentum_alpha=0.3,adaptative_learning_rate=False,
+                hidden_layers_dim=[ 28,16,
                                     2,
-                                    IMAGE_WIDTH, 
-                                    INPUT_SIZE]):
+                                    16,28]):
     X = []
     for img in SYMBOLS_IMAGE:
         X.append(get_bit_image(img))
