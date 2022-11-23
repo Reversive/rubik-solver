@@ -92,7 +92,8 @@ def get_config():
     latent_space_dim = int(general_config['latent_space_dim'])
     with_adam = general_config['with_adam'] == 'True'
     momentum_alpha = float(general_config['momentum_alpha'])
-    return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim, with_adam, adaptative_learning_rate,momentum_alpha
+    adaptative_learning_rate = general_config['adaptative_learning_rate'] == 'True'
+    return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim, with_adam, adaptative_learning_rate, momentum_alpha
 
 def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.LOGISTICA, 
                 noise=False, noise_factor=0.0, test_size=0, with_adam=False, momentum_alpha=0.0,adaptative_learning_rate=False,
@@ -133,9 +134,9 @@ def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFun
 
 if __name__ == "__main__":
     random.seed(123456789)
-    program_to_exec, learning_rate, epochs, act_func_data, scaler, \
-    beta, noise, noise_factor, load_backup_weights, test_size, \
-    latent_space_dim, with_adam, adaptative_learning_rate = get_config()
+    program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, \
+            load_backup_weights, test_size, latent_space_dim, with_adam, adaptative_learning_rate, momentum_alpha\
+                = get_config()
     
     X = []
     for img in SYMBOLS_IMAGE:
