@@ -14,12 +14,12 @@ IMAGE_WIDTH = 8
 IMAGE_HEIGHT = 7
 INPUT_SIZE = 7*IMAGE_WIDTH
 
-def create_network(act_func_data=ActivationFunctions.LOGISTICA,latent_space_dim=70,
-                                        hidden_layers_dim=[  INPUT_SIZE, 
-                                                                IMAGE_WIDTH,
-                                                                2,
-                                                                IMAGE_WIDTH, 
-                                                                INPUT_SIZE],
+def create_network(act_func_data=ActivationFunctions.LOGISTICA,latent_space_dim=2,
+                                        hidden_layers_dim=[  28, 
+                                                            16,
+                                                            2,
+                                                            16, 
+                                                            28],
                         learning_rate=0.05, epochs=1000, with_adam=False, momentum_alpha=0,adaptative_learning_rate=False):
     BETA = 1
     act_func = lambda x: act_func_data.value["act_func"](x, BETA)
@@ -96,12 +96,13 @@ def get_config():
     return program_to_exec, learning_rate, epochs, act_func_data, scaler, beta, noise, noise_factor, load_backup_weights, test_size, latent_space_dim, with_adam, adaptative_learning_rate, momentum_alpha
 
 def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFunctions.LOGISTICA, 
-                noise=False, noise_factor=0.0, test_size=0, with_adam=False, momentum_alpha=0.0,adaptative_learning_rate=False,
-                hidden_layers_dim=[ INPUT_SIZE, 
-                                    IMAGE_WIDTH,
+                noise=False, noise_factor=0.0, test_size=0, with_adam=False, 
+                momentum_alpha=0.0,adaptative_learning_rate=False,
+                hidden_layers_dim=[ 28, 
+                                    16,
                                     2,
-                                    IMAGE_WIDTH, 
-                                    INPUT_SIZE]):
+                                    16, 
+                                    28]):
     X = []
     for img in SYMBOLS_IMAGE:
         X.append(get_bit_image(img))
@@ -109,10 +110,11 @@ def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFun
     for img in SYMBOLS_IMAGE:
         y.append(get_bit_image(img))
 
-    for i in range(len(X)):
-        for j in range(len(X[i])):
-            X[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
-        X[i] = np.clip(X[i], 0.0, 1.0)
+    if noise:
+        for i in range(len(X)):
+            for j in range(len(X[i])):
+                X[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
+            X[i] = np.clip(X[i], 0.0, 1.0)
 
     if test_size == 0:
         X_train = X
@@ -121,8 +123,9 @@ def latent_space_run(learning_rate=0.05, epochs=250, act_func_data=ActivationFun
         y_test = y
     else:
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
-    network = create_network(act_func_data=act_func_data, 
-            learning_rate=learning_rate, hidden_layers_dim=hidden_layers_dim, momentum_alpha=momentum_alpha,
+        
+    network = create_network(act_func_data=act_func_data, learning_rate=learning_rate, 
+            hidden_layers_dim=hidden_layers_dim, momentum_alpha=momentum_alpha,
             epochs=epochs, adaptative_learning_rate=adaptative_learning_rate,with_adam=with_adam)
 
     train_accuracies, test_accuracies, train_errors, test_errors = train_guess_number(
@@ -145,23 +148,31 @@ if __name__ == "__main__":
     for img in SYMBOLS_IMAGE:
         y.append(get_bit_image(img))
 
-    for i in range(len(X)):
-        for j in range(len(X[i])):
-            X[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
-            
-        X[i] = np.clip(X[i], 0.0, 1.0)
+    if noise:
+        for i in range(len(X)):
+            for j in range(len(X[i])):
+                X[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
+                
+            X[i] = np.clip(X[i], 0.0, 1.0)
 
-    hidden_layers_dim = [  INPUT_SIZE, 
-                            IMAGE_WIDTH,
-                            latent_space_dim,
-                            IMAGE_WIDTH, 
-                            INPUT_SIZE]
+    hidden_layers_dim = [  28, 
+                            16,
+                            2,
+                            16, 
+                            28]
+    
+    if test_size == 0:
+        X_train = X
+        X_test = X
+        y_train = y
+        y_test = y
+    else:
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
-    network = create_network(act_func_data=act_func_data, 
-            learning_rate=learning_rate, hidden_layers_dim=hidden_layers_dim,
-            epochs=epochs, with_adam=with_adam, adaptative_learning_rate=adaptative_learning_rate)
-
+    network = create_network(act_func_data=act_func_data, learning_rate=learning_rate, 
+            hidden_layers_dim=hidden_layers_dim, momentum_alpha=momentum_alpha,
+            epochs=epochs, adaptative_learning_rate=adaptative_learning_rate,with_adam=with_adam)
+    
     if load_backup_weights:
         network.load_backup_weights()
     else:
