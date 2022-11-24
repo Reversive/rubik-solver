@@ -2,6 +2,8 @@ from typing import Deque
 import numpy as np
 import math
 import csv
+import random
+import copy
 
 MIN_ERROR_TRESHOLD = np.exp(-10000)
 WEIGHTS_BACKUP_DIR = 'TP3/data/weights_backup.txt'
@@ -135,12 +137,22 @@ class MultilayerNetwork:
         return correct / len(X)
     
     def add_noise(self, X):
-        for i in range(len(X)):
-            for j in range(len(X[i])):
-                X[i][j] += self.noise_factor * np.random.normal(loc=0.0, scale=1.0)
-            X[i] = np.clip(X[i], 0.0, 1.0)
+        ans = copy.deepcopy(X)
+        # for i in range(len(ans)):
+        #     for j in range(len(ans[i])):
+        #         ans[i][j] += self.noise_factor * np.random.normal(loc=0.0, scale=1.0)
+        #     ans[i] = np.clip(ans[i], 0.0, 1.0)
 
-        return X + np.random.normal(0, self.noise, X.shape)
+        for i in range(len(ans)):
+            for j in range(len(ans[i])):
+                aux_num = random.random()
+                if(aux_num < self.noise_factor):
+                    ans[i][j] = abs((ans[i][j] - 1))
+
+
+        return ans
+
+
 
     def train(self, X_train, y_train, X_test = None, y_test = None):
         error_min = float('inf')

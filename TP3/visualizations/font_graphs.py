@@ -65,10 +65,10 @@ def plot_error_and_accuracy_changing_noise_factor():
     errors_by_experiment = []
     accuracies_by_experiment = []
     legends = []
-    cases = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]
+    cases = [0.1,0.2,0.5,0.7,0.9]
     for i in cases:
         for j in range(N):
-            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(act_func_data=ActivationFunctions.LOGISTICA,momentum_alpha=0.5,with_adam=False,noise=True,adaptative_learning_rate=False,noise_factor=i)
+            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(act_func_data=ActivationFunctions.LOGISTICA,epochs=1000,hidden_layers_dim=[56],momentum_alpha=0.3,with_adam=True,noise=True,adaptative_learning_rate=False,noise_factor=i)
             errors_by_experiment.append(train_errors)
             accuracies_by_experiment.append(train_accuracies)
         legends.append("Noise Factor: " + str(i))
