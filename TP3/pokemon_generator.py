@@ -153,6 +153,6 @@ if __name__ == "__main__":
 
     generate_latent_space_matrix_plot(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 15)
 
-    interface = Interface(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, min(x_test_encoded[:, 0]),
-            min(x_test_encoded[:, 1]),max(x_test_encoded[:, 0]),max(x_test_encoded[:, 1]))
+    interface = Interface(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 
+        min(x_test_encoded[:, 0]), min(x_test_encoded[:, 1]),max(x_test_encoded[:, 0]),max(x_test_encoded[:, 1]))
     interface.show_interface()
