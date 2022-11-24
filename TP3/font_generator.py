@@ -56,7 +56,8 @@ def get_heatmap(network, X_train):
     WIDTH = 8
     matrix = np.zeros((int(IMG_AMOUNT / AMOUNT_PER_ROW) * HEIGHT, WIDTH * AMOUNT_PER_ROW))
     for idx, train_element in enumerate(X_train):
-        result = network.forward_propagation(train_element)
+        # result = train_element # si queremos que sea con el set original
+        result = network.forward_propagation(train_element) # si queremos que sea con la prediccion
         temp = get_binary(result)
         k = 0
         for j in range(HEIGHT * int(math.floor(idx / AMOUNT_PER_ROW)),
