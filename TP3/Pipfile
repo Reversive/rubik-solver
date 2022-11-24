@@ -14,6 +14,11 @@ seaborn = "*"
 # tensorflow-macos = "*"
 # tensorflow-metal = "*"
 pygame = "*"
+opencv-python = "*"
+pipenv = "*"
+install = "*"
+ipykernel = "*"
+jupyter = "*"
 
 [dev-packages]
 
