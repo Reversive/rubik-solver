@@ -25,7 +25,7 @@ INPUT_DIM = IMAGE_SIZE * IMAGE_SIZE * NUM_CHANNELS
 FIRST_INTERMEDIATE_DIM = 1024
 SECOND_INTERMEDIATE_DIM = 256
 LATENT_DIM = 2  # tiene que ser 2 para poder ser graficado en un plot
-EPOCHS = 200
+EPOCHS = 20
 
 
 def sampling(args: tuple):

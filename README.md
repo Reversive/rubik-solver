@@ -15,3 +15,8 @@ Trabajos Prácticos de la materia **72.27: Sistemas de Inteligencia Artificial**
 * Implementación de algoritmo de perceptrón simple con distintas funciones de activación. 
 * Implementación de algoritmo de perceptrón simple lineal y no lineal.
 * Implementación de algoritmo de perceptrón multicapa.
+
+# TP3: [Autoencoder](https://github.com/Reversive/sia-repo/blob/main/TP3/font_generator.py) y [Variable Autoencoder](https://github.com/Reversive/sia-repo/blob/main/TP3/pokemon_generator.py)
+* Implementación de autoencoder con mejoras para la red multicapa como adam y adaptative learning rate.
+* Evaluación de aprendizaje de font.h con autoencoder
+* Utilizacion de VAE para aprendizaje de 151 imagenes de pokemon
