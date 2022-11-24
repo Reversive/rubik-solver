@@ -37,7 +37,7 @@ class Interface:
 
     def show_interface(self):
         pg.init()
-        screen = pg.display.set_mode((self.image_width / SCALE, self.image_height))
+        screen = pg.display.set_mode((self.image_width *2, self.image_height))
         pg.display.set_caption(CAPTION)
         icon = pg.image.load(ICON_PATH)
         pg.display.set_icon(icon)

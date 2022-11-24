@@ -22,7 +22,7 @@ INPUT_DIM = IMAGE_SIZE * IMAGE_SIZE * NUM_CHANNELS
 FIRST_INTERMEDIATE_DIM = 1024
 SECOND_INTERMEDIATE_DIM = 256
 LATENT_DIM = 2  # tiene que ser 2 para poder ser graficado en un plot
-EPOCHS = 300
+EPOCHS = 100
 
 
 def sampling(args: tuple):
@@ -108,20 +108,24 @@ if __name__ == "__main__":
         return vae_loss
 
 
-    vae.compile(loss=vae_loss)
+    vae.compile(loss=vae_loss, optimizer='rmsprop')
     vae.summary()
 
-    vae.fit(X_train, X_train,
-            epochs=EPOCHS)
+    history = vae.fit(X_train, X_train, epochs=EPOCHS)
+    #plot error vs epoch
+    plt.plot(history.history['loss'])
+    plt.ylabel('Error')
+    plt.xlabel('Epochs')
+    plt.show()
 
     # Para ver el rango de latent space?
-
     x_test_encoded = encoder.predict(X_test)[0]
     plt.figure(figsize=(6, 6))
     plt.scatter(x_test_encoded[:, 0], x_test_encoded[:, 1], c=y_test, cmap='viridis')
     plt.colorbar()
-    plt.show(block=False)
+    plt.show(block=True)
 
-    generate_latent_space_matrix_plot(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 10)
+    generate_latent_space_matrix_plot(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 15)
+
     interface = Interface(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS)
     interface.show_interface()

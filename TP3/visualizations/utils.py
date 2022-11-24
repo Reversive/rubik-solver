@@ -1,6 +1,7 @@
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy.stats import norm
 
 
 def plot_accuracy_of_epochs_curves_with_legend(curves, N, legends, y_axis_label="Accuracy", x_axis_label="Epochs"):
@@ -37,15 +38,8 @@ def generate_latent_space_matrix_plot(predict, input_width, input_height, num_ch
     # generate nxn samples
     figure = np.zeros((input_width * n, input_height * n, num_channels))
 
-    # Create a Grid of latent variables, to be provided as inputs to decoder.predict
-    # Creating vectors within range -5 to 5 as that seems to be the range in latent space
-    min_range = 0.05
-    max_range = 0.95
-    # min_range = -5
-    # max_range = 5
-
-    grid_x = np.linspace(min_range, max_range, n)
-    grid_y = np.linspace(min_range, max_range, n)[::-1]
+    grid_x = norm.ppf(np.linspace(0.05, 0.95, n))
+    grid_y = norm.ppf(np.linspace(0.05, 0.95, n))
 
     # decoder for each square in the grid
     for i, yi in enumerate(grid_y):
@@ -68,5 +62,5 @@ def generate_latent_space_matrix_plot(predict, input_width, input_height, num_ch
     plt.axis('off')
     plt.savefig('TP3/ui/utils/images/pokemon.png', bbox_inches='tight', pad_inches=0)
     plt.axis('on')
-    plt.show(block=False)
+    plt.show(block=True)
     plt.close('all')
