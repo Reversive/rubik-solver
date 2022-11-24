@@ -58,9 +58,4 @@ def generate_latent_space_matrix_plot(predict, input_width, input_height, num_ch
         plt.imshow(figure, cmap='Greys_r')
     else:
         plt.imshow(figure)
-
-    plt.axis('off')
-    plt.savefig('TP3/ui/utils/images/pokemon.png', bbox_inches='tight', pad_inches=0)
-    plt.axis('on')
-    plt.show(block=True)
-    plt.close('all')
+    figure = plt.show(block=False)

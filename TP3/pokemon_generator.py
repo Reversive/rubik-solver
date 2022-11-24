@@ -8,6 +8,7 @@ from keras.metrics import binary_crossentropy
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import os
+import cv2  # pip3 install opencv-python
 
 from .ui.interface import Interface
 from .visualizations.utils import generate_latent_space_matrix_plot
@@ -15,21 +16,23 @@ from tensorflow.python.framework.ops import disable_eager_execution
 
 disable_eager_execution()
 
+# IMAGES_PATH = "TP3/data/GS_pokemon_images/"
 IMAGES_PATH = "TP3/data/pokemon_images/"
+# NUM_CHANNELS = 1
 NUM_CHANNELS = 3  # RGB
 IMAGE_SIZE = 96
 INPUT_DIM = IMAGE_SIZE * IMAGE_SIZE * NUM_CHANNELS
 FIRST_INTERMEDIATE_DIM = 1024
 SECOND_INTERMEDIATE_DIM = 256
 LATENT_DIM = 2  # tiene que ser 2 para poder ser graficado en un plot
-EPOCHS = 100
+EPOCHS = 200
 
 
 def sampling(args: tuple):
     z_mean, z_log_var = args
     print(z_mean)
     print(z_log_var)
-    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], LATENT_DIM), mean=0.)
+    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], LATENT_DIM), mean=0., stddev=1.)
     return z_mean + K.exp(z_log_var / 2) * epsilon  # h(z)
 
 
@@ -56,6 +59,25 @@ def read_pokemon_images():
     # plt.show()
 
     return X, y
+
+# def read_pokemon_images():
+#     X = []
+#     y = []
+#     for image_file_name in os.listdir(IMAGES_PATH):
+#         img_array = cv2.imread(os.path.join(IMAGES_PATH,image_file_name), cv2.IMREAD_GRAYSCALE)
+#         new_array = cv2.resize(img_array, (IMAGE_SIZE,IMAGE_SIZE))
+#         X.append(new_array)
+#         # get id in file name
+#         image_id = image_file_name.split(".")[0].split("/")[-1]
+#         y.append(int(image_id))
+
+#     X = np.array(X)
+#     # reshape so its a 4d array
+#     X = X.reshape(-1, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS)
+#     X = X.astype('float32') / 255
+#     X = X.reshape((len(X), np.prod(X.shape[1:])))
+
+#     return X, y
 
 
 if __name__ == "__main__":
@@ -111,21 +133,26 @@ if __name__ == "__main__":
     vae.compile(loss=vae_loss, optimizer='rmsprop')
     vae.summary()
 
-    history = vae.fit(X_train, X_train, epochs=EPOCHS)
+    history = vae.fit(X_train, X_train, epochs=EPOCHS, batch_size=20, shuffle=True)
     #plot error vs epoch
-    plt.plot(history.history['loss'])
-    plt.ylabel('Error')
-    plt.xlabel('Epochs')
-    plt.show()
+    # plt.plot(history.history['loss'])
+    # plt.ylabel('Error')
+    # plt.xlabel('Epochs')
+    # plt.show(block=False)
 
     # Para ver el rango de latent space?
     x_test_encoded = encoder.predict(X_test)[0]
     plt.figure(figsize=(6, 6))
     plt.scatter(x_test_encoded[:, 0], x_test_encoded[:, 1], c=y_test, cmap='viridis')
+    plt.axis('off')
+    plt.savefig('TP3/ui/utils/images/latent_space.png', bbox_inches='tight', pad_inches=0)
     plt.colorbar()
+    plt.axis('on')
     plt.show(block=True)
+    
 
     generate_latent_space_matrix_plot(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 15)
 
-    interface = Interface(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS)
+    interface = Interface(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, min(x_test_encoded[:, 0]),
+            min(x_test_encoded[:, 1]),max(x_test_encoded[:, 0]),max(x_test_encoded[:, 1]))
     interface.show_interface()
