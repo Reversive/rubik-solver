@@ -56,7 +56,6 @@ class Interface:
                     pos = pg.mouse.get_pos()
                     if pos[0] <= self.image_width:
                         x, y = self.get_scaled_positions(pos)
-                        print(pos, x,y)
                         decoded = self.predict(np.array([[x, y]]))
                         image = decoded.reshape(self.clicked_image_width, self.clicked_image_height, self.num_channels)
                         plt.imshow(image)

@@ -59,3 +59,4 @@ def generate_latent_space_matrix_plot(predict, input_width, input_height, num_ch
     else:
         plt.imshow(figure)
     figure = plt.show(block=False)
+    plt.close(figure)

@@ -8,7 +8,6 @@ from keras.metrics import binary_crossentropy
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import os
-import cv2  # pip3 install opencv-python
 
 from .ui.interface import Interface
 from .visualizations.utils import generate_latent_space_matrix_plot
@@ -25,7 +24,7 @@ INPUT_DIM = IMAGE_SIZE * IMAGE_SIZE * NUM_CHANNELS
 FIRST_INTERMEDIATE_DIM = 1024
 SECOND_INTERMEDIATE_DIM = 256
 LATENT_DIM = 2  # tiene que ser 2 para poder ser graficado en un plot
-EPOCHS = 20
+EPOCHS = 50
 
 
 def sampling(args: tuple):
@@ -148,7 +147,7 @@ if __name__ == "__main__":
     plt.savefig('TP3/ui/utils/images/latent_space.png', bbox_inches='tight', pad_inches=0)
     plt.colorbar()
     plt.axis('on')
-    plt.show(block=True)
+    plt.show(block=False)
     
 
     generate_latent_space_matrix_plot(lambda x: decoder.predict(x)[0], IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS, 15)

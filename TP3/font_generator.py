@@ -10,6 +10,7 @@ import configparser
 import sys
 from .visualizations.utils import generate_latent_space_matrix_plot
 import matplotlib.pyplot as plt
+import copy
 
 IMAGE_WIDTH = 8
 IMAGE_HEIGHT = 7
@@ -49,15 +50,33 @@ def get_binary(output):
     return binary
 
 
+def get_noisy_image():
+    noise_factor = 0.3
+    X = []
+    for img in SYMBOLS_IMAGE:
+        X.append(get_bit_image(img))
+    ans = copy.deepcopy(X)
+    # for i in range(len(ans)):
+    #     for j in range(len(ans[i])):
+    #         ans[i][j] += noise_factor * np.random.normal(loc=0.0, scale=1.0)
+    #     ans[i] = np.clip(ans[i], 0.0, 1.0)
+    for i in range(len(ans)):
+        for j in range(len(ans[i])):
+            aux_num = random.random()
+            if aux_num < noise_factor:
+                ans[i][j] = 0
+    return ans
+
+
 def get_heatmap(network, X_train):
     AMOUNT_PER_ROW = 4
     IMG_AMOUNT = 32
     HEIGHT = 7
     WIDTH = 8
     matrix = np.zeros((int(IMG_AMOUNT / AMOUNT_PER_ROW) * HEIGHT, WIDTH * AMOUNT_PER_ROW))
-    for idx, train_element in enumerate(X_train):
-        # result = train_element # si queremos que sea con el set original
-        result = network.forward_propagation(train_element) # si queremos que sea con la prediccion
+    for idx, train_element in enumerate(get_noisy_image()):
+        result = train_element  # if we want the original dataset
+        # result = network.forward_propagation(train_element)  # for the predictions
         temp = get_binary(result)
         k = 0
         for j in range(HEIGHT * int(math.floor(idx / AMOUNT_PER_ROW)),
