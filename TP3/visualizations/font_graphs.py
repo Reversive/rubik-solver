@@ -8,11 +8,11 @@ def plot_error_and_accuracy_changing_act_function():
     N = 5
     errors_by_experiment = []
     accuracies_by_experiment = []
-    legends = ["Signo","TanH","Logistica"]
+    legends = ["Signo","Linear","TanH","Logistica","RElu"]
     activation_functions = [ActivationFunctions.SIGN, ActivationFunctions.TANH, ActivationFunctions.LOGISTICA]
     for i in activation_functions:
         for j in range(N):
-            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(act_func_data=i,momentum_alpha=0.5)
+            train_accuracies, test_accuracies, train_errors, test_errors = latent_space_run(act_func_data=i,momentum_alpha=0.3,with_adam=True)
             errors_by_experiment.append(train_errors)
             accuracies_by_experiment.append(train_accuracies)
     plot_accuracy_of_epochs_curves_with_legend(errors_by_experiment, N, legends=legends, y_axis_label="Error")
